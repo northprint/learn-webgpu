@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<script>
+			// ダークモードの初期設定（FOUC防止）
+			(function() {
+				const darkMode = localStorage.getItem('darkMode') === 'true' || 
+					(!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+				if (darkMode) {
+					document.documentElement.classList.add('dark');
+				}
+			})();
+		</script>
+		%sveltekit.head%
+	</head>
+	<body data-sveltekit-preload-data="hover">
+		<div style="display: contents">%sveltekit.body%</div>
+	</body>
+</html>

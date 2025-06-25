@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-bg: #ffffff;
+    --color-text: #1a1a1a;
+    --color-border: #e5e7eb;
+    --color-code-bg: #f3f4f6;
+  }
+
+  :root.dark {
+    --color-bg: #0a0a0a;
+    --color-text: #fafafa;
+    --color-border: #27272a;
+    --color-code-bg: #18181b;
+  }
+
+  body {
+    @apply bg-[var(--color-bg)] text-[var(--color-text)] transition-colors duration-200;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-4 py-2 bg-gpu-blue text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium;
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2 bg-gray-200 dark:bg-gray-800 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors duration-200 font-medium;
+  }
+
+  .card {
+    @apply bg-gray-50 dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6;
+  }
+
+  .code-block {
+    @apply bg-[var(--color-code-bg)] rounded-lg p-4 font-mono text-sm overflow-x-auto;
+  }
+}
