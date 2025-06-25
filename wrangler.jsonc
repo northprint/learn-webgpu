@@ -1,6 +1,8 @@
 {
+  // Cloudflare Workers/Pages設定
   "name": "learn-webgpu",
   "compatibility_date": "2024-12-24",
+  // 静的アセットのディレクトリを指定
   "assets": {
     "directory": "./.svelte-kit/cloudflare"
   }
