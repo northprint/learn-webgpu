@@ -817,7 +817,7 @@ fn fs_main() -> @location(0) vec4f {
 									<!-- 写経モード時の解答表示 -->
 									<div class="typing-solution">
 										<div class="typing-solution-header">
-											<span class="text-sm font-medium">解答コード（参照用）</span>
+											<span class="text-sm font-medium text-gray-700 dark:text-gray-100">解答コード（参照用）</span>
 											<button 
 												onclick={() => typingMode = false}
 												class="text-xs text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
@@ -1040,7 +1040,7 @@ fn fs_main() -> @location(0) vec4f {
 	}
 	
 	:global(.dark) .typing-solution {
-		background-color: rgb(17 24 39 / 0.5);
+		background-color: rgb(31 41 55 / 0.7);
 	}
 	
 	.typing-solution-header {
@@ -1066,7 +1066,8 @@ fn fs_main() -> @location(0) vec4f {
 	}
 	
 	.typing-solution-code code {
-		@apply text-gray-700 dark:text-gray-100;
+		@apply text-gray-700 dark:text-gray-50;
+		opacity: 0.9;
 	}
 	
 	.solution-banner {
