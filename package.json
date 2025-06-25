@@ -12,7 +12,7 @@
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
     "deploy": "npm run build && wrangler deploy",
-    "pages:deploy": "npm run build && wrangler pages deploy .svelte-kit/cloudflare --project-name=learn-webgpu"
+    "pages:deploy": "echo 'Deployment handled by Cloudflare Pages'"
   },
   "devDependencies": {
     "@playwright/test": "^1.53.1",
