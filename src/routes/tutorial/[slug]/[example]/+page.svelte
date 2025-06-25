@@ -1066,7 +1066,7 @@ fn fs_main() -> @location(0) vec4f {
 	}
 	
 	.typing-solution-code code {
-		@apply text-gray-700 dark:text-gray-300;
+		@apply text-gray-700 dark:text-gray-100;
 	}
 	
 	.solution-banner {
