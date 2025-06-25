@@ -10,7 +10,7 @@
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
-    "pages:deploy": "wrangler pages deploy .svelte-kit/cloudflare"
+    "pages:deploy": "wrangler pages deploy .svelte-kit/cloudflare --project-name=learn-webgpu"
   },
   "devDependencies": {
     "@playwright/test": "^1.53.1",
