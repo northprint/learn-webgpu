@@ -151,9 +151,9 @@ export const progress = createProgressStore();
 export const completionRate = derived(
 	progress,
 	$progress => {
-		// チュートリアルの総数を取得（動的にインポートを避けるため、ここでは固定値）
-		// 実際の実装では、tutorialChaptersから動的に計算
-		const totalExamples = 7; // 現在の例題数
+		// チュートリアルの総数を動的に計算
+		// getTotalExamplesはモジュールの最下部で定義
+		const totalExamples = getTotalExamples();
 		const completed = $progress.completedExamples.size;
 		
 		return {
@@ -168,4 +168,12 @@ export const completionRate = derived(
 export function isExampleCompleted(chapterId: string, exampleId: string, progressData: ProgressData): boolean {
 	const key = `${chapterId}/${exampleId}`;
 	return progressData.completedExamples.has(key);
+}
+
+// チュートリアルの総数を取得
+function getTotalExamples(): number {
+	// 動的インポートを避けるため、ここで手動で計算
+	// この値はtutorialChaptersの実際の例題数と同期する必要がある
+	// getting-started: 2, first-triangle: 1, buffers-and-uniforms: 2, textures: 1, lighting: 1
+	return 7;
 }

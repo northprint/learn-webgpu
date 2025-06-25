@@ -15,9 +15,22 @@
 	<div class="mb-8 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
 		<div class="flex items-center justify-between mb-2">
 			<span class="text-sm font-medium">学習進捗</span>
-			<span class="text-sm text-gray-800 dark:text-gray-400">
-				{$completionRate.completed} / {$completionRate.total} 完了
-			</span>
+			<div class="flex items-center gap-4">
+				<span class="text-sm text-gray-800 dark:text-gray-400">
+					{$completionRate.completed} / {$completionRate.total} 完了
+				</span>
+				<button 
+					onclick={() => {
+						if (confirm('本当に進捗をリセットしますか？\nこの操作は取り消せません。')) {
+							progress.reset();
+						}
+					}}
+					class="text-xs text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 transition-colors"
+					title="進捗をリセット"
+				>
+					リセット
+				</button>
+			</div>
 		</div>
 		<div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
 			<div 
