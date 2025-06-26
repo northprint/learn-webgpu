@@ -6,12 +6,13 @@
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",
-    "preview:wrangler": "wrangler pages dev .svelte-kit/cloudflare",
+    "preview:wrangler": "wrangler dev",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
     "deploy": "npm run build && wrangler deploy",
+    "deploy:local": "npm run build && wrangler dev",
     "pages:deploy": "wrangler pages deploy .svelte-kit/cloudflare --project-name=learn-webgpu"
   },
   "devDependencies": {

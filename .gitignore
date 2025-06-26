@@ -17,5 +17,4 @@ yarn-error.log*
 .wrangler
 .cloudflare
 /functions
-wrangler.toml
 .vercel
