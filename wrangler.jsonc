@@ -1,6 +1,3 @@
 {
-    "name": "learn-webgpu",
-    "compatibility_date": "2025-06-26",
-    "main": "./.svelte-kit/output/server/index.js",
-    "pages_build_output_dir": "./.svelte-kit/output/client"
+  "name": "learn-webgpu"
 }
