@@ -1,4 +1,5 @@
 {
   "name": "learn-webgpu",
-  "pages_build_output_dir": "./.svelte-kit/cloudflare"
+  "compatibility_date": "2025-06-26",
+  "pages_build_output_dir": ".svelte-kit/cloudflare"
 }
