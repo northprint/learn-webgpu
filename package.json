@@ -13,7 +13,7 @@
     "typecheck": "tsc --noEmit",
     "deploy": "npm run build && wrangler deploy",
     "deploy:local": "npm run build && wrangler dev",
-    "pages:deploy": "echo 'Deployment handled by Cloudflare Pages'"
+    "pages:deploy": "npx wrangler pages deploy .svelte-kit/cloudflare"
   },
   "devDependencies": {
     "@playwright/test": "^1.53.1",
