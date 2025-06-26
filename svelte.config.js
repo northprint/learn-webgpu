@@ -7,8 +7,14 @@ const config = {
 	preprocess: vitePreprocess(),
 
 	kit: {
-		// Cloudflare Pagesにデプロイ
-		adapter: adapter()
+		// Cloudflare PagesでSSRを有効にしてデプロイ
+		adapter: adapter({
+			// Pages用の設定
+			routes: {
+				include: ['/*'],
+				exclude: ['<all>']
+			}
+		})
 	}
 };
 
