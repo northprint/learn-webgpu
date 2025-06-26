@@ -11,7 +11,7 @@
 </script>
 
 <svelte:head>
-	<title>設定 - WebGPU Learn</title>
+	<title>設定 - Learn WebGPU</title>
 </svelte:head>
 
 <div class="container mx-auto px-6 py-8 max-w-4xl">

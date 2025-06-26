@@ -1,6 +1,6 @@
 {
-  "name": "WebGPU Learn",
-  "short_name": "WebGPU Learn",
+  "name": "Learn WebGPU",
+  "short_name": "Learn WebGPU",
   "description": "WebGPUを学ぶためのインタラクティブチュートリアル",
   "theme_color": "#3B82F6",
   "background_color": "#ffffff",

@@ -226,7 +226,7 @@ fn fs_main() -> @location(0) vec4f {
 </script>
 
 <svelte:head>
-	<title>プレイグラウンド - WebGPU Learn</title>
+	<title>プレイグラウンド - Learn WebGPU</title>
 </svelte:head>
 
 <div class="playground-layout">

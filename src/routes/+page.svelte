@@ -44,7 +44,7 @@
 </script>
 
 <svelte:head>
-	<title>WebGPU Learn - WebGPUを学ぶためのインタラクティブチュートリアル</title>
+	<title>Learn WebGPU - WebGPUを学ぶためのインタラクティブチュートリアル</title>
 	<meta name="description" content="WebGPUの基礎から応用まで、実際にコードを書きながら学べるインタラクティブなチュートリアル" />
 </svelte:head>
 

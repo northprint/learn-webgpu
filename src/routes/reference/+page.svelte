@@ -3,7 +3,7 @@
 </script>
 
 <svelte:head>
-	<title>リファレンス - WebGPU Learn</title>
+	<title>リファレンス - Learn WebGPU</title>
 </svelte:head>
 
 <div class="container mx-auto px-6 py-8 max-w-4xl">

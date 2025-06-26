@@ -5,7 +5,7 @@
 </script>
 
 <svelte:head>
-	<title>チュートリアル - WebGPU Learn</title>
+	<title>チュートリアル - Learn WebGPU</title>
 </svelte:head>
 
 <div class="tutorial-list-container">

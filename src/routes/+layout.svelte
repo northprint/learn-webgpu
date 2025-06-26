@@ -45,7 +45,7 @@
 		<div class="container mx-auto px-4 py-4 flex items-center justify-between">
 			<a href="/" class="flex items-center gap-2">
 				<span class="text-2xl font-bold bg-gradient-to-r from-gpu-blue via-gpu-purple to-gpu-pink bg-clip-text text-transparent">
-					WebGPU Learn
+					Learn WebGPU
 				</span>
 			</a>
 			
@@ -106,7 +106,7 @@
 	
 	<footer class="border-t border-[var(--color-border)] py-8 mt-16">
 		<div class="container mx-auto px-4 text-center text-sm text-gray-900 dark:text-gray-400 font-medium">
-			<p>WebGPU Learn - WebGPUを学ぶためのインタラクティブチュートリアル</p>
+			<p>Learn WebGPU - WebGPUを学ぶためのインタラクティブチュートリアル</p>
 			<p class="mt-2">
 				<a href="https://github.com/northprint/learn-webgpu" target="_blank" rel="noopener noreferrer" class="hover:text-gpu-blue transition-colors">
 					GitHub
