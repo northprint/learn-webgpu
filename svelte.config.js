@@ -7,14 +7,8 @@ const config = {
 	preprocess: vitePreprocess(),
 
 	kit: {
-		// Cloudflare Workersにデプロイ
-		adapter: adapter({
-			// Cloudflare Workers向けの設定
-			routes: {
-				include: ['/*'],
-				exclude: ['<all>']
-			}
-		})
+		// Cloudflare Pagesにデプロイ
+		adapter: adapter()
 	}
 };
 
