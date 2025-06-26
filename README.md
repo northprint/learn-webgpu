@@ -2,6 +2,8 @@
 
 WebGPUを学習するためのインタラクティブなチュートリアルWebアプリケーション。
 
+🌐 **ライブサイト**: [https://learn-webgpu.com/](https://learn-webgpu.com/)
+
 ## 概要
 
 WebGPU LearnはブラウザでWebGPUを学習できるインタラクティブなチュートリアルアプリケーションです。実際にコードを編集・実行しながら、WebGPUの基礎から応用まで段階的に学習できます。
