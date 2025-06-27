@@ -27,12 +27,13 @@
 			const { device, context: canvasContext, format } = context;
 			
 			// デバイスが失われていないかチェック
-			if (device.lost) {
-				console.warn('[WebGPUCanvas] Device is lost, skipping clear');
-				// デバイスが失われた場合はリセットを呼び出す（非同期）
-				resetContext().catch(e => console.error('[WebGPUCanvas] Failed to reset context:', e));
-				return;
-			}
+			device.lost.then((info) => {
+				if (info) {
+					console.warn('[WebGPUCanvas] Device is lost:', info.reason, info.message);
+					// デバイスが失われた場合はリセットを呼び出す（非同期）
+					resetContext().catch(e => console.error('[WebGPUCanvas] Failed to reset context:', e));
+				}
+			});
 			
 			// コマンドエンコーダーを作成
 			const encoder = device.createCommandEncoder();
@@ -64,17 +65,18 @@
 		if (!canvasElement) return;
 		
 		try {
-			// deviceManagerを使用してキャンバスをリセット
-			await webgpuDeviceManager.resetCanvasContext(canvasElement);
+			// 既存のコンテキストを解放
+			if (context) {
+				webgpuDeviceManager.releaseCanvasContext(canvasElement);
+				context = null;
+			}
 			
-			// コンテキストが存在しない場合は初期化
-			if (!context) {
-				await initializeWebGPU();
-			} else {
-				// コールバックを再実行
-				if (onContextReady) {
-					onContextReady(context);
-				}
+			// 新しいコンテキストを作成
+			context = await webgpuDeviceManager.createContext(canvasElement);
+			
+			// コールバックを実行
+			if (onContextReady) {
+				onContextReady(context);
 			}
 		} catch (e) {
 			console.error('[WebGPUCanvas] Failed to reset context:', e);

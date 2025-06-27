@@ -10,7 +10,7 @@
 	
 	let { currentChapter, currentExample }: Props = $props();
 	
-	let expandedChapters = $state<Set<string>>(new Set([currentChapter].filter(Boolean)));
+	let expandedChapters = $state<Set<string>>(new Set(currentChapter ? [currentChapter] : []));
 	
 	function toggleChapter(chapterId: string) {
 		if (expandedChapters.has(chapterId)) {

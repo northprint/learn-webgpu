@@ -33,6 +33,7 @@ fn fs_main() -> @location(0) vec4f {
 	function handleContextReady(context: WebGPUContext) {
 		webgpuContext = context;
 		consoleMessages.info('WebGPUの準備が完了しました');
+		console.log('[Playground] WebGPU context ready:', context);
 	}
 	
 	// コードを実行
@@ -61,7 +62,7 @@ fn fs_main() -> @location(0) vec4f {
 			try {
 				await webgpuCanvasComponent.resetContext();
 				// リセット後、新しいコンテキストが設定されるまで少し待つ
-				await new Promise(resolve => setTimeout(resolve, 100));
+				await new Promise(resolve => setTimeout(resolve, 50));
 				
 				// コンテキストが正常に再初期化されたか確認
 				if (!webgpuContext) {
@@ -159,8 +160,14 @@ fn fs_main() -> @location(0) vec4f {
 	}
 	
 	// サンプルコードをロード
-	function loadSample(sampleName: string) {
+	async function loadSample(sampleName: string) {
 		if (!sampleName || !samples[sampleName]) return;
+		
+		// 実行中のアニメーションを停止
+		if (activeAnimationIds.size > 0) {
+			activeAnimationIds.forEach(id => cancelAnimationFrame(id));
+			activeAnimationIds.clear();
+		}
 		
 		const sample = samples[sampleName];
 		javascriptCode = sample.javascript;
@@ -171,6 +178,11 @@ fn fs_main() -> @location(0) vec4f {
 		
 		if (sample.fragmentShader) {
 			fragmentShader = sample.fragmentShader;
+		}
+		
+		// キャンバスをクリア
+		if (webgpuCanvasComponent && webgpuCanvasComponent.clearCanvas) {
+			webgpuCanvasComponent.clearCanvas();
 		}
 		
 		consoleMessages.clear();

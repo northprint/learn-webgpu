@@ -633,11 +633,12 @@ fn fs_main() -> @location(0) vec4f {
 	}
 	
 	// 次の単元へ遷移
-	function navigateToNextExample() {
-		if (nextExample) {
+	async function navigateToNextExample() {
+		const next = await nextExample;
+		if (next) {
 			// スクロール位置をトップに戻す
 			window.scrollTo(0, 0);
-			goto(`/tutorial/${nextExample.chapterId}/${nextExample.exampleId}`);
+			goto(`/tutorial/${next.chapterId}/${next.exampleId}`);
 		} else {
 			// 最後の単元の場合は、チュートリアルトップに戻る
 			window.scrollTo(0, 0);
@@ -726,7 +727,7 @@ fn fs_main() -> @location(0) vec4f {
 					<button
 						onclick={navigateToNextExample}
 						class="btn-primary text-sm flex items-center gap-2"
-						title={$_('tutorialDetail.navigation.nextUnitTooltip', { values: { title: nextExampleInfo?.title || '' } })}
+						title={$_('tutorialDetail.navigation.nextUnitTooltip', { values: { title: nextExampleInfo && 'title' in nextExampleInfo ? String(nextExampleInfo.title) : '' } })}
 					>
 						{$_('tutorialDetail.navigation.nextUnit')}
 						<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1066,9 +1067,13 @@ fn fs_main() -> @location(0) vec4f {
 		word-wrap: break-word;
 	}
 	
-	.typing-solution-code code {
-		@apply text-gray-700 dark:text-gray-50;
+	.typing-solution-code pre code {
+		color: rgb(31 41 55) !important;
 		opacity: 0.9;
+	}
+	
+	:global(.dark) .typing-solution-code pre code {
+		color: rgb(243 244 246) !important;
 	}
 	
 	.solution-banner {

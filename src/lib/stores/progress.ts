@@ -81,12 +81,12 @@ function createProgressStore() {
 		// ステップの完了状態を取得
 		getCompletedSteps(chapterId: string, exampleId: string): Set<number> {
 			const key = `${chapterId}/${exampleId}`;
-			let currentData: ProgressData | null = null;
-			const unsubscribe = this.subscribe((data) => {
+			let currentData: ProgressData | undefined;
+			const unsubscribe = this.subscribe((data: ProgressData) => {
 				currentData = data;
 			});
 			unsubscribe();
-			return currentData?.completedSteps[key] || new Set();
+			return (currentData && currentData.completedSteps && currentData.completedSteps[key]) || new Set();
 		},
 		
 		// 例題の完了を取り消し

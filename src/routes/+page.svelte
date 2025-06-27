@@ -6,37 +6,97 @@
 	
 	let webgpuSupported = $state(false);
 	let checkingSupport = $state(true);
+	let browserInfo = $state<{
+		browserName: string;
+		browserVersion: string;
+		isChrome: boolean;
+		chromeVersion: number;
+	}>({ browserName: '', browserVersion: '', isChrome: false, chromeVersion: 0 });
+	let errorMessage = $state<string>('');
+	
+	// ブラウザ情報を取得
+	function getBrowserInfo() {
+		const userAgent = navigator.userAgent;
+		let browserName = 'Unknown';
+		let browserVersion = 'Unknown';
+		let isChrome = false;
+		let chromeVersion = 0;
+		
+		if (userAgent.includes('Chrome')) {
+			isChrome = true;
+			const match = userAgent.match(/Chrome\/(\d+)\./);
+			if (match) {
+				chromeVersion = parseInt(match[1]);
+				browserVersion = match[1];
+			}
+			
+			if (userAgent.includes('Edg/')) {
+				browserName = 'Microsoft Edge';
+			} else if (userAgent.includes('OPR/')) {
+				browserName = 'Opera';
+			} else {
+				browserName = 'Google Chrome';
+			}
+		} else if (userAgent.includes('Firefox')) {
+			browserName = 'Mozilla Firefox';
+			const match = userAgent.match(/Firefox\/(\d+)\./);
+			if (match) {
+				browserVersion = match[1];
+			}
+		} else if (userAgent.includes('Safari')) {
+			browserName = 'Safari';
+			const match = userAgent.match(/Version\/(\d+)\./);
+			if (match) {
+				browserVersion = match[1];
+			}
+		}
+		
+		return { browserName, browserVersion, isChrome, chromeVersion };
+	}
 	
 	onMount(async () => {
+		// ブラウザ情報を取得
+		browserInfo = getBrowserInfo();
+		console.log('[HomePage] Browser info:', browserInfo);
+		
 		// WebGPUサポートチェック
 		console.log('[HomePage] Checking WebGPU support...');
 		console.log('[HomePage] navigator.gpu:', 'gpu' in navigator);
 		
 		try {
-			if ('gpu' in navigator) {
+			if (!('gpu' in navigator)) {
+				console.log('[HomePage] WebGPU API not available');
+				errorMessage = 'WebGPU APIがブラウザで利用できません。';
+				webgpuSupported = false;
+			} else {
 				console.log('[HomePage] Requesting adapter...');
 				const adapter = await navigator.gpu.requestAdapter();
 				console.log('[HomePage] Adapter:', adapter);
 				
-				if (adapter) {
+				if (!adapter) {
+					console.log('[HomePage] No adapter available');
+					errorMessage = 'WebGPUアダプターが利用できません。GPUが無効化されているか、ドライバーの更新が必要な可能性があります。';
+					webgpuSupported = false;
+				} else {
 					// デバイスの取得も試みる
 					console.log('[HomePage] Requesting device...');
-					const device = await adapter.requestDevice();
-					console.log('[HomePage] Device:', device);
-					
-					// 成功！
-					webgpuSupported = true;
-					device.destroy();
-				} else {
-					console.log('[HomePage] No adapter available');
-					webgpuSupported = false;
+					try {
+						const device = await adapter.requestDevice();
+						console.log('[HomePage] Device:', device);
+						
+						// 成功！
+						webgpuSupported = true;
+						device.destroy();
+					} catch (deviceError) {
+						console.error('[HomePage] Device request failed:', deviceError);
+						errorMessage = 'WebGPUデバイスの初期化に失敗しました。';
+						webgpuSupported = false;
+					}
 				}
-			} else {
-				console.log('[HomePage] WebGPU API not available');
-				webgpuSupported = false;
 			}
 		} catch (e) {
 			console.error('[HomePage] WebGPU check failed:', e);
+			errorMessage = 'WebGPUのチェック中にエラーが発生しました。';
 			webgpuSupported = false;
 		} finally {
 			checkingSupport = false;
@@ -80,11 +140,87 @@
 				</a>
 			</div>
 		{:else}
-			<div class="bg-yellow-100 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700 rounded-lg p-4 max-w-md mx-auto">
-				<p class="text-sm text-yellow-800 dark:text-yellow-200">
-					{$_('errors.webgpu.notSupported')}
-					{$_('hero.browserNotSupported')}
-				</p>
+
+			<div class="bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700 rounded-lg p-6 max-w-2xl mx-auto">
+				<h3 class="text-lg font-semibold text-red-800 dark:text-red-200 mb-3">
+					{$_('hero.webgpuNotSupported')}
+				</h3>
+				
+				<div class="space-y-3 text-sm">
+					<!-- ブラウザ情報 -->
+					<div class="bg-white/50 dark:bg-gray-800/50 rounded p-3">
+						<p class="font-medium text-red-700 dark:text-red-300 mb-1">{$_('hero.browserInfo')}:</p>
+						<p class="text-gray-700 dark:text-gray-300">
+							{browserInfo.browserName} {$_('hero.version')} {browserInfo.browserVersion}
+						</p>
+					</div>
+					
+					<!-- エラーメッセージ -->
+					{#if errorMessage}
+						<div class="bg-white/50 dark:bg-gray-800/50 rounded p-3">
+							<p class="font-medium text-red-700 dark:text-red-300 mb-1">{$_('hero.errorDetails')}:</p>
+							<p class="text-gray-700 dark:text-gray-300">{errorMessage}</p>
+						</div>
+					{/if}
+					
+					<!-- 推奨事項 -->
+					<div class="bg-white/50 dark:bg-gray-800/50 rounded p-3">
+						<p class="font-medium text-red-700 dark:text-red-300 mb-2">{$_('hero.solutions')}:</p>
+						<ul class="space-y-2 text-gray-700 dark:text-gray-300">
+							{#if browserInfo.isChrome && browserInfo.chromeVersion < 113}
+								<li class="flex items-start gap-2">
+									<span class="text-red-500">•</span>
+									<span>{$_('hero.chromeOldVersion', { values: { version: browserInfo.chromeVersion } })}</span>
+								</li>
+							{:else if browserInfo.isChrome && browserInfo.chromeVersion >= 113}
+								<li class="flex items-start gap-2">
+									<span class="text-yellow-500">•</span>
+									<span>{$_('hero.chromeWebGPUCheck', { values: { version: browserInfo.chromeVersion } })}:</span>
+								</li>
+								<li class="ml-6">
+									• {$_('hero.gpuAccelerationCheck')}
+								</li>
+								<li class="ml-6">
+									• <code class="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-1 rounded">chrome://gpu</code> {$_('hero.checkGPUInfo')}
+								</li>
+								<li class="ml-6">
+									• {$_('hero.updateDrivers')}
+								</li>
+							{/if}
+							<li class="flex items-start gap-2">
+								<span class="text-green-500">•</span>
+								<span>{$_('hero.stableEnvironments')}:</span>
+							</li>
+							<li class="ml-6">
+								• {$_('hero.osRequirement')}
+							</li>
+							<li class="ml-6">
+								• {$_('hero.gpuRequirement')}
+							</li>
+							<li class="ml-6">
+								• {$_('hero.driverRequirement')}
+							</li>
+							{#if navigator.userAgent.includes('Linux')}
+								<li class="flex items-start gap-2 mt-3">
+									<span class="text-orange-500">•</span>
+									<span>{$_('hero.linuxNote')}</span>
+								</li>
+							{/if}
+						</ul>
+					</div>
+					
+					<!-- LinuxでのGPU確認 -->
+					{#if navigator.platform.includes('Linux')}
+						<div class="bg-blue-50 dark:bg-blue-900/20 rounded p-3 border border-blue-200 dark:border-blue-800">
+							<p class="font-medium text-blue-700 dark:text-blue-300 mb-2">Linux環境の追加確認事項:</p>
+							<ul class="space-y-1 text-gray-700 dark:text-gray-300 text-sm">
+								<li>• GPUドライバーが正しくインストールされているか確認</li>
+								<li>• ハードウェアアクセラレーションが有効になっているか確認</li>
+								<li>• <code class="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-1 rounded">chrome://gpu</code> でGPU情報を確認</li>
+							</ul>
+						</div>
+					{/if}
+				</div>
 			</div>
 		{/if}
 	</section>

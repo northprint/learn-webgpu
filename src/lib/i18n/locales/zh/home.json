@@ -3,7 +3,22 @@
     "subtitle": "一个通过编写实际代码来学习下一代 Web 图形 API WebGPU 的交互式教程。",
     "startTutorial": "开始教程",
     "tryPlayground": "试用演练场",
-    "browserNotSupported": "请使用 Chrome 113+、Edge 113+ 或 Chrome Canary。"
+    "browserNotSupported": "请使用 Chrome 113+、Edge 113+ 或 Chrome Canary。",
+    "webgpuNotSupported": "不支持 WebGPU",
+    "browserInfo": "当前浏览器信息",
+    "version": "版本",
+    "errorDetails": "错误详情",
+    "solutions": "解决方案",
+    "chromeOldVersion": "Chrome {{version}} 已过时。请更新到 Chrome 113 或更高版本。",
+    "chromeWebGPUCheck": "如果 Chrome {{version}} 中无法使用 WebGPU，请检查以下内容",
+    "gpuAccelerationCheck": "已启用 GPU 硬件加速（设置 → 系统 → 高级）",
+    "checkGPUInfo": "查看 GPU 信息",
+    "updateDrivers": "图形驱动程序是最新的",
+    "stableEnvironments": "WebGPU 在以下环境中运行最稳定",
+    "osRequirement": "Windows 10/11 或 macOS（最新版本）",
+    "gpuRequirement": "独立 GPU（NVIDIA、AMD、Intel Arc）",
+    "driverRequirement": "最新的图形驱动程序",
+    "linuxNote": "在 Linux 上可能需要额外的配置。我们建议使用 Chrome Dev 或 Canary 进行测试。"
   },
   "features": {
     "stepByStep": {

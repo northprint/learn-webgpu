@@ -38,4 +38,37 @@
   .code-block {
     @apply bg-[var(--color-code-bg)] rounded-lg p-4 font-mono text-sm overflow-x-auto;
   }
+  
+  .code-block pre {
+    @apply m-0;
+  }
+  
+  .code-block code {
+    @apply text-gray-800 dark:text-gray-200 bg-transparent;
+  }
+  
+  /* インラインコードのスタイル */
+  code {
+    @apply bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 px-1.5 py-0.5 rounded text-sm font-mono;
+  }
+  
+  /* prose内のcodeタグでダークモード対応 */
+  .prose code {
+    @apply bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200;
+  }
+  
+  /* prose-invert内のcodeタグ */
+  .prose-invert code {
+    @apply bg-gray-800 text-gray-200;
+  }
+  
+  /* code-block内のcodeタグは背景をリセット */
+  .code-block code {
+    @apply bg-transparent p-0;
+  }
+  
+  /* 写経モード内のcodeタグは背景をリセット */
+  .typing-solution-code code {
+    @apply bg-transparent p-0;
+  }
 }

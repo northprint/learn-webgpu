@@ -3,6 +3,8 @@
 	import { tutorialChapters } from '$lib/tutorials';
 	import { progress, completionRate } from '$lib/stores/progress';
 	import { isExampleCompleted } from '$lib/stores/progress';
+	
+	let loading = $state(false);
 </script>
 
 <svelte:head>

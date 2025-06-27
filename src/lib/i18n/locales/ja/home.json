@@ -3,7 +3,22 @@
     "subtitle": "次世代のWeb グラフィックスAPI、WebGPUを実際にコードを書きながら学べるインタラクティブなチュートリアルです。",
     "startTutorial": "チュートリアルを始める",
     "tryPlayground": "プレイグラウンドで試す",
-    "browserNotSupported": "Chrome 113+、Edge 113+、またはChrome Canaryをご利用ください。"
+    "browserNotSupported": "Chrome 113+、Edge 113+、またはChrome Canaryをご利用ください。",
+    "webgpuNotSupported": "WebGPUがサポートされていません",
+    "browserInfo": "現在のブラウザ情報",
+    "version": "バージョン",
+    "errorDetails": "エラー詳細",
+    "solutions": "解決方法",
+    "chromeOldVersion": "Chrome {{version}}は古いバージョンです。Chrome 113以上にアップデートしてください。",
+    "chromeWebGPUCheck": "Chrome {{version}}でWebGPUが利用できない場合は、以下を確認してください",
+    "gpuAccelerationCheck": "GPUハードウェアアクセラレーションが有効になっているか（設定 → システム → 詳細設定）",
+    "checkGPUInfo": "でGPU情報を確認",
+    "updateDrivers": "グラフィックドライバーが最新版に更新されているか",
+    "stableEnvironments": "WebGPUは以下の環境で最も安定して動作します",
+    "osRequirement": "Windows 10/11またはmacOS（最新版）",
+    "gpuRequirement": "専用GPU（NVIDIA、AMD、Intel Arc）",
+    "driverRequirement": "最新のグラフィックドライバー",
+    "linuxNote": "Linuxでは追加の設定が必要な場合があります。Chrome DevやCanaryでの動作確認を推奨します。"
   },
   "features": {
     "stepByStep": {

@@ -3,7 +3,22 @@
     "subtitle": "An interactive tutorial to learn WebGPU, the next-generation web graphics API, by writing actual code.",
     "startTutorial": "Start Tutorial",
     "tryPlayground": "Try Playground",
-    "browserNotSupported": "Please use Chrome 113+, Edge 113+, or Chrome Canary."
+    "browserNotSupported": "Please use Chrome 113+, Edge 113+, or Chrome Canary.",
+    "webgpuNotSupported": "WebGPU is not supported",
+    "browserInfo": "Current browser info",
+    "version": "version",
+    "errorDetails": "Error details",
+    "solutions": "Solutions",
+    "chromeOldVersion": "Chrome {{version}} is outdated. Please update to Chrome 113 or later.",
+    "chromeWebGPUCheck": "If WebGPU is not available in Chrome {{version}}, please check the following",
+    "gpuAccelerationCheck": "GPU hardware acceleration is enabled (Settings → System → Advanced)",
+    "checkGPUInfo": "to check GPU information",
+    "updateDrivers": "Graphics drivers are up to date",
+    "stableEnvironments": "WebGPU works most reliably in the following environments",
+    "osRequirement": "Windows 10/11 or macOS (latest version)",
+    "gpuRequirement": "Dedicated GPU (NVIDIA, AMD, Intel Arc)",
+    "driverRequirement": "Latest graphics drivers",
+    "linuxNote": "Additional configuration may be required on Linux. We recommend testing with Chrome Dev or Canary."
   },
   "features": {
     "stepByStep": {
