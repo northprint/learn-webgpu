@@ -1,0 +1,48 @@
+{
+  "hero": {
+    "subtitle": "An interactive tutorial to learn WebGPU, the next-generation web graphics API, by writing actual code.",
+    "startTutorial": "Start Tutorial",
+    "tryPlayground": "Try Playground",
+    "browserNotSupported": "Please use Chrome 113+, Edge 113+, or Chrome Canary."
+  },
+  "features": {
+    "stepByStep": {
+      "title": "Step-by-Step Learning",
+      "description": "Structured tutorials from basics to advanced topics"
+    },
+    "interactive": {
+      "title": "Interactive",
+      "description": "Edit code in the browser and see results in real-time"
+    },
+    "practical": {
+      "title": "Practical Content",
+      "description": "Learn practical techniques for real-world projects"
+    }
+  },
+  "curriculum": {
+    "title": "What You'll Learn",
+    "basics": {
+      "title": "Basics",
+      "items": [
+        "WebGPU concepts and setup",
+        "Drawing your first triangle",
+        "Introduction to WGSL shading language",
+        "Buffers and data transfer"
+      ]
+    },
+    "advanced": {
+      "title": "Advanced",
+      "items": [
+        "3D transformations and matrices",
+        "Texture mapping",
+        "Lighting and shading",
+        "Performance optimization"
+      ]
+    }
+  },
+  "cta": {
+    "title": "Ready to get started?",
+    "subtitle": "Dive into the world of WebGPU",
+    "button": "Start Learning →"
+  }
+}

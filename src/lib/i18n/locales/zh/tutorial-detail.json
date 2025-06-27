@@ -1,0 +1,103 @@
+{
+  "tabs": {
+    "instructions": "说明",
+    "code": "代码",
+    "preview": "预览",
+    "vertexShader": "顶点着色器",
+    "fragmentShader": "片段着色器",
+    "computeShader": "计算着色器"
+  },
+  "actions": {
+    "run": "运行",
+    "reset": "重置",
+    "copy": "复制",
+    "showSolution": "显示答案",
+    "hideSolution": "返回问题",
+    "runCode": "运行代码",
+    "complete": "标记为完成",
+    "retryExercise": "再次练习"
+  },
+  "status": {
+    "running": "运行中...",
+    "showingSolution": "正在显示答案",
+    "codeExecuted": "代码已执行",
+    "typingMode": "在查看答案的同时练习打字"
+  },
+  "challenges": {
+    "title": "挑战",
+    "hint": "提示"
+  },
+  "messages": {
+    "webgpuStarting": "正在初始化 WebGPU...",
+    "webgpuReady": "WebGPU 已准备就绪",
+    "codeExecuted": "代码已执行",
+    "consoleClear": "控制台已清除",
+    "errorPrefix": "[错误]",
+    "typeTooltip": "在查看答案的同时练习打字",
+    "error": {
+      "compilation": "编译错误",
+      "runtime": "运行时错误",
+      "pipelineValidation": "管线验证失败",
+      "shaderCompilation": "着色器编译失败",
+      "bufferCreation": "缓冲区创建失败",
+      "bindGroupCreation": "绑定组创建失败"
+    }
+  },
+  "editor": {
+    "enterTypingMode": "打字练习",
+    "typingModeOn": "打字模式开启",
+    "typingModeOff": "打字模式关闭",
+    "exitTypingMode": "退出打字模式",
+    "solutionCodeReference": "答案代码（参考）"
+  },
+  "console": {
+    "executingCode": "正在执行代码...",
+    "executionCompleted": "执行完成",
+    "codeReset": "代码已重置",
+    "showingSolution": "正在显示答案",
+    "backToProblem": "返回问题",
+    "webgpuContextReady": "WebGPU 上下文已准备就绪",
+    "newTutorialLoaded": "新教程已加载",
+    "markedCompleted": "已将此示例标记为完成！",
+    "loadingTutorial": "正在加载教程内容...",
+    "tutorialLoaded": "教程加载完成"
+  },
+  "navigation": {
+    "nextUnit": "下一个单元",
+    "backToTutorialList": "返回教程列表",
+    "tutorialNotFound": "未找到教程",
+    "nextUnitTooltip": "下一个单元：{title}"
+  },
+  "errors": {
+    "tutorialChanged": "教程已更改",
+    "tutorialChangedDetail": "由于您导航到其他教程，执行已中断。请再次单击运行按钮。",
+    "tutorialChangedHint": "提示：要运行新教程，请再次单击运行按钮。",
+    "webgpuAdapterFailed": "获取 WebGPU 适配器失败。请检查您的浏览器是否支持 WebGPU。",
+    "webgpuDeviceFailed": "获取 WebGPU 设备失败。请检查您的 GPU 驱动程序是否为最新版本。",
+    "shaderCompileFailed": "着色器编译失败。请检查您的 WGSL 语法。",
+    "bufferCreateFailed": "缓冲区创建失败。请检查大小和使用标志。",
+    "textureCreateFailed": "纹理创建失败。请检查格式和大小。",
+    "pipelineCreateFailed": "管线创建失败。请检查着色器和绑定组布局的兼容性。",
+    "errorLocation": "错误位于第 {line} 行，第 {column} 列",
+    "executionErrorPrefix": "执行错误",
+    "shaderCompileError": "着色器编译错误",
+    "shaderModuleError": "着色器模块创建错误",
+    "loadingFailed": "加载教程失败"
+  },
+  "shader": {
+    "minimalVertex": "最小顶点着色器",
+    "minimalFragment": "最小片段着色器",
+    "todoImplementVertex": "待办：实现顶点坐标",
+    "todoImplementColor": "待办：实现颜色",
+    "gray": "灰色",
+    "compilationInfo": "着色器编译信息",
+    "problematicCode": "有问题的代码：",
+    "shaderError": "着色器错误",
+    "shaderWarning": "着色器警告",
+    "shaderInfo": "着色器信息",
+    "gpuValidationError": "GPU 验证错误",
+    "gpuOutOfMemoryError": "GPU 内存不足错误",
+    "gpuDeviceLost": "GPU 设备丢失",
+    "details": "详情"
+  }
+}

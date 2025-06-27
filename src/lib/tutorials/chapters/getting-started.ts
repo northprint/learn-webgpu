@@ -1,219 +1,189 @@
-import type { TutorialChapter } from '$lib/webgpu/types';
+import type { TutorialChapter, TutorialExample } from '$lib/webgpu/types';
+import { buildTranslatedChapter, getTranslatedInitialCode, getTranslatedSolutionCode } from '$lib/i18n/tutorial-helper';
 
-export const gettingStartedChapter: TutorialChapter = {
-	id: 'getting-started',
-	title: '基礎編: WebGPUの基本概念とセットアップ',
-	description: 'WebGPUの基本概念を理解し、開発環境をセットアップします',
-	examples: [
-		{
+// チャプターを動的に生成する関数
+export async function getGettingStartedChapter(): Promise<TutorialChapter | null> {
+  return buildTranslatedChapter('getting-started', (translations) => {
+    const examples: TutorialExample[] = [];
+    
+    // WebGPU Init Example
+    const webgpuInit = translations.examples.webgpuInit;
+    if (webgpuInit) {
+      examples.push({
 			id: 'webgpu-init',
-			title: 'WebGPUの初期化',
-			description: 'WebGPUアダプターとデバイスの取得方法を学びます',
+			title: webgpuInit.title,
+			description: webgpuInit.description,
 			steps: [
 				{
-					title: 'WebGPUの基本概念',
-					content: `WebGPUは、Webブラウザで高性能なグラフィックスと計算を実現するための新しいAPIです。
-
-**主要な概念：**
-- **Adapter（アダプター）**: GPUハードウェアへのアクセスを表します
-- **Device（デバイス）**: GPUとの通信インターフェースです
-- **Queue（キュー）**: GPUへのコマンド送信を管理します
-
-まずは、WebGPUが使用可能かチェックしましょう。`,
-					task: 'コンソールに「WebGPUの初期化に成功しました！」と表示されるまで、コードを実行してみましょう。'
+					title: webgpuInit.steps.step1.title,
+					content: webgpuInit.steps.step1.content,
+					task: webgpuInit.steps.step1.task
 				},
 				{
-					title: 'アダプターの取得',
-					content: `\`navigator.gpu.requestAdapter()\`を使用してGPUアダプターを取得します。
-
-オプションで以下を指定できます：
-- \`powerPreference\`: 'low-power' または 'high-performance'
-- \`forceFallbackAdapter\`: ソフトウェア実装を強制`,
-					task: 'コードを修正して、高性能モードでアダプターを取得してみましょう。',
-					hint: 'requestAdapter()に{ powerPreference: "high-performance" }を渡します。'
+					title: webgpuInit.steps.step2.title,
+					content: webgpuInit.steps.step2.content,
+					task: webgpuInit.steps.step2.task,
+					hint: webgpuInit.steps.step2.hint
 				},
 				{
-					title: 'デバイスの作成',
-					content: `アダプターから\`requestDevice()\`でデバイスを作成します。
-
-デバイスは実際のGPU操作に使用されます：
-- バッファーの作成
-- テクスチャの作成
-- シェーダーのコンパイル
-- レンダリングパイプラインの作成`,
-					task: 'デバイスが正常に作成されたことを確認し、デバイスの機能を調べてみましょう。'
+					title: webgpuInit.steps.step3.title,
+					content: webgpuInit.steps.step3.content,
+					task: webgpuInit.steps.step3.task
 				}
 			],
-			initialCode: {
-				javascript: `// WebGPUの初期化を始めましょう！
+			initialCode: getTranslatedInitialCode(translations, 'webgpuInit', (comments) => 
+`// ${comments.start}
 async function initWebGPU() {
-  // TODO: WebGPUのサポートをチェック
-  // ヒント: navigator.gpu が存在するか確認します
+  // ${comments.checkSupport}
+  // ${comments.checkSupportHint}
   
   
-  // TODO: アダプターを取得
-  // ヒント: navigator.gpu.requestAdapter() を使用します
+  // ${comments.getAdapter}
+  // ${comments.getAdapterHint}
   
   
-  // TODO: デバイスを取得
-  // ヒント: adapter.requestDevice() を使用します
+  // ${comments.getDevice}
+  // ${comments.getDeviceHint}
   
   
-  console.log('初期化を完了してください...');
+  console.log('${comments.completeInit}');
   
-  // TODO: 取得したアダプターとデバイスを返す
+  // ${comments.returnValues}
 }
 
-// 実行
-initWebGPU().catch(console.error);`,
-				vertexShader: '',
-				fragmentShader: ''
-			},
-			code: {
-				javascript: `// WebGPUの初期化
+// ${comments.execute}
+initWebGPU().catch(console.error);`
+			),
+			code: getTranslatedSolutionCode(translations, 'webgpuInit', (comments) => 
+`// ${comments.title}
 async function initWebGPU() {
-  // WebGPUがサポートされているか確認
+  // ${comments.checkSupport}
   if (!navigator.gpu) {
-    throw new Error('WebGPUはこのブラウザでサポートされていません');
+    throw new Error('${comments.notSupported}');
   }
   
-  // アダプターを取得
+  // ${comments.getAdapter}
   const adapter = await navigator.gpu.requestAdapter();
   if (!adapter) {
-    throw new Error('WebGPUアダプターが見つかりません');
+    throw new Error('${comments.noAdapter}');
   }
   
-  // デバイスを取得
+  // ${comments.getDevice}
   const device = await adapter.requestDevice();
   
-  console.log('WebGPUの初期化に成功しました！');
-  console.log('アダプター情報:', adapter);
-  console.log('デバイス情報:', device);
+  console.log('${comments.success}');
+  console.log('${comments.adapterInfo}', adapter);
+  console.log('${comments.deviceInfo}', device);
   
   return { adapter, device };
 }
 
-// 実行
-initWebGPU().catch(console.error);`,
-				vertexShader: '',
-				fragmentShader: ''
-			}
-		},
-		{
-			id: 'canvas-setup',
-			title: 'キャンバスのセットアップ',
-			description: 'WebGPUでキャンバスに描画する準備を行います',
-			steps: [
-				{
-					title: 'キャンバスコンテキストの取得',
-					content: `WebGPUで描画するには、キャンバスのWebGPUコンテキストを取得する必要があります。
-
-**手順：**
-1. HTMLキャンバス要素を取得
-2. \`getContext('webgpu')\`でコンテキストを取得
-3. デバイスとフォーマットを設定`,
-					task: 'キャンバスのWebGPUコンテキストを取得しましょう。'
-				},
-				{
-					title: 'スワップチェーンの設定',
-					content: `スワップチェーンは、画面に表示するテクスチャを管理します。
-
-**設定項目：**
-- \`device\`: 使用するGPUデバイス
-- \`format\`: テクスチャフォーマット（通常は'bgra8unorm'）
-- \`usage\`: テクスチャの使用方法`,
-					task: 'キャンバスコンテキストを設定して、背景色をクリアしてみましょう。',
-					hint: 'context.configure()を使用します。'
-				},
-				{
-					title: '最初の描画',
-					content: `コマンドエンコーダーを使用して、描画コマンドを記録します。
-
-**基本的な流れ：**
-1. コマンドエンコーダーを作成
-2. レンダーパスを開始
-3. 描画コマンドを記録
-4. コマンドバッファーを送信`,
-					task: '背景を青色でクリアしてみましょう。'
-				}
-			],
-			initialCode: {
-				javascript: `// キャンバスのセットアップ
+// ${comments.execute}
+initWebGPU().catch(console.error);`
+			)
+		});
+		}
+		
+		// Canvas Setup Example
+		const canvasSetup = translations.examples.canvasSetup;
+		if (canvasSetup) {
+			examples.push({
+				id: 'canvas-setup',
+				title: canvasSetup.title,
+				description: canvasSetup.description,
+				steps: [
+					{
+						title: canvasSetup.steps.step1.title,
+						content: canvasSetup.steps.step1.content,
+						task: canvasSetup.steps.step1.task
+					},
+					{
+						title: canvasSetup.steps.step2.title,
+						content: canvasSetup.steps.step2.content,
+						task: canvasSetup.steps.step2.task,
+						hint: canvasSetup.steps.step2.hint
+					},
+					{
+						title: canvasSetup.steps.step3.title,
+						content: canvasSetup.steps.step3.content,
+						task: canvasSetup.steps.step3.task
+					}
+				],
+				initialCode: getTranslatedInitialCode(translations, 'canvasSetup', (comments) => 
+`// ${comments.title}
 async function setupCanvas() {
-  // WebGPUの初期化
+  // ${comments.initWebGPU}
   const { adapter, device } = await initWebGPU();
   
-  // TODO: キャンバス要素を取得
-  // ヒント: document.querySelector('canvas') を使用
+  // ${comments.getCanvas}
+  // ${comments.getCanvasHint}
   
   
-  // TODO: WebGPUコンテキストを取得
-  // ヒント: canvas.getContext('webgpu') を使用
+  // ${comments.getContext}
+  // ${comments.getContextHint}
   
   
-  // TODO: 推奨フォーマットを取得
-  // ヒント: navigator.gpu.getPreferredCanvasFormat() を使用
+  // ${comments.getFormat}
+  // ${comments.getFormatHint}
   
   
-  // TODO: コンテキストを設定
-  // ヒント: context.configure({ device, format }) を使用
+  // ${comments.configure}
+  // ${comments.configureHint}
   
   
-  console.log('キャンバスの設定を完了してください...');
+  console.log('${comments.completeSetup}');
 }
 
-// WebGPUの初期化（前の例から）
+// ${comments.previousExample}
 async function initWebGPU() {
   if (!navigator.gpu) {
-    throw new Error('WebGPUはこのブラウザでサポートされていません');
+    throw new Error('${webgpuInit.solution.comments.notSupported}');
   }
   const adapter = await navigator.gpu.requestAdapter();
   if (!adapter) {
-    throw new Error('WebGPUアダプターが見つかりません');
+    throw new Error('${webgpuInit.solution.comments.noAdapter}');
   }
   const device = await adapter.requestDevice();
   return { adapter, device };
 }
 
-// 実行
-setupCanvas().catch(console.error);`,
-				vertexShader: '',
-				fragmentShader: ''
-			},
-			code: {
-				javascript: `// キャンバスのセットアップと最初の描画
+// ${comments.execute}
+setupCanvas().catch(console.error);`
+				),
+				code: getTranslatedSolutionCode(translations, 'canvasSetup', (comments) => 
+`// ${comments.title}
 async function setupCanvas() {
-  // WebGPUの初期化
+  // ${comments.initWebGPU}
   const { adapter, device } = await initWebGPU();
   
-  // キャンバス要素を取得
+  // ${comments.getCanvas}
   const canvas = document.querySelector('canvas');
   if (!canvas) {
-    throw new Error('キャンバス要素が見つかりません');
+    throw new Error('${comments.noCanvas}');
   }
   
-  // WebGPUコンテキストを取得
+  // ${comments.getContext}
   const context = canvas.getContext('webgpu');
   if (!context) {
-    throw new Error('WebGPUコンテキストを取得できません');
+    throw new Error('${comments.noContext}');
   }
   
-  // 推奨フォーマットを取得
+  // ${comments.getFormat}
   const canvasFormat = navigator.gpu.getPreferredCanvasFormat();
   
-  // コンテキストを設定
+  // ${comments.configure}
   context.configure({
     device: device,
     format: canvasFormat,
   });
   
-  // 背景をクリア
+  // ${comments.clearBackground}
   const encoder = device.createCommandEncoder();
   
   const pass = encoder.beginRenderPass({
     colorAttachments: [{
       view: context.getCurrentTexture().createView(),
-      clearValue: { r: 0.0, g: 0.2, b: 0.4, a: 1.0 }, // 青色
+      clearValue: { r: 0.0, g: 0.2, b: 0.4, a: 1.0 }, // ${comments.blueColor}
       loadOp: 'clear',
       storeOp: 'store',
     }]
@@ -222,39 +192,41 @@ async function setupCanvas() {
   pass.end();
   device.queue.submit([encoder.finish()]);
   
-  console.log('キャンバスのセットアップが完了しました！');
+  console.log('${comments.complete}');
 }
 
-// WebGPUの初期化（前の例から）
+// ${comments.previousExample}
 async function initWebGPU() {
   if (!navigator.gpu) {
-    throw new Error('WebGPUはこのブラウザでサポートされていません');
+    throw new Error('${webgpuInit.solution.comments.notSupported}');
   }
   const adapter = await navigator.gpu.requestAdapter();
   if (!adapter) {
-    throw new Error('WebGPUアダプターが見つかりません');
+    throw new Error('${webgpuInit.solution.comments.noAdapter}');
   }
   const device = await adapter.requestDevice();
   return { adapter, device };
 }
 
-// 実行
-setupCanvas().catch(console.error);`,
-				vertexShader: '',
-				fragmentShader: ''
-			},
-			challenges: [
-				{
-					title: '異なる背景色',
-					description: '背景を異なる色（例：赤、緑、黄色）に変更してみましょう。',
-					hint: 'clearValueのr, g, b値を変更します。'
-				},
-				{
-					title: 'アニメーション',
-					description: '時間とともに背景色が変化するアニメーションを作成してみましょう。',
-					hint: 'requestAnimationFrame()を使用して、フレームごとに色を更新します。'
-				}
-			]
+// ${comments.execute}
+setupCanvas().catch(console.error);`
+				),
+				challenges: canvasSetup.challenges?.map((challenge: any) => ({
+					title: challenge.title,
+					description: challenge.description,
+					hint: challenge.hint
+				}))
+			});
 		}
-	]
+		
+		return examples;
+	});
+}
+
+// 後方互換性のためのデフォルトエクスポート
+export const gettingStartedChapter: TutorialChapter = {
+	id: 'getting-started',
+	title: 'Loading...',
+	description: 'Loading...',
+	examples: []
 };

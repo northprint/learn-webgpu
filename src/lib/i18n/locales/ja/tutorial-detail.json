@@ -1,0 +1,111 @@
+{
+  "tabs": {
+    "instructions": "学習",
+    "code": "コード",
+    "preview": "プレビュー",
+    "vertexShader": "頂点シェーダー",
+    "fragmentShader": "フラグメントシェーダー",
+    "computeShader": "コンピュートシェーダー"
+  },
+  "actions": {
+    "run": "実行",
+    "reset": "リセット",
+    "copy": "コピー",
+    "showSolution": "解答を見る",
+    "hideSolution": "問題に戻る",
+    "runCode": "コードを実行",
+    "complete": "完了にする",
+    "retryExercise": "もう一度練習する"
+  },
+  "status": {
+    "running": "実行中...",
+    "showingSolution": "解答を表示中",
+    "codeExecuted": "コードが実行されました",
+    "typingMode": "解答を見ながらコードを書く練習モード"
+  },
+  "challenges": {
+    "title": "チャレンジ",
+    "hint": "ヒント"
+  },
+  "messages": {
+    "webgpuStarting": "WebGPU を初期化しています...",
+    "webgpuReady": "WebGPU の準備が完了しました",
+    "codeExecuted": "コードが実行されました",
+    "consoleClear": "コンソールがクリアされました",
+    "errorPrefix": "[エラー]",
+    "typeTooltip": "解答を見ながらコードを書く練習モード",
+    "error": {
+      "compilation": "コンパイルエラー",
+      "runtime": "実行時エラー",
+      "pipelineValidation": "パイプラインの検証に失敗しました",
+      "shaderCompilation": "シェーダーのコンパイルに失敗しました",
+      "bufferCreation": "バッファーの作成に失敗しました",
+      "bindGroupCreation": "バインドグループの作成に失敗しました",
+      "webgpuNotInitialized": "WebGPUが初期化されていません",
+      "executionError": "実行エラー",
+      "unknownError": "不明なエラー"
+    }
+  },
+  "editor": {
+    "enterTypingMode": "タイピング練習",
+    "typingModeOn": "写経モード ON",
+    "typingModeOff": "写経モード OFF",
+    "exitTypingMode": "写経モードを終了",
+    "solutionCodeReference": "解答コード（参照用）"
+  },
+  "console": {
+    "executingCode": "コードを実行中...",
+    "executionCompleted": "実行が完了しました",
+    "codeReset": "コードをリセットしました",
+    "showingSolution": "解答を表示しています",
+    "backToProblem": "問題に戻りました",
+    "webgpuContextReady": "WebGPUコンテキストの準備が完了しました",
+    "newTutorialLoaded": "新しいチュートリアルを読み込みました",
+    "markedCompleted": "この例題を完了としてマークしました！",
+    "loadingTutorial": "チュートリアルのコンテンツを読み込み中...",
+    "tutorialLoaded": "チュートリアルの読み込みが完了しました"
+  },
+  "navigation": {
+    "nextUnit": "次の単元へ",
+    "backToTutorialList": "チュートリアル一覧に戻る",
+    "tutorialNotFound": "チュートリアルが見つかりません"
+  },
+  "errors": {
+    "tutorialChanged": "チュートリアルが変更されました",
+    "tutorialChangedDetail": "別のチュートリアルに移動したため、実行が中断されました。もう一度実行ボタンをクリックしてください。",
+    "tutorialChangedHint": "ヒント: 新しいチュートリアルで実行する場合は、もう一度実行ボタンをクリックしてください。",
+    "webgpuAdapterFailed": "WebGPUアダプターの取得に失敗しました。ブラウザがWebGPUをサポートしているか確認してください。",
+    "webgpuDeviceFailed": "WebGPUデバイスの取得に失敗しました。GPUドライバーが最新か確認してください。",
+    "shaderCompileFailed": "シェーダーのコンパイルに失敗しました。WGSLシンタックスを確認してください。",
+    "bufferCreateFailed": "バッファーの作成に失敗しました。サイズとusageフラグを確認してください。",
+    "textureCreateFailed": "テクスチャの作成に失敗しました。フォーマットとサイズを確認してください。",
+    "pipelineCreateFailed": "パイプラインの作成に失敗しました。シェーダーとバインドグループレイアウトの互換性を確認してください。",
+    "errorLocation": "エラー位置: 行 {line}, 列 {column}",
+    "executionErrorPrefix": "実行エラー",
+    "shaderCompileError": "シェーダーコンパイルエラー",
+    "shaderModuleError": "シェーダーモジュール作成エラー",
+    "loadingFailed": "チュートリアルの読み込みに失敗しました"
+  },
+  "shader": {
+    "minimalVertex": "最小限の頂点シェーダー",
+    "minimalFragment": "最小限のフラグメントシェーダー",
+    "todoImplementVertex": "TODO: 頂点座標を実装してください",
+    "todoImplementColor": "TODO: 色を実装してください",
+    "gray": "グレー",
+    "compilationInfo": "シェーダーコンパイル情報",
+    "problematicCode": "問題のあるコード:",
+    "shaderError": "シェーダーエラー",
+    "shaderWarning": "シェーダー警告",
+    "shaderInfo": "シェーダー情報",
+    "gpuValidationError": "GPU検証エラー",
+    "gpuOutOfMemoryError": "GPUメモリ不足エラー",
+    "gpuDeviceLost": "GPUデバイスが失われました",
+    "details": "詳細"
+  },
+  "navigation": {
+    "nextUnit": "次の単元へ",
+    "backToTutorialList": "チュートリアル一覧に戻る",
+    "tutorialNotFound": "チュートリアルが見つかりません",
+    "nextUnitTooltip": "次の単元: {title}"
+  }
+}

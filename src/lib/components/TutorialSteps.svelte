@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { TutorialStep } from '$lib/webgpu/types';
 	import { marked } from 'marked';
+	import { _ } from 'svelte-i18n';
 	import { progress } from '$lib/stores/progress';
 	
 	interface Props {
@@ -124,7 +125,7 @@
 									<svg class="w-4 h-4 text-gpu-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
 									</svg>
-									タスク
+									{$_('tutorialSteps.task')}
 								</h4>
 								<p class="text-sm">{step.task}</p>
 							</div>
@@ -134,7 +135,7 @@
 						{#if step.hint}
 							<details class="hint-box">
 								<summary class="cursor-pointer font-medium text-sm">
-									💡 ヒントを見る
+									💡 {$_('tutorialSteps.hint')}
 								</summary>
 								<p class="mt-2 text-sm">{step.hint}</p>
 							</details>
@@ -146,7 +147,7 @@
 								onclick={() => markStepComplete(index)}
 								class="btn-primary btn-sm mt-4"
 							>
-								このステップを完了
+								{$_('tutorialSteps.complete')}
 							</button>
 						{/if}
 					</div>
@@ -158,9 +159,9 @@
 	<!-- 進捗表示 -->
 	<div class="mt-6 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
 		<div class="flex items-center justify-between mb-2">
-			<span class="text-sm font-medium">進捗状況</span>
+			<span class="text-sm font-medium">{$_('tutorialSteps.progress.title')}</span>
 			<span class="text-sm text-gray-800 dark:text-gray-400">
-				{completedSteps.size} / {steps.length} 完了
+				{$_('tutorialSteps.progress.completed', { values: { current: completedSteps.size, total: steps.length } })}
 			</span>
 		</div>
 		<div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
@@ -180,16 +181,16 @@
 				</svg>
 				<div class="flex-1">
 					<h4 class="font-semibold text-green-900 dark:text-green-100 mb-1">
-						すべてのステップを完了しました！
+						{$_('tutorialSteps.completion.title')}
 					</h4>
 					<p class="text-sm text-green-800 dark:text-green-200 mb-3">
-						おめでとうございます！この単元のすべての学習ステップを完了しました。
+						{$_('tutorialSteps.completion.message')}
 					</p>
 					<button 
 						onclick={() => window.dispatchEvent(new CustomEvent('navigate-next-example'))}
 						class="btn-primary btn-sm flex items-center gap-2"
 					>
-						次の単元へ進む
+						{$_('tutorialSteps.completion.next')}
 						<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
 						</svg>

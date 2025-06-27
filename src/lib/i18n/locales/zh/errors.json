@@ -1,0 +1,32 @@
+{
+  "webgpu": {
+    "notSupported": "此浏览器不支持 WebGPU",
+    "adapterNotFound": "未找到 GPU 适配器",
+    "deviceLost": "GPU 设备已丢失",
+    "outOfMemory": "GPU 内存不足"
+  },
+  "shader": {
+    "compilationFailed": "着色器编译失败",
+    "syntaxError": "着色器语法错误",
+    "validationFailed": "着色器验证失败"
+  },
+  "pipeline": {
+    "creationFailed": "管线创建失败",
+    "invalidLayout": "无效的管线布局"
+  },
+  "buffer": {
+    "creationFailed": "缓冲区创建失败",
+    "mappingFailed": "缓冲区映射失败",
+    "sizeMismatch": "缓冲区大小不匹配"
+  },
+  "texture": {
+    "loadFailed": "纹理加载失败",
+    "invalidFormat": "无效的纹理格式",
+    "sizeTooLarge": "纹理尺寸过大"
+  },
+  "general": {
+    "unknownError": "发生未知错误",
+    "networkError": "网络错误",
+    "timeout": "请求超时"
+  }
+}

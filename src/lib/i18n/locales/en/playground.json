@@ -1,0 +1,49 @@
+{
+  "title": "Playground",
+  "description": "Experiment freely with WebGPU code",
+  "samples": {
+    "title": "Samples",
+    "select": "Select a sample...",
+    "blank": "Blank Canvas",
+    "triangle": "Basic Triangle",
+    "rainbow": "Rainbow Triangle",
+    "animated": "Animated Triangle",
+    "particles": "Particle System",
+    "fractal": "Fractal (Mandelbrot Set)",
+    "wave": "Wave Animation",
+    "3dcube": "3D Rotating Cube",
+    "compute": "Compute Shader (Conway's Game of Life)",
+    "texture": "Texture Mapping",
+    "lighting": "Lighting (Phong Shading)",
+    "postprocess": "Post-processing (Bloom Effect)",
+    "customShader": "Custom Shader (Use vertex/fragment tabs)"
+  },
+  "actions": {
+    "clear": "Clear"
+  },
+  "editor": {
+    "placeholder": "Enter your WebGPU code here...",
+    "formatCode": "Format Code",
+    "downloadCode": "Download Code",
+    "shareCode": "Share Code"
+  },
+  "console": {
+    "title": "Console",
+    "clear": "Clear",
+    "noLogs": "No logs"
+  },
+  "errors": {
+    "compilationFailed": "Compilation failed",
+    "runtimeError": "Runtime error",
+    "webgpuNotSupported": "WebGPU is not supported in this browser"
+  },
+  "messages": {
+    "sampleLoaded": "Sample \"{name}\" loaded"
+  },
+  "code": {
+    "initCanvas": "Initialize canvas and WebGPU",
+    "yourCode": "Write your code here",
+    "welcome": "Welcome to WebGPU Playground!",
+    "example": "Example: Clear background color"
+  }
+}

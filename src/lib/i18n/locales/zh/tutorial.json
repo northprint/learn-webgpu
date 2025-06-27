@@ -1,0 +1,101 @@
+{
+  "title": "教程",
+  "chapters": {
+    "introduction": {
+      "title": "简介",
+      "description": "学习 WebGPU 的基础知识",
+      "examples": {
+        "what-is-webgpu": "什么是 WebGPU？",
+        "browser-support": "浏览器支持",
+        "setup": "环境设置"
+      }
+    },
+    "first-triangle": {
+      "title": "第一个三角形",
+      "description": "了解基本渲染",
+      "examples": {
+        "device-and-context": "设备和上下文",
+        "render-pipeline": "渲染管线",
+        "draw-triangle": "绘制三角形"
+      }
+    },
+    "shaders": {
+      "title": "着色器",
+      "description": "顶点和片段着色器",
+      "examples": {
+        "shader-basics": "着色器基础",
+        "vertex-shader": "顶点着色器",
+        "fragment-shader": "片段着色器"
+      }
+    },
+    "buffers": {
+      "title": "缓冲区",
+      "description": "GPU 内存管理",
+      "examples": {
+        "vertex-buffer": "顶点缓冲区",
+        "index-buffer": "索引缓冲区",
+        "uniform-buffer": "统一缓冲区"
+      }
+    },
+    "textures": {
+      "title": "纹理",
+      "description": "图像和采样",
+      "examples": {
+        "loading-textures": "加载纹理",
+        "texture-sampling": "纹理采样",
+        "multiple-textures": "多个纹理"
+      }
+    },
+    "3d-graphics": {
+      "title": "3D 图形",
+      "description": "3D 变换和投影",
+      "examples": {
+        "model-transform": "模型变换",
+        "view-projection": "视图和投影",
+        "depth-buffer": "深度缓冲区"
+      }
+    },
+    "lighting": {
+      "title": "光照",
+      "description": "光和影",
+      "examples": {
+        "basic-lighting": "基本光照",
+        "phong-shading": "冯氏着色",
+        "multiple-lights": "多个光源"
+      }
+    },
+    "compute": {
+      "title": "计算着色器",
+      "description": "GPU 并行计算",
+      "examples": {
+        "compute-basics": "计算基础",
+        "particle-system": "粒子系统",
+        "image-processing": "图像处理"
+      }
+    }
+  },
+  "progress": {
+    "completed": "已完成",
+    "inProgress": "进行中",
+    "notStarted": "未开始",
+    "yourProgress": "你的进度",
+    "completedCount": "已完成 {count}",
+    "resetConfirm": "你确定要重置你的进度吗？\n此操作无法撤销。",
+    "continueFrom": "从你上次离开的地方继续：",
+    "continueLearning": "继续学习"
+  },
+  "navigation": {
+    "previousExample": "上一个示例",
+    "nextExample": "下一个示例",
+    "backToChapter": "返回章节"
+  },
+  "editor": {
+    "instructions": "说明",
+    "code": "代码",
+    "preview": "预览",
+    "console": "控制台",
+    "runCode": "运行代码",
+    "resetCode": "重置代码",
+    "copyCode": "复制代码"
+  }
+}

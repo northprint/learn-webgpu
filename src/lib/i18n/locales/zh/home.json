@@ -1,0 +1,48 @@
+{
+  "hero": {
+    "subtitle": "一个通过编写实际代码来学习下一代 Web 图形 API WebGPU 的交互式教程。",
+    "startTutorial": "开始教程",
+    "tryPlayground": "试用演练场",
+    "browserNotSupported": "请使用 Chrome 113+、Edge 113+ 或 Chrome Canary。"
+  },
+  "features": {
+    "stepByStep": {
+      "title": "循序渐进的学习",
+      "description": "从基础到高级主题的结构化教程"
+    },
+    "interactive": {
+      "title": "互动式",
+      "description": "在浏览器中编辑代码并实时查看结果"
+    },
+    "practical": {
+      "title": "实用内容",
+      "description": "学习适用于实际项目的实用技术"
+    }
+  },
+  "curriculum": {
+    "title": "你将学到什么",
+    "basics": {
+      "title": "基础知识",
+      "items": [
+        "WebGPU 概念和设置",
+        "绘制你的第一个三角形",
+        "WGSL 着色语言简介",
+        "缓冲区和数据传输"
+      ]
+    },
+    "advanced": {
+      "title": "高级",
+      "items": [
+        "3D 变换和矩阵",
+        "纹理映射",
+        "光照和着色",
+        "性能优化"
+      ]
+    }
+  },
+  "cta": {
+    "title": "准备好开始了吗？",
+    "subtitle": "深入 WebGPU 的世界",
+    "button": "开始学习 →"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "step": "Step",
+  "task": "Task",
+  "hint": "Show hint",
+  "complete": "Complete this step",
+  "progress": {
+    "title": "Progress",
+    "completed": "{current} / {total} completed"
+  },
+  "completion": {
+    "title": "All steps completed!",
+    "message": "Congratulations! You have completed all learning steps in this section.",
+    "next": "Continue to next section"
+  }
+}

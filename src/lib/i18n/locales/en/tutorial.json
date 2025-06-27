@@ -1,0 +1,101 @@
+{
+  "title": "Tutorial",
+  "chapters": {
+    "introduction": {
+      "title": "Introduction",
+      "description": "Learn the basics of WebGPU",
+      "examples": {
+        "what-is-webgpu": "What is WebGPU?",
+        "browser-support": "Browser Support",
+        "setup": "Environment Setup"
+      }
+    },
+    "first-triangle": {
+      "title": "First Triangle",
+      "description": "Understanding basic rendering",
+      "examples": {
+        "device-and-context": "Device and Context",
+        "render-pipeline": "Render Pipeline",
+        "draw-triangle": "Draw a Triangle"
+      }
+    },
+    "shaders": {
+      "title": "Shaders",
+      "description": "Vertex and Fragment Shaders",
+      "examples": {
+        "shader-basics": "Shader Basics",
+        "vertex-shader": "Vertex Shader",
+        "fragment-shader": "Fragment Shader"
+      }
+    },
+    "buffers": {
+      "title": "Buffers",
+      "description": "GPU Memory Management",
+      "examples": {
+        "vertex-buffer": "Vertex Buffer",
+        "index-buffer": "Index Buffer",
+        "uniform-buffer": "Uniform Buffer"
+      }
+    },
+    "textures": {
+      "title": "Textures",
+      "description": "Images and Sampling",
+      "examples": {
+        "loading-textures": "Loading Textures",
+        "texture-sampling": "Texture Sampling",
+        "multiple-textures": "Multiple Textures"
+      }
+    },
+    "3d-graphics": {
+      "title": "3D Graphics",
+      "description": "3D Transformations and Projection",
+      "examples": {
+        "model-transform": "Model Transform",
+        "view-projection": "View and Projection",
+        "depth-buffer": "Depth Buffer"
+      }
+    },
+    "lighting": {
+      "title": "Lighting",
+      "description": "Light and Shadow",
+      "examples": {
+        "basic-lighting": "Basic Lighting",
+        "phong-shading": "Phong Shading",
+        "multiple-lights": "Multiple Lights"
+      }
+    },
+    "compute": {
+      "title": "Compute Shaders",
+      "description": "GPU Parallel Computing",
+      "examples": {
+        "compute-basics": "Compute Basics",
+        "particle-system": "Particle System",
+        "image-processing": "Image Processing"
+      }
+    }
+  },
+  "progress": {
+    "completed": "Completed",
+    "inProgress": "In Progress",
+    "notStarted": "Not Started",
+    "yourProgress": "Your Progress",
+    "completedCount": "{count} completed",
+    "resetConfirm": "Are you sure you want to reset your progress?\nThis action cannot be undone.",
+    "continueFrom": "Continue from where you left off:",
+    "continueLearning": "Continue Learning"
+  },
+  "navigation": {
+    "previousExample": "Previous Example",
+    "nextExample": "Next Example",
+    "backToChapter": "Back to Chapter"
+  },
+  "editor": {
+    "instructions": "Instructions",
+    "code": "Code",
+    "preview": "Preview",
+    "console": "Console",
+    "runCode": "Run Code",
+    "resetCode": "Reset Code",
+    "copyCode": "Copy Code"
+  }
+}

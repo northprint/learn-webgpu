@@ -1,0 +1,39 @@
+{
+  "app": {
+    "title": "WebGPUを学ぼう",
+    "description": "インタラクティブなチュートリアルでWebGPUをマスター",
+    "loading": "読み込み中..."
+  },
+  "nav": {
+    "home": "ホーム",
+    "tutorial": "チュートリアル",
+    "playground": "プレイグラウンド",
+    "reference": "リファレンス",
+    "settings": "設定"
+  },
+  "actions": {
+    "run": "実行",
+    "reset": "リセット",
+    "copy": "コピー",
+    "share": "共有",
+    "back": "戻る",
+    "next": "次へ",
+    "save": "保存",
+    "cancel": "キャンセル"
+  },
+  "theme": {
+    "light": "ライト",
+    "dark": "ダーク",
+    "system": "システム"
+  },
+  "language": {
+    "ja": "日本語",
+    "en": "English"
+  },
+  "loading": "読み込み中",
+  "footer": {
+    "madeWith": "Made with ❤️ by Learn WebGPU",
+    "github": "GitHub",
+    "kofi": "Ko-fi"
+  }
+}

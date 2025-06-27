@@ -1,0 +1,15 @@
+{
+  "step": "ステップ",
+  "task": "タスク",
+  "hint": "ヒントを見る",
+  "complete": "このステップを完了",
+  "progress": {
+    "title": "進捗状況",
+    "completed": "{current} / {total} 完了"
+  },
+  "completion": {
+    "title": "すべてのステップを完了しました！",
+    "message": "おめでとうございます！この単元のすべての学習ステップを完了しました。",
+    "next": "次の単元へ進む"
+  }
+}

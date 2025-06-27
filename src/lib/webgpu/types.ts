@@ -52,6 +52,7 @@ export interface TutorialExample {
 		description: string;
 		hint?: string;
 	}[];
+	externalResources?: string[]; // 外部リソース（画像、データファイルなど）のURL
 }
 
 export interface TutorialChapter {

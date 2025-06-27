@@ -1,0 +1,49 @@
+{
+  "title": "演练场",
+  "description": "自由地试验 WebGPU 代码",
+  "samples": {
+    "title": "示例",
+    "select": "选择一个示例...",
+    "blank": "空白画布",
+    "triangle": "基本三角形",
+    "rainbow": "彩虹三角形",
+    "animated": "动画三角形",
+    "particles": "粒子系统",
+    "fractal": "分形（曼德博集合）",
+    "wave": "波浪动画",
+    "3dcube": "3D 旋转立方体",
+    "compute": "计算着色器（康威生命游戏）",
+    "texture": "纹理映射",
+    "lighting": "光照（冯氏着色）",
+    "postprocess": "后期处理（泛光效果）",
+    "customShader": "自定义着色器（使用顶点/片段选项卡）"
+  },
+  "actions": {
+    "clear": "清除"
+  },
+  "editor": {
+    "placeholder": "在此处输入您的 WebGPU 代码...",
+    "formatCode": "格式化代码",
+    "downloadCode": "下载代码",
+    "shareCode": "分享代码"
+  },
+  "console": {
+    "title": "控制台",
+    "clear": "清除",
+    "noLogs": "无日志"
+  },
+  "errors": {
+    "compilationFailed": "编译失败",
+    "runtimeError": "运行时错误",
+    "webgpuNotSupported": "此浏览器不支持 WebGPU"
+  },
+  "messages": {
+    "sampleLoaded": "示例 \"{name}\" 已加载"
+  },
+  "code": {
+    "initCanvas": "初始化画布和 WebGPU",
+    "yourCode": "在此处编写您的代码",
+    "welcome": "欢迎来到 WebGPU 演练场！",
+    "example": "示例：清除背景颜色"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "title": "プレイグラウンド",
+  "description": "WebGPUコードを自由に試してみよう",
+  "samples": {
+    "title": "サンプル",
+    "select": "サンプルを選択...",
+    "blank": "空のキャンバス",
+    "triangle": "基本的な三角形",
+    "rainbow": "レインボー三角形",
+    "animated": "アニメーション三角形",
+    "particles": "パーティクルシステム",
+    "fractal": "フラクタル（マンデルブロ集合）",
+    "wave": "波のアニメーション",
+    "3dcube": "3D回転キューブ",
+    "compute": "コンピュートシェーダー（Conway's Game of Life）",
+    "texture": "テクスチャマッピング",
+    "lighting": "ライティング（Phongシェーディング）",
+    "postprocess": "ポストプロセッシング（ブルーム効果）",
+    "customShader": "カスタムシェーダー（頂点・フラグメントタブ使用）"
+  },
+  "actions": {
+    "clear": "クリア"
+  },
+  "editor": {
+    "placeholder": "ここにWebGPUコードを入力してください...",
+    "formatCode": "コードを整形",
+    "downloadCode": "コードをダウンロード",
+    "shareCode": "コードを共有"
+  },
+  "console": {
+    "title": "コンソール",
+    "clear": "クリア",
+    "noLogs": "ログはありません"
+  },
+  "errors": {
+    "compilationFailed": "コンパイルに失敗しました",
+    "runtimeError": "実行時エラー",
+    "webgpuNotSupported": "このブラウザはWebGPUをサポートしていません"
+  },
+  "messages": {
+    "sampleLoaded": "サンプル「{name}」をロードしました"
+  },
+  "code": {
+    "initCanvas": "キャンバスとWebGPUの初期化",
+    "yourCode": "ここにあなたのコードを書いてください",
+    "welcome": "WebGPUプレイグラウンドへようこそ！",
+    "example": "例: 背景色をクリア"
+  }
+}

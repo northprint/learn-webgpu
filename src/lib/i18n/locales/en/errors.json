@@ -1,0 +1,32 @@
+{
+  "webgpu": {
+    "notSupported": "WebGPU is not supported in this browser",
+    "adapterNotFound": "GPU adapter not found",
+    "deviceLost": "GPU device was lost",
+    "outOfMemory": "GPU out of memory"
+  },
+  "shader": {
+    "compilationFailed": "Shader compilation failed",
+    "syntaxError": "Shader syntax error",
+    "validationFailed": "Shader validation failed"
+  },
+  "pipeline": {
+    "creationFailed": "Pipeline creation failed",
+    "invalidLayout": "Invalid pipeline layout"
+  },
+  "buffer": {
+    "creationFailed": "Buffer creation failed",
+    "mappingFailed": "Buffer mapping failed",
+    "sizeMismatch": "Buffer size mismatch"
+  },
+  "texture": {
+    "loadFailed": "Texture loading failed",
+    "invalidFormat": "Invalid texture format",
+    "sizeTooLarge": "Texture size too large"
+  },
+  "general": {
+    "unknownError": "An unknown error occurred",
+    "networkError": "Network error",
+    "timeout": "Request timed out"
+  }
+}

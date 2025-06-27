@@ -1,0 +1,39 @@
+{
+  "app": {
+    "title": "Learn WebGPU",
+    "description": "Master WebGPU with interactive tutorials",
+    "loading": "Loading..."
+  },
+  "nav": {
+    "home": "Home",
+    "tutorial": "Tutorial",
+    "playground": "Playground",
+    "reference": "Reference",
+    "settings": "Settings"
+  },
+  "actions": {
+    "run": "Run",
+    "reset": "Reset",
+    "copy": "Copy",
+    "share": "Share",
+    "back": "Back",
+    "next": "Next",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "language": {
+    "ja": "日本語",
+    "en": "English"
+  },
+  "loading": "Loading",
+  "footer": {
+    "madeWith": "Made with ❤️ by Learn WebGPU",
+    "github": "GitHub",
+    "kofi": "Ko-fi"
+  }
+}

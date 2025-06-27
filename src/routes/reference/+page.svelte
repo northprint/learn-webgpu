@@ -52,16 +52,16 @@ device.queue.submit([commandBuffer]);`}</code></pre>
 			<div class="card mb-6">
 				<h3 class="text-xl font-semibold mb-2">基本構造</h3>
 				<div class="code-block">
-					<pre><code>{`// 頂点シェーダー
+					<pre><code>{`// ${$_('reference.shader.comments.vertex')}
 @vertex
 fn vs_main(@location(0) position: vec3f) -> @builtin(position) vec4f {
   return vec4f(position, 1.0);
 }
 
-// フラグメントシェーダー
+// ${$_('reference.shader.comments.fragment')}
 @fragment
 fn fs_main() -> @location(0) vec4f {
-  return vec4f(1.0, 0.0, 0.0, 1.0); // 赤色
+  return vec4f(1.0, 0.0, 0.0, 1.0); // ${$_('reference.shader.comments.red')}
 }`}</code></pre>
 				</div>
 			</div>
@@ -69,12 +69,12 @@ fn fs_main() -> @location(0) vec4f {
 			<div class="card mb-6">
 				<h3 class="text-xl font-semibold mb-2">データ型</h3>
 				<ul class="list-disc list-inside space-y-1 text-gray-600 dark:text-gray-400">
-					<li><code>f32</code> - 32ビット浮動小数点数</li>
-					<li><code>i32</code> - 32ビット符号付き整数</li>
-					<li><code>u32</code> - 32ビット符号なし整数</li>
-					<li><code>bool</code> - 真偽値</li>
-					<li><code>vec2f</code>, <code>vec3f</code>, <code>vec4f</code> - ベクトル型</li>
-					<li><code>mat4x4f</code> - 4x4行列</li>
+					<li><code>f32</code> - {$_('reference.shader.types.f32')}</li>
+					<li><code>i32</code> - {$_('reference.shader.types.i32')}</li>
+					<li><code>u32</code> - {$_('reference.shader.types.u32')}</li>
+					<li><code>bool</code> - {$_('reference.shader.types.bool')}</li>
+					<li><code>vec2f</code>, <code>vec3f</code>, <code>vec4f</code> - {$_('reference.shader.types.vector')}</li>
+					<li><code>mat4x4f</code> - {$_('reference.shader.types.matrix')}</li>
 				</ul>
 			</div>
 		</section>
@@ -120,13 +120,13 @@ fn fs_main() -> @location(0) vec4f {
 			<div class="card mb-6">
 				<h3 class="text-xl font-semibold mb-2">バッファ</h3>
 				<div class="code-block">
-					<pre><code>{`// バッファの作成
+					<pre><code>{`// ${$_('reference.resources.bufferCreate')}
 const buffer = device.createBuffer({
   size: vertices.byteLength,
   usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST
 });
 
-// データの書き込み
+// ${$_('reference.resources.dataWrite')}
 device.queue.writeBuffer(buffer, 0, vertices);`}</code></pre>
 				</div>
 			</div>
@@ -149,17 +149,17 @@ device.queue.writeBuffer(buffer, 0, vertices);`}</code></pre>
 			<ul class="space-y-2">
 				<li>
 					<a href="https://www.w3.org/TR/webgpu/" target="_blank" rel="noopener noreferrer" class="text-gpu-blue hover:underline">
-						WebGPU仕様書 →
+						{$_('reference.links.webgpuSpec')} →
 					</a>
 				</li>
 				<li>
 					<a href="https://www.w3.org/TR/WGSL/" target="_blank" rel="noopener noreferrer" class="text-gpu-blue hover:underline">
-						WGSL仕様書 →
+						{$_('reference.links.wgslSpec')} →
 					</a>
 				</li>
 				<li>
 					<a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGPU_API" target="_blank" rel="noopener noreferrer" class="text-gpu-blue hover:underline">
-						MDN WebGPUドキュメント →
+						{$_('reference.links.mdnDocs')} →
 					</a>
 				</li>
 			</ul>

@@ -1,0 +1,124 @@
+{
+  "title": "基礎編: WebGPUの基本概念とセットアップ",
+  "description": "WebGPUの基本概念を理解し、開発環境をセットアップします",
+  "examples": {
+    "webgpuInit": {
+      "title": "WebGPUの初期化",
+      "description": "WebGPUアダプターとデバイスの取得方法を学びます",
+      "steps": {
+        "step1": {
+          "title": "WebGPUの基本概念",
+          "content": "WebGPUは、Webブラウザで高性能なグラフィックスと計算を実現するための新しいAPIです。\n\n**主要な概念：**\n- **Adapter（アダプター）**: GPUハードウェアへのアクセスを表します\n- **Device（デバイス）**: GPUとの通信インターフェースです\n- **Queue（キュー）**: GPUへのコマンド送信を管理します\n\nまずは、WebGPUが使用可能かチェックしましょう。",
+          "task": "コンソールに「WebGPUの初期化に成功しました！」と表示されるまで、コードを実行してみましょう。"
+        },
+        "step2": {
+          "title": "アダプターの取得",
+          "content": "`navigator.gpu.requestAdapter()`を使用してGPUアダプターを取得します。\n\nオプションで以下を指定できます：\n- `powerPreference`: 'low-power' または 'high-performance'\n- `forceFallbackAdapter`: ソフトウェア実装を強制",
+          "task": "コードを修正して、高性能モードでアダプターを取得してみましょう。",
+          "hint": "requestAdapter()に{ powerPreference: \"high-performance\" }を渡します。"
+        },
+        "step3": {
+          "title": "デバイスの作成",
+          "content": "アダプターから`requestDevice()`でデバイスを作成します。\n\nデバイスは実際のGPU操作に使用されます：\n- バッファーの作成\n- テクスチャの作成\n- シェーダーのコンパイル\n- レンダリングパイプラインの作成",
+          "task": "デバイスが正常に作成されたことを確認し、デバイスの機能を調べてみましょう。"
+        }
+      },
+      "initialCode": {
+        "comments": {
+          "start": "WebGPUの初期化を始めましょう！",
+          "checkSupport": "TODO: WebGPUのサポートをチェック",
+          "checkSupportHint": "ヒント: navigator.gpu が存在するか確認します",
+          "getAdapter": "TODO: アダプターを取得",
+          "getAdapterHint": "ヒント: navigator.gpu.requestAdapter() を使用します",
+          "getDevice": "TODO: デバイスを取得",
+          "getDeviceHint": "ヒント: adapter.requestDevice() を使用します",
+          "completeInit": "初期化を完了してください...",
+          "returnValues": "TODO: 取得したアダプターとデバイスを返す",
+          "execute": "実行"
+        }
+      },
+      "solution": {
+        "comments": {
+          "title": "WebGPUの初期化",
+          "checkSupport": "WebGPUがサポートされているか確認",
+          "notSupported": "WebGPUはこのブラウザでサポートされていません",
+          "getAdapter": "アダプターを取得",
+          "noAdapter": "WebGPUアダプターが見つかりません",
+          "getDevice": "デバイスを取得",
+          "success": "WebGPUの初期化に成功しました！",
+          "adapterInfo": "アダプター情報:",
+          "deviceInfo": "デバイス情報:",
+          "execute": "実行"
+        }
+      }
+    },
+    "canvasSetup": {
+      "title": "キャンバスのセットアップ",
+      "description": "WebGPUでキャンバスに描画する準備を行います",
+      "steps": {
+        "step1": {
+          "title": "キャンバスコンテキストの取得",
+          "content": "WebGPUで描画するには、キャンバスのWebGPUコンテキストを取得する必要があります。\n\n**手順：**\n1. HTMLキャンバス要素を取得\n2. `getContext('webgpu')`でコンテキストを取得\n3. デバイスとフォーマットを設定",
+          "task": "キャンバスのWebGPUコンテキストを取得しましょう。"
+        },
+        "step2": {
+          "title": "スワップチェーンの設定",
+          "content": "スワップチェーンは、画面に表示するテクスチャを管理します。\n\n**設定項目：**\n- `device`: 使用するGPUデバイス\n- `format`: テクスチャフォーマット（通常は'bgra8unorm'）\n- `usage`: テクスチャの使用方法",
+          "task": "キャンバスコンテキストを設定して、背景色をクリアしてみましょう。",
+          "hint": "context.configure()を使用します。"
+        },
+        "step3": {
+          "title": "最初の描画",
+          "content": "コマンドエンコーダーを使用して、描画コマンドを記録します。\n\n**基本的な流れ：**\n1. コマンドエンコーダーを作成\n2. レンダーパスを開始\n3. 描画コマンドを記録\n4. コマンドバッファーを送信",
+          "task": "背景を青色でクリアしてみましょう。"
+        }
+      },
+      "initialCode": {
+        "comments": {
+          "title": "キャンバスのセットアップ",
+          "initWebGPU": "WebGPUの初期化",
+          "getCanvas": "TODO: キャンバス要素を取得",
+          "getCanvasHint": "ヒント: document.querySelector('canvas') を使用",
+          "getContext": "TODO: WebGPUコンテキストを取得",
+          "getContextHint": "ヒント: canvas.getContext('webgpu') を使用",
+          "getFormat": "TODO: 推奨フォーマットを取得",
+          "getFormatHint": "ヒント: navigator.gpu.getPreferredCanvasFormat() を使用",
+          "configure": "TODO: コンテキストを設定",
+          "configureHint": "ヒント: context.configure({ device, format }) を使用",
+          "completeSetup": "キャンバスの設定を完了してください...",
+          "previousExample": "WebGPUの初期化（前の例から）",
+          "execute": "実行"
+        }
+      },
+      "solution": {
+        "comments": {
+          "title": "キャンバスのセットアップと最初の描画",
+          "initWebGPU": "WebGPUの初期化",
+          "getCanvas": "キャンバス要素を取得",
+          "noCanvas": "キャンバス要素が見つかりません",
+          "getContext": "WebGPUコンテキストを取得",
+          "noContext": "WebGPUコンテキストを取得できません",
+          "getFormat": "推奨フォーマットを取得",
+          "configure": "コンテキストを設定",
+          "clearBackground": "背景をクリア",
+          "blueColor": "青色",
+          "complete": "キャンバスのセットアップが完了しました！",
+          "previousExample": "WebGPUの初期化（前の例から）",
+          "execute": "実行"
+        }
+      },
+      "challenges": [
+        {
+          "title": "異なる背景色",
+          "description": "背景を異なる色（例：赤、緑、黄色）に変更してみましょう。",
+          "hint": "clearValueのr, g, b値を変更します。"
+        },
+        {
+          "title": "アニメーション",
+          "description": "時間とともに背景色が変化するアニメーションを作成してみましょう。",
+          "hint": "requestAnimationFrame()を使用して、フレームごとに色を更新します。"
+        }
+      ]
+    }
+  }
+}

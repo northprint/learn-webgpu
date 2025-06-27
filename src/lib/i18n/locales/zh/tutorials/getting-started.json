@@ -1,0 +1,124 @@
+{
+  "title": "基础：WebGPU 核心概念和设置",
+  "description": "了解 WebGPU 核心概念并设置您的开发环境",
+  "examples": {
+    "webgpuInit": {
+      "title": "WebGPU 初始化",
+      "description": "了解如何获取 WebGPU 适配器和设备",
+      "steps": {
+        "step1": {
+          "title": "WebGPU 核心概念",
+          "content": "WebGPU 是用于在 Web 浏览器中进行高性能图形和计算的新 API。\n\n**关键概念：**\n- **适配器**：表示对 GPU 硬件的访问\n- **设备**：与 GPU 的通信接口\n- **队列**：管理向 GPU 提交命令\n\n让我们从检查 WebGPU 是否可用开始。",
+          "task": "运行代码，直到在控制台中看到 \"WebGPU 初始化成功！\"。"
+        },
+        "step2": {
+          "title": "获取适配器",
+          "content": "使用 `navigator.gpu.requestAdapter()` 获取 GPU 适配器。\n\n可用选项：\n- `powerPreference`: 'low-power' 或 'high-performance'\n- `forceFallbackAdapter`: 强制使用软件实现",
+          "task": "修改代码以在高性能模式下获取适配器。",
+          "hint": "将 { powerPreference: \"high-performance\" } 传递给 requestAdapter()。"
+        },
+        "step3": {
+          "title": "创建设备",
+          "content": "使用 `requestDevice()` 从适配器创建设备。\n\n设备用于实际的 GPU 操作：\n- 创建缓冲区\n- 创建纹理\n- 编译着色器\n- 创建渲染管线",
+          "task": "验证设备是否已成功创建并检查其功能。"
+        }
+      },
+      "initialCode": {
+        "comments": {
+          "start": "让我们开始 WebGPU 初始化！",
+          "checkSupport": "待办：检查 WebGPU 支持",
+          "checkSupportHint": "提示：检查 navigator.gpu 是否存在",
+          "getAdapter": "待办：获取适配器",
+          "getAdapterHint": "提示：使用 navigator.gpu.requestAdapter()",
+          "getDevice": "待办：获取设备",
+          "getDeviceHint": "提示：使用 adapter.requestDevice()",
+          "completeInit": "请完成初始化...",
+          "returnValues": "待办：返回获取的适配器和设备",
+          "execute": "执行"
+        }
+      },
+      "solution": {
+        "comments": {
+          "title": "WebGPU 初始化",
+          "checkSupport": "检查是否支持 WebGPU",
+          "notSupported": "此浏览器不支持 WebGPU",
+          "getAdapter": "获取适配器",
+          "noAdapter": "未找到 WebGPU 适配器",
+          "getDevice": "获取设备",
+          "success": "WebGPU 初始化成功！",
+          "adapterInfo": "适配器信息：",
+          "deviceInfo": "设备信息：",
+          "execute": "执行"
+        }
+      }
+    },
+    "canvasSetup": {
+      "title": "画布设置",
+      "description": "准备使用 WebGPU 在画布上绘图",
+      "steps": {
+        "step1": {
+          "title": "获取画布上下文",
+          "content": "要使用 WebGPU 绘图，您需要从画布中获取 WebGPU 上下文。\n\n**步骤：**\n1. 获取 HTML 画布元素\n2. 使用 `getContext('webgpu')` 获取上下文\n3. 配置设备和格式",
+          "task": "从画布中获取 WebGPU 上下文。"
+        },
+        "step2": {
+          "title": "配置交换链",
+          "content": "交换链管理屏幕上显示的纹理。\n\n**配置选项：**\n- `device`: 要使用的 GPU 设备\n- `format`: 纹理格式（通常为 'bgra8unorm'）\n- `usage`: 纹理的使用方式",
+          "task": "配置画布上下文并尝试清除背景颜色。",
+          "hint": "使用 context.configure()。"
+        },
+        "step3": {
+          "title": "首次绘制",
+          "content": "使用命令编码器记录绘图命令。\n\n**基本流程：**\n1. 创建命令编码器\n2. 开始渲染通道\n3. 记录绘图命令\n4. 提交命令缓冲区",
+          "task": "用蓝色清除背景。"
+        }
+      },
+      "initialCode": {
+        "comments": {
+          "title": "画布设置",
+          "initWebGPU": "WebGPU 初始化",
+          "getCanvas": "待办：获取画布元素",
+          "getCanvasHint": "提示：使用 document.querySelector('canvas')",
+          "getContext": "待办：获取 WebGPU 上下文",
+          "getContextHint": "提示：使用 canvas.getContext('webgpu')",
+          "getFormat": "待办：获取首选格式",
+          "getFormatHint": "提示：使用 navigator.gpu.getPreferredCanvasFormat()",
+          "configure": "待办：配置上下文",
+          "configureHint": "提示：使用 context.configure({ device, format })",
+          "completeSetup": "请完成画布设置...",
+          "previousExample": "WebGPU 初始化（来自上一个示例）",
+          "execute": "执行"
+        }
+      },
+      "solution": {
+        "comments": {
+          "title": "画布设置和首次绘制",
+          "initWebGPU": "WebGPU 初始化",
+          "getCanvas": "获取画布元素",
+          "noCanvas": "未找到画布元素",
+          "getContext": "获取 WebGPU 上下文",
+          "noContext": "无法获取 WebGPU 上下文",
+          "getFormat": "获取首选格式",
+          "configure": "配置上下文",
+          "clearBackground": "清除背景",
+          "blueColor": "蓝色",
+          "complete": "画布设置完成！",
+          "previousExample": "WebGPU 初始化（来自上一个示例）",
+          "execute": "执行"
+        }
+      },
+      "challenges": [
+        {
+          "title": "不同的背景颜色",
+          "description": "尝试将背景更改为不同的颜色（例如，红色、绿色、黄色）。",
+          "hint": "更改 clearValue 中的 r、g、b 值。"
+        },
+        {
+          "title": "动画",
+          "description": "创建一个背景颜色随时间变化的动画。",
+          "hint": "使用 requestAnimationFrame() 每帧更新颜色。"
+        }
+      ]
+    }
+  }
+}

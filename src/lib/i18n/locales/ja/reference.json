@@ -1,0 +1,55 @@
+{
+  "title": "WebGPUリファレンス",
+  "sections": {
+    "basicConcepts": "基本概念",
+    "shaders": "シェーダー（WGSL）",
+    "pipeline": "パイプライン",
+    "resourceManagement": "リソース管理",
+    "usefulLinks": "役立つリンク"
+  },
+  "concepts": {
+    "gpuAdapter": {
+      "title": "GPUAdapter",
+      "description": "物理的なGPUデバイスへのアクセスを提供するオブジェクト。"
+    },
+    "gpuDevice": {
+      "title": "GPUDevice",
+      "description": "GPUリソースの作成とコマンドの実行に使用される論理デバイス。"
+    },
+    "gpuCommandEncoder": {
+      "title": "GPUCommandEncoder",
+      "description": "GPUコマンドをエンコードしてコマンドバッファを作成。"
+    }
+  },
+  "shader": {
+    "basicStructure": "基本構造",
+    "dataTypes": "データ型",
+    "types": {
+      "f32": "32ビット浮動小数点数",
+      "i32": "32ビット符号付き整数",
+      "u32": "32ビット符号なし整数",
+      "bool": "真偽値",
+      "vector": "ベクトル型",
+      "matrix": "4x4行列"
+    },
+    "comments": {
+      "vertex": "頂点シェーダー",
+      "fragment": "フラグメントシェーダー",
+      "red": "赤色"
+    }
+  },
+  "pipelineSection": {
+    "renderPipeline": "レンダーパイプライン"
+  },
+  "resources": {
+    "buffer": "バッファ",
+    "texture": "テクスチャ",
+    "bufferCreate": "バッファの作成",
+    "dataWrite": "データの書き込み"
+  },
+  "links": {
+    "webgpuSpec": "WebGPU仕様書",
+    "wgslSpec": "WGSL仕様書",
+    "mdnDocs": "MDN WebGPUドキュメント"
+  }
+}

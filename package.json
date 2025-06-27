@@ -41,6 +41,7 @@
     "@monaco-editor/loader": "^1.4.0",
     "@types/marked": "^5.0.2",
     "marked": "^15.0.12",
-    "monaco-editor": "^0.45.0"
+    "monaco-editor": "^0.45.0",
+    "svelte-i18n": "^4.0.1"
   }
 }

@@ -2,38 +2,38 @@
 	import { page } from '$app/stores';
 	import { onMount, onDestroy } from 'svelte';
 	import { goto, afterNavigate } from '$app/navigation';
+	import { _ } from 'svelte-i18n';
+	import type { PageData } from './$types';
 	import WebGPUCanvas from '$lib/components/WebGPUCanvas.svelte';
 	import MonacoEditor from '$lib/components/MonacoEditor.svelte';
 	import ConsoleOutput from '$lib/components/ConsoleOutput.svelte';
 	import TutorialSteps from '$lib/components/TutorialSteps.svelte';
-	import { getTutorialExample, getTutorialChapter, getNextExample } from '$lib/tutorials/index.js';
+	import { getNextExample } from '$lib/tutorials/index.js';
 	import { editorState, consoleMessages, executionState, loadCode } from '$lib/stores/editor.js';
 	import { progress } from '$lib/stores/progress.js';
 	import type { WebGPUContext } from '$lib/webgpu/types.js';
+	
+	let { data }: { data: PageData } = $props();
 	
 	let webgpuContext: WebGPUContext | null = null;
 	let currentExecutionId = 0;
 	let canvasComponent = $state<WebGPUCanvas | null>(null);
 	let activeAnimationFrame: number | null = null;
-	let activeTimeouts: number[] = [];
+	let activeTimeouts: ReturnType<typeof setTimeout>[] = [];
 	let createdResources: any[] = [];
 	
 	// URLパラメータから現在のチャプターと例題を取得
 	let chapterId = $derived($page.params.slug);
 	let exampleId = $derived($page.params.example);
-	let chapter = $derived(getTutorialChapter(chapterId));
-	let example = $derived(chapter ? getTutorialExample(chapterId, exampleId) : undefined);
+	let chapter = $derived(data.chapter);
+	let example = $derived(data.example);
 	
 	// 次の単元の情報を取得
 	let nextExample = $derived(
 		chapterId && exampleId ? getNextExample(chapterId, exampleId) : null
 	);
-	let nextChapter = $derived(
-		nextExample ? getTutorialChapter(nextExample.chapterId) : null
-	);
-	let nextExampleInfo = $derived(
-		nextExample && nextChapter ? getTutorialExample(nextExample.chapterId, nextExample.exampleId) : null
-	);
+	let nextChapter = $derived(data.nextChapter);
+	let nextExampleInfo = $derived(data.nextExample);
 	
 	// タブとビューの管理
 	let activeTab = $state<'javascript' | 'vertex' | 'fragment'>('javascript');
@@ -43,18 +43,18 @@
 	let typingMode = $state(false); // 写経モード
 	
 	// 最小限のシェーダーコードテンプレート
-	const minimalVertexShader = `// 最小限の頂点シェーダー
+	const minimalVertexShader = `// ${$_('tutorialDetail.shader.minimalVertex')}
 @vertex
 fn vs_main(@builtin(vertex_index) vertexIndex: u32) -> @builtin(position) vec4f {
-  // TODO: 頂点座標を実装してください
+  // ${$_('tutorialDetail.shader.todoImplementVertex')}
   return vec4f(0.0, 0.0, 0.0, 1.0);
 }`;
 
-	const minimalFragmentShader = `// 最小限のフラグメントシェーダー
+	const minimalFragmentShader = `// ${$_('tutorialDetail.shader.minimalFragment')}
 @fragment
 fn fs_main() -> @location(0) vec4f {
-  // TODO: 色を実装してください
-  return vec4f(0.5, 0.5, 0.5, 1.0); // グレー
+  // ${$_('tutorialDetail.shader.todoImplementColor')}
+  return vec4f(0.5, 0.5, 0.5, 1.0); // ${$_('tutorialDetail.shader.gray')}
 }`;
 
 	// 例題のコードをエディタにロード
@@ -87,11 +87,11 @@ fn fs_main() -> @location(0) vec4f {
 				activeAnimationFrame = null;
 			}
 			
-			// アクティブなタイムアウトをクリア
+			// Clear active timeouts
 			activeTimeouts.forEach(id => clearTimeout(id));
 			activeTimeouts = [];
 			
-			// 実行IDをインクリメント（古い非同期処理を無効化）
+			// Increment execution ID to invalidate old async operations
 			currentExecutionId++;
 			
 			// WebGPUリソースのクリーンアップ
@@ -111,7 +111,7 @@ fn fs_main() -> @location(0) vec4f {
 			window.scrollTo(0, 0);
 			
 			consoleMessages.clear();
-			consoleMessages.info('新しいチュートリアルを読み込みました');
+			consoleMessages.info($_('tutorialDetail.console.newTutorialLoaded'));
 		}
 		
 		return () => {
@@ -127,7 +127,7 @@ fn fs_main() -> @location(0) vec4f {
 	// WebGPUコンテキストの準備完了
 	function handleContextReady(context: WebGPUContext) {
 		webgpuContext = context;
-		consoleMessages.info('WebGPUコンテキストの準備が完了しました');
+		consoleMessages.info($_('tutorialDetail.console.webgpuContextReady'));
 	}
 	
 	// WebGPUリソースのクリーンアップ
@@ -150,7 +150,7 @@ fn fs_main() -> @location(0) vec4f {
 	// コードの実行
 	async function runCode() {
 		if (!webgpuContext) {
-			consoleMessages.error('WebGPUが初期化されていません');
+			consoleMessages.error($_('tutorialDetail.messages.error.webgpuNotInitialized'));
 			return;
 		}
 		
@@ -161,7 +161,7 @@ fn fs_main() -> @location(0) vec4f {
 		}));
 		
 		consoleMessages.clear();
-		consoleMessages.log('コードを実行中...');
+		consoleMessages.log($_('tutorialDetail.console.executingCode'));
 		
 		const executionId = ++currentExecutionId;
 		
@@ -171,9 +171,9 @@ fn fs_main() -> @location(0) vec4f {
 			const lostPromise = device.lost.then((info) => {
 				// "already been used to create a device"エラーは正常動作の一部なので無視
 				if (info.message && !info.message.includes('already been used to create a device')) {
-					consoleMessages.error(`GPUデバイスが失われました: ${info.reason}`);
+					consoleMessages.error(`${$_('tutorialDetail.shader.gpuDeviceLost')}: ${info.reason}`);
 					if (info.message) {
-						consoleMessages.error(`詳細: ${info.message}`);
+						consoleMessages.error(`${$_('tutorialDetail.shader.details')}: ${info.message}`);
 					}
 				}
 			});
@@ -220,14 +220,14 @@ fn fs_main() -> @location(0) vec4f {
 					// エラーをポップして確認
 					const error = await device.popErrorScope();
 					if (error) {
-						throw new Error(`シェーダーコンパイルエラー (${type}): ${error.message}`);
+						throw new Error(`${$_('tutorialDetail.errors.shaderCompileError')} (${type}): ${error.message}`);
 					}
 					
 					// コンパイル情報を取得（利用可能な場合）
 					if ('getCompilationInfo' in shaderModule) {
 						const info = await (shaderModule as any).getCompilationInfo();
 						if (info.messages && info.messages.length > 0) {
-							customConsole.warn(`----- ${type.toUpperCase()} シェーダーコンパイル情報 -----`);
+							customConsole.warn(`----- ${type.toUpperCase()} ${$_('tutorialDetail.shader.compilationInfo')} -----`);
 							
 							// シェーダーコードを行番号付きで表示
 							const shaderCode = type === 'vertex' ? $editorState.vertexShader : $editorState.fragmentShader;
@@ -243,7 +243,7 @@ fn fs_main() -> @location(0) vec4f {
 									const startLine = Math.max(0, lineNum - 3);
 									const endLine = Math.min(lines.length, lineNum + 2);
 									
-									customConsole.warn('問題のあるコード:');
+									customConsole.warn($_('tutorialDetail.shader.problematicCode'));
 									for (let i = startLine; i < endLine; i++) {
 										const prefix = i === lineNum - 1 ? '>>> ' : '    ';
 										customConsole.warn(`${prefix}${i + 1}: ${lines[i]}`);
@@ -256,7 +256,8 @@ fn fs_main() -> @location(0) vec4f {
 									}
 								}
 								
-								const msg = `シェーダー${level} (${type}) [行 ${lineNum}, 列 ${linePos}]: ${message.message}`;
+								const levelText = level === 'error' ? $_('tutorialDetail.messages.error.compilation') : level === 'warning' ? $_('tutorialDetail.shader.shaderWarning') : $_('tutorialDetail.shader.shaderInfo');
+								const msg = `${levelText} (${type}) [${$_('tutorialDetail.errors.errorLocation', { values: { line: lineNum, column: linePos } })}]: ${message.message}`;
 								
 								if (level === 'error') {
 									customConsole.error(msg);
@@ -272,7 +273,7 @@ fn fs_main() -> @location(0) vec4f {
 					
 					return shaderModule;
 				} catch (error) {
-					throw new Error(`シェーダーモジュール作成エラー (${type}): ${error instanceof Error ? error.message : String(error)}`);
+					throw new Error(`${$_('tutorialDetail.errors.shaderModuleError')} (${type}): ${error instanceof Error ? error.message : String(error)}`);
 				}
 			};
 			
@@ -322,7 +323,7 @@ fn fs_main() -> @location(0) vec4f {
 						return (contextType: string) => {
 							if (contextType === 'webgpu') {
 								// 既に設定済みのコンテキストを返す
-								return webgpuContext.context;
+								return webgpuContext?.context || null;
 							}
 							return target.getContext(contextType);
 						};
@@ -364,12 +365,12 @@ fn fs_main() -> @location(0) vec4f {
 							requestAdapter: async (options?: GPURequestAdapterOptions) => {
 								// 実行IDが異なる場合はエラー
 								if (currentExecId !== currentExecutionId) {
-									throw new Error('チュートリアルが変更されました。');
+									throw new Error($_('tutorialDetail.errors.tutorialChanged'));
 								}
 								
 								// webgpuContextがnullでないことを確認
 								if (!webgpuContext) {
-									throw new Error('WebGPUコンテキストが初期化されていません');
+									throw new Error($_('tutorialDetail.messages.error.webgpuNotInitialized'));
 								}
 								// アダプターのプロキシを返す
 								return new Proxy(webgpuContext.adapter, {
@@ -451,10 +452,10 @@ fn fs_main() -> @location(0) vec4f {
 					const oomError = await device.popErrorScope();
 					
 					if (validationError) {
-						customConsole.error(`GPU検証エラー: ${validationError.message}`);
+						customConsole.error(`${$_('tutorialDetail.shader.gpuValidationError')}: ${validationError.message}`);
 					}
 					if (oomError) {
-						customConsole.error(`GPUメモリ不足エラー: ${oomError.message}`);
+						customConsole.error(`${$_('tutorialDetail.shader.gpuOutOfMemoryError')}: ${oomError.message}`);
 					}
 					
 					return !validationError && !oomError;
@@ -472,9 +473,9 @@ fn fs_main() -> @location(0) vec4f {
 				const match = error.message.match(/^(.+) \((\d+):(\d+)\)$/);
 				if (match) {
 					const [, message, line] = match;
-					throw new Error(`シンタックスエラー (行 ${line}): ${message}`);
+					throw new Error(`${$_('tutorialDetail.messages.error.compilation')} (${$_('tutorialDetail.errors.errorLocation', { values: { line, column: '0' } })}): ${message}`);
 				}
-				throw new Error(`シンタックスエラー: ${error.message}`);
+				throw new Error(`${$_('tutorialDetail.messages.error.compilation')}: ${error.message}`);
 			}
 			
 			const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
@@ -508,7 +509,7 @@ fn fs_main() -> @location(0) vec4f {
 			await executionEnv.checkGPUError();
 			
 			if (executionId === currentExecutionId) {
-				consoleMessages.log('実行が完了しました');
+				consoleMessages.log($_('tutorialDetail.console.executionCompleted'));
 				executionState.update(state => ({
 					...state,
 					isRunning: false,
@@ -522,7 +523,7 @@ fn fs_main() -> @location(0) vec4f {
 			if (executionId === currentExecutionId) {
 				console.error('[Tutorial] Execution error:', error);
 				
-				let errorMessage = '不明なエラー';
+				let errorMessage = $_('tutorialDetail.messages.error.unknownError');
 				let errorDetails = '';
 				
 				if (error instanceof Error) {
@@ -536,35 +537,35 @@ fn fs_main() -> @location(0) vec4f {
 				if (error instanceof Error) {
 					
 					// チュートリアル変更エラーの特別処理
-					if (errorMessage.includes('チュートリアルが変更されました')) {
-						errorDetails = '別のチュートリアルに移動したため、実行が中断されました。もう一度実行ボタンをクリックしてください。';
-						consoleMessages.warn('ヒント: 新しいチュートリアルで実行する場合は、もう一度実行ボタンをクリックしてください。');
+					if (errorMessage.includes($_('tutorialDetail.errors.tutorialChanged'))) {
+						errorDetails = $_('tutorialDetail.errors.tutorialChangedDetail');
+						consoleMessages.warn($_('tutorialDetail.errors.tutorialChangedHint'));
 					}
 					// WebGPU固有のエラーを検出して、より分かりやすいメッセージを提供
 					else if (errorMessage.includes('requestAdapter')) {
-						errorDetails = 'WebGPUアダプターの取得に失敗しました。ブラウザがWebGPUをサポートしているか確認してください。';
+						errorDetails = $_('tutorialDetail.errors.webgpuAdapterFailed');
 					} else if (errorMessage.includes('requestDevice')) {
-						errorDetails = 'WebGPUデバイスの取得に失敗しました。GPUドライバーが最新か確認してください。';
+						errorDetails = $_('tutorialDetail.errors.webgpuDeviceFailed');
 					} else if (errorMessage.includes('createShaderModule')) {
-						errorDetails = 'シェーダーのコンパイルに失敗しました。WGSLシンタックスを確認してください。';
+						errorDetails = $_('tutorialDetail.errors.shaderCompileFailed');
 					} else if (errorMessage.includes('createBuffer')) {
-						errorDetails = 'バッファーの作成に失敗しました。サイズとusageフラグを確認してください。';
+						errorDetails = $_('tutorialDetail.errors.bufferCreateFailed');
 					} else if (errorMessage.includes('createTexture')) {
-						errorDetails = 'テクスチャの作成に失敗しました。フォーマットとサイズを確認してください。';
+						errorDetails = $_('tutorialDetail.errors.textureCreateFailed');
 					} else if (errorMessage.includes('createRenderPipeline') || errorMessage.includes('createComputePipeline')) {
-						errorDetails = 'パイプラインの作成に失敗しました。シェーダーとバインドグループレイアウトの互換性を確認してください。';
+						errorDetails = $_('tutorialDetail.errors.pipelineCreateFailed');
 					}
 					
 					// スタックトレースから行番号を抽出
 					if (error.stack) {
 						const lineMatch = error.stack.match(/<anonymous>:(\d+):(\d+)/);
 						if (lineMatch) {
-							errorDetails += `\nエラー位置: 行 ${lineMatch[1]}, 列 ${lineMatch[2]}`;
+							errorDetails += `\n${$_('tutorialDetail.errors.errorLocation', { values: { line: lineMatch[1], column: lineMatch[2] } })}`;
 						}
 					}
 				}
 				
-				consoleMessages.error(`実行エラー: ${errorMessage}`);
+				consoleMessages.error(`${$_('tutorialDetail.errors.executionErrorPrefix')}: ${errorMessage}`);
 				if (errorDetails) {
 					consoleMessages.error(errorDetails);
 				}
@@ -591,7 +592,7 @@ fn fs_main() -> @location(0) vec4f {
 				};
 				loadCode(processedCode);
 				consoleMessages.clear();
-				consoleMessages.info('コードをリセットしました');
+				consoleMessages.info($_('tutorialDetail.console.codeReset'));
 				showSolution = false;
 			}
 		}
@@ -618,7 +619,7 @@ fn fs_main() -> @location(0) vec4f {
 					fragmentShader: codeToLoad.fragmentShader || minimalFragmentShader
 				};
 				loadCode(processedCode);
-				consoleMessages.info(showSolution ? '解答を表示しています' : '問題に戻りました');
+				consoleMessages.info(showSolution ? $_('tutorialDetail.console.showingSolution') : $_('tutorialDetail.console.backToProblem'));
 			}
 		}
 	}
@@ -627,32 +628,32 @@ fn fs_main() -> @location(0) vec4f {
 	function markAsCompleted() {
 		if (chapterId && exampleId) {
 			progress.markCompleted(chapterId, exampleId);
-			consoleMessages.info('この例題を完了としてマークしました！');
+			consoleMessages.info($_('tutorialDetail.console.markedCompleted'));
 		}
 	}
 	
 	// 次の単元へ遷移
 	function navigateToNextExample() {
-		if (chapterId && exampleId) {
-			const next = getNextExample(chapterId, exampleId);
-			if (next) {
-				// スクロール位置をトップに戻す
-				window.scrollTo(0, 0);
-				goto(`/tutorial/${next.chapterId}/${next.exampleId}`);
-			} else {
-				// 最後の単元の場合は、チュートリアルトップに戻る
-				window.scrollTo(0, 0);
-				goto('/tutorial');
-			}
+		if (nextExample) {
+			// スクロール位置をトップに戻す
+			window.scrollTo(0, 0);
+			goto(`/tutorial/${nextExample.chapterId}/${nextExample.exampleId}`);
+		} else {
+			// 最後の単元の場合は、チュートリアルトップに戻る
+			window.scrollTo(0, 0);
+			goto('/tutorial');
 		}
 	}
 	
 	// navigate-next-exampleイベントのリスナーを設定
 	onMount(() => {
+		// イベントリスナーの設定
 		const handleNavigateNext = () => navigateToNextExample();
 		window.addEventListener('navigate-next-example', handleNavigateNext);
 		
+		// クリーンアップ関数
 		return () => {
+			// イベントリスナーを削除
 			window.removeEventListener('navigate-next-example', handleNavigateNext);
 		};
 	});
@@ -686,17 +687,17 @@ fn fs_main() -> @location(0) vec4f {
 </script>
 
 <svelte:head>
-	<title>{example?.title || 'チュートリアル'} - WebGPU Learn</title>
+	<title>{example?.title || $_('tutorial.title')} - WebGPU Learn</title>
 </svelte:head>
 
-{#if !chapter || !example}
+{#if !data.chapter || !data.example}
 	<div class="flex items-center justify-center h-full">
 		<div class="text-center">
 			<h2 class="text-2xl font-bold text-gray-600 dark:text-gray-400">
-				チュートリアルが見つかりません
+				{$_('tutorialDetail.navigation.tutorialNotFound')}
 			</h2>
 			<a href="/tutorial" class="mt-4 inline-block text-gpu-blue hover:underline">
-				チュートリアル一覧に戻る
+				{$_('tutorialDetail.navigation.backToTutorialList')}
 			</a>
 		</div>
 	</div>
@@ -719,15 +720,15 @@ fn fs_main() -> @location(0) vec4f {
 					onclick={markAsCompleted}
 					class="btn-secondary text-sm"
 				>
-					完了にする
+					{$_('tutorialDetail.actions.complete')}
 				</button>
 				{#if nextExample && nextExampleInfo}
 					<button
 						onclick={navigateToNextExample}
 						class="btn-primary text-sm flex items-center gap-2"
-						title="次の単元: {nextExampleInfo.title}"
+						title={$_('tutorialDetail.navigation.nextUnitTooltip', { values: { title: nextExampleInfo?.title || '' } })}
 					>
-						次の単元へ
+						{$_('tutorialDetail.navigation.nextUnit')}
 						<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
 						</svg>
@@ -748,7 +749,7 @@ fn fs_main() -> @location(0) vec4f {
 							class:active={viewMode === 'learn'}
 							onclick={() => viewMode = 'learn'}
 						>
-							📚 学習
+							📚 {$_('tutorialDetail.tabs.instructions')}
 						</button>
 					{/if}
 					<button
@@ -756,7 +757,7 @@ fn fs_main() -> @location(0) vec4f {
 						class:active={viewMode === 'code'}
 						onclick={() => viewMode = 'code'}
 					>
-						💻 コード
+						💻 {$_('tutorialDetail.tabs.code')}
 					</button>
 				</div>
 				
@@ -788,7 +789,7 @@ fn fs_main() -> @location(0) vec4f {
 										class:active={activeTab === 'vertex'}
 										onclick={() => activeTab = 'vertex'}
 									>
-										頂点シェーダー
+										{$_('tutorialDetail.tabs.vertexShader')}
 									</button>
 								{/if}
 								{#if example.code?.fragmentShader}
@@ -797,7 +798,7 @@ fn fs_main() -> @location(0) vec4f {
 										class:active={activeTab === 'fragment'}
 										onclick={() => activeTab = 'fragment'}
 									>
-										フラグメントシェーダー
+										{$_('tutorialDetail.tabs.fragmentShader')}
 									</button>
 								{/if}
 							</div>
@@ -809,7 +810,7 @@ fn fs_main() -> @location(0) vec4f {
 										<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
 										</svg>
-										<span>解答を表示中</span>
+										<span>{$_('tutorialDetail.status.showingSolution')}</span>
 									</div>
 								{/if}
 								
@@ -817,12 +818,12 @@ fn fs_main() -> @location(0) vec4f {
 									<!-- 写経モード時の解答表示 -->
 									<div class="typing-solution">
 										<div class="typing-solution-header">
-											<span class="text-sm font-medium text-gray-700 dark:text-gray-100">解答コード（参照用）</span>
+											<span class="text-sm font-medium text-gray-700 dark:text-gray-100">{$_('tutorialDetail.editor.solutionCodeReference')}</span>
 											<button 
 												onclick={() => typingMode = false}
 												class="text-xs text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
 											>
-												写経モードを終了
+												{$_('tutorialDetail.editor.exitTypingMode')}
 											</button>
 										</div>
 										<div class="typing-solution-code">
@@ -862,9 +863,9 @@ fn fs_main() -> @location(0) vec4f {
 								>
 									{#if $executionState.isRunning}
 										<div class="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
-										実行中...
+										{$_('tutorialDetail.status.running')}
 									{:else}
-										▶ 実行
+										▶ {$_('tutorialDetail.actions.run')}
 									{/if}
 								</button>
 								
@@ -872,26 +873,26 @@ fn fs_main() -> @location(0) vec4f {
 									onclick={resetCode}
 									class="btn-secondary"
 								>
-									リセット
+									{$_('tutorialDetail.actions.reset')}
 								</button>
 								
 								{#if example.code}
 									<button
 										onclick={() => typingMode = !typingMode}
 										class="btn-secondary flex items-center gap-2"
-										title="解答を見ながらコードを書く練習モード"
+										title={$_('tutorialDetail.status.typingMode')}
 									>
 										{#if typingMode}
 											<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
 												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
 											</svg>
-											写経モード ON
+											{$_('tutorialDetail.editor.typingModeOn')}
 										{:else}
 											<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
 											</svg>
-											写経モード OFF
+											{$_('tutorialDetail.editor.typingModeOff')}
 										{/if}
 									</button>
 								{/if}
@@ -905,12 +906,12 @@ fn fs_main() -> @location(0) vec4f {
 											<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
 											</svg>
-											問題に戻る
+											{$_('tutorialDetail.actions.hideSolution')}
 										{:else}
 											<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l2 2 4-4M9 11l2 2 4-4m0 6l-8 8-4-4 1.5-1.5L5 14l6.5 6.5z" />
 											</svg>
-											解答を見る
+											{$_('tutorialDetail.actions.showSolution')}
 										{/if}
 									</button>
 								{/if}
@@ -920,7 +921,7 @@ fn fs_main() -> @location(0) vec4f {
 						<!-- チャレンジ -->
 						{#if example.challenges && viewMode === 'code'}
 							<div class="challenges-section">
-								<h3 class="text-lg font-semibold mb-4">🏆 チャレンジ</h3>
+								<h3 class="text-lg font-semibold mb-4">🏆 {$_('tutorialDetail.challenges.title')}</h3>
 								<div class="space-y-3">
 									{#each example.challenges as challenge, i}
 										<div class="challenge-card">
@@ -928,7 +929,7 @@ fn fs_main() -> @location(0) vec4f {
 											<p class="text-sm text-gray-600 dark:text-gray-400">{challenge.description}</p>
 											{#if challenge.hint}
 												<details class="mt-2">
-													<summary class="cursor-pointer text-sm text-gpu-blue">💡 ヒント</summary>
+													<summary class="cursor-pointer text-sm text-gpu-blue">💡 {$_('tutorialDetail.challenges.hint')}</summary>
 													<p class="mt-1 text-sm pl-4">{challenge.hint}</p>
 												</details>
 											{/if}

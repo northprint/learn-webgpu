@@ -1,34 +1,35 @@
 <script lang="ts">
+	import { _ } from 'svelte-i18n';
 	import { tutorialChapters } from '$lib/tutorials';
 	import { progress, completionRate } from '$lib/stores/progress';
 	import { isExampleCompleted } from '$lib/stores/progress';
 </script>
 
 <svelte:head>
-	<title>チュートリアル - Learn WebGPU</title>
+	<title>{$_('nav.tutorial')} - {$_('app.title')}</title>
 </svelte:head>
 
 <div class="tutorial-list-container">
-	<h1 class="text-3xl font-bold mb-6">WebGPUチュートリアル</h1>
+	<h1 class="text-3xl font-bold mb-6">{$_('tutorial.title')}</h1>
 	
 	<!-- 進捗表示 -->
 	<div class="mb-8 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
 		<div class="flex items-center justify-between mb-2">
-			<span class="text-sm font-medium">学習進捗</span>
+			<span class="text-sm font-medium">{$_('tutorial.progress.yourProgress')}</span>
 			<div class="flex items-center gap-4">
 				<span class="text-sm text-gray-800 dark:text-gray-400">
-					{$completionRate.completed} / {$completionRate.total} 完了
+					{$_('tutorial.progress.completedCount', { values: { count: $completionRate.completed } })}
 				</span>
 				<button 
 					onclick={() => {
-						if (confirm('本当に進捗をリセットしますか？\nこの操作は取り消せません。')) {
+						if (confirm($_('tutorial.progress.resetConfirm'))) {
 							progress.reset();
 						}
 					}}
 					class="text-xs text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 transition-colors"
 					title="進捗をリセット"
 				>
-					リセット
+					{$_('actions.reset')}
 				</button>
 			</div>
 		</div>
@@ -41,8 +42,13 @@
 	</div>
 	
 	<!-- チャプター一覧 -->
-	<div class="space-y-6">
-		{#each tutorialChapters as chapter, chapterIndex}
+	{#if loading}
+		<div class="flex items-center justify-center py-12">
+			<div class="text-gray-500">{$_('common.loading')}...</div>
+		</div>
+	{:else}
+		<div class="space-y-6">
+			{#each tutorialChapters as chapter, chapterIndex}
 			<div class="card">
 				<div class="flex items-start gap-4">
 					<div class="flex-shrink-0 w-12 h-12 bg-gpu-blue/10 rounded-lg flex items-center justify-center">
@@ -92,16 +98,17 @@
 			</div>
 		{/each}
 	</div>
+	{/if}
 	
 	<!-- 最後に訪問したページへのリンク -->
 	{#if $progress.lastVisited && $progress.lastVisited !== '/tutorial'}
 		<div class="mt-8 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
-			<p class="text-sm text-gray-800 dark:text-gray-400 mb-2">前回の続きから：</p>
+			<p class="text-sm text-gray-800 dark:text-gray-400 mb-2">{$_('tutorial.progress.continueFrom')}</p>
 			<a 
 				href={$progress.lastVisited} 
 				class="inline-flex items-center gap-2 text-gpu-blue hover:underline"
 			>
-				続きを学習する
+				{$_('tutorial.progress.continueLearning')}
 				<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
 				</svg>

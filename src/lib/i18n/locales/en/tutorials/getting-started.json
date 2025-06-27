@@ -1,0 +1,124 @@
+{
+  "title": "Basics: WebGPU Core Concepts and Setup",
+  "description": "Understand WebGPU core concepts and set up your development environment",
+  "examples": {
+    "webgpuInit": {
+      "title": "WebGPU Initialization",
+      "description": "Learn how to obtain a WebGPU adapter and device",
+      "steps": {
+        "step1": {
+          "title": "WebGPU Core Concepts",
+          "content": "WebGPU is a new API for high-performance graphics and computation in web browsers.\n\n**Key concepts:**\n- **Adapter**: Represents access to GPU hardware\n- **Device**: Communication interface with the GPU\n- **Queue**: Manages command submission to the GPU\n\nLet's start by checking if WebGPU is available.",
+          "task": "Run the code until you see \"WebGPU initialization successful!\" in the console."
+        },
+        "step2": {
+          "title": "Getting an Adapter",
+          "content": "Use `navigator.gpu.requestAdapter()` to get a GPU adapter.\n\nAvailable options:\n- `powerPreference`: 'low-power' or 'high-performance'\n- `forceFallbackAdapter`: Force software implementation",
+          "task": "Modify the code to get an adapter in high-performance mode.",
+          "hint": "Pass { powerPreference: \"high-performance\" } to requestAdapter()."
+        },
+        "step3": {
+          "title": "Creating a Device",
+          "content": "Create a device from the adapter using `requestDevice()`.\n\nThe device is used for actual GPU operations:\n- Creating buffers\n- Creating textures\n- Compiling shaders\n- Creating render pipelines",
+          "task": "Verify that the device was created successfully and examine its features."
+        }
+      },
+      "initialCode": {
+        "comments": {
+          "start": "Let's start WebGPU initialization!",
+          "checkSupport": "TODO: Check WebGPU support",
+          "checkSupportHint": "Hint: Check if navigator.gpu exists",
+          "getAdapter": "TODO: Get adapter",
+          "getAdapterHint": "Hint: Use navigator.gpu.requestAdapter()",
+          "getDevice": "TODO: Get device",
+          "getDeviceHint": "Hint: Use adapter.requestDevice()",
+          "completeInit": "Please complete the initialization...",
+          "returnValues": "TODO: Return the obtained adapter and device",
+          "execute": "Execute"
+        }
+      },
+      "solution": {
+        "comments": {
+          "title": "WebGPU initialization",
+          "checkSupport": "Check if WebGPU is supported",
+          "notSupported": "WebGPU is not supported in this browser",
+          "getAdapter": "Get adapter",
+          "noAdapter": "WebGPU adapter not found",
+          "getDevice": "Get device",
+          "success": "WebGPU initialization successful!",
+          "adapterInfo": "Adapter info:",
+          "deviceInfo": "Device info:",
+          "execute": "Execute"
+        }
+      }
+    },
+    "canvasSetup": {
+      "title": "Canvas Setup",
+      "description": "Prepare to draw on canvas with WebGPU",
+      "steps": {
+        "step1": {
+          "title": "Getting Canvas Context",
+          "content": "To draw with WebGPU, you need to get the WebGPU context from the canvas.\n\n**Steps:**\n1. Get HTML canvas element\n2. Get context with `getContext('webgpu')`\n3. Configure device and format",
+          "task": "Get the WebGPU context from the canvas."
+        },
+        "step2": {
+          "title": "Configuring Swap Chain",
+          "content": "The swap chain manages textures displayed on screen.\n\n**Configuration options:**\n- `device`: GPU device to use\n- `format`: Texture format (usually 'bgra8unorm')\n- `usage`: How the texture will be used",
+          "task": "Configure the canvas context and try clearing the background color.",
+          "hint": "Use context.configure()."
+        },
+        "step3": {
+          "title": "First Draw",
+          "content": "Use a command encoder to record drawing commands.\n\n**Basic flow:**\n1. Create command encoder\n2. Begin render pass\n3. Record drawing commands\n4. Submit command buffer",
+          "task": "Clear the background with blue color."
+        }
+      },
+      "initialCode": {
+        "comments": {
+          "title": "Canvas setup",
+          "initWebGPU": "WebGPU initialization",
+          "getCanvas": "TODO: Get canvas element",
+          "getCanvasHint": "Hint: Use document.querySelector('canvas')",
+          "getContext": "TODO: Get WebGPU context",
+          "getContextHint": "Hint: Use canvas.getContext('webgpu')",
+          "getFormat": "TODO: Get preferred format",
+          "getFormatHint": "Hint: Use navigator.gpu.getPreferredCanvasFormat()",
+          "configure": "TODO: Configure context",
+          "configureHint": "Hint: Use context.configure({ device, format })",
+          "completeSetup": "Please complete the canvas setup...",
+          "previousExample": "WebGPU initialization (from previous example)",
+          "execute": "Execute"
+        }
+      },
+      "solution": {
+        "comments": {
+          "title": "Canvas setup and first draw",
+          "initWebGPU": "WebGPU initialization",
+          "getCanvas": "Get canvas element",
+          "noCanvas": "Canvas element not found",
+          "getContext": "Get WebGPU context",
+          "noContext": "Cannot get WebGPU context",
+          "getFormat": "Get preferred format",
+          "configure": "Configure context",
+          "clearBackground": "Clear background",
+          "blueColor": "Blue",
+          "complete": "Canvas setup complete!",
+          "previousExample": "WebGPU initialization (from previous example)",
+          "execute": "Execute"
+        }
+      },
+      "challenges": [
+        {
+          "title": "Different Background Colors",
+          "description": "Try changing the background to different colors (e.g., red, green, yellow).",
+          "hint": "Change the r, g, b values in clearValue."
+        },
+        {
+          "title": "Animation",
+          "description": "Create an animation where the background color changes over time.",
+          "hint": "Use requestAnimationFrame() to update the color every frame."
+        }
+      ]
+    }
+  }
+}

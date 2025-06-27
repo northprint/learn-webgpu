@@ -1,0 +1,32 @@
+{
+  "webgpu": {
+    "notSupported": "WebGPUはこのブラウザでサポートされていません",
+    "adapterNotFound": "GPUアダプターが見つかりませんでした",
+    "deviceLost": "GPUデバイスが失われました",
+    "outOfMemory": "GPUメモリが不足しています"
+  },
+  "shader": {
+    "compilationFailed": "シェーダーのコンパイルに失敗しました",
+    "syntaxError": "シェーダーの構文エラー",
+    "validationFailed": "シェーダーの検証に失敗しました"
+  },
+  "pipeline": {
+    "creationFailed": "パイプラインの作成に失敗しました",
+    "invalidLayout": "無効なパイプラインレイアウト"
+  },
+  "buffer": {
+    "creationFailed": "バッファーの作成に失敗しました",
+    "mappingFailed": "バッファーのマッピングに失敗しました",
+    "sizeMismatch": "バッファーサイズが一致しません"
+  },
+  "texture": {
+    "loadFailed": "テクスチャの読み込みに失敗しました",
+    "invalidFormat": "無効なテクスチャフォーマット",
+    "sizeTooLarge": "テクスチャサイズが大きすぎます"
+  },
+  "general": {
+    "unknownError": "不明なエラーが発生しました",
+    "networkError": "ネットワークエラー",
+    "timeout": "タイムアウトしました"
+  }
+}

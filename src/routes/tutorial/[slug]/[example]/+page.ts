@@ -1,20 +1,40 @@
 import type { PageLoad } from './$types';
+import { getTutorialChapter, getTutorialExample, getNextExample } from '$lib/tutorials';
 import { error } from '@sveltejs/kit';
-import { getTutorialExample } from '$lib/tutorials/index.js';
 
-export const load: PageLoad = ({ params }) => {
+export const load: PageLoad = async ({ params }) => {
 	const { slug: chapterId, example: exampleId } = params;
 	
-	// チュートリアルの例を取得
-	const example = getTutorialExample(chapterId, exampleId);
+	// チャプターと例題を取得
+	const chapter = await getTutorialChapter(chapterId);
+	if (!chapter) {
+		throw error(404, 'Chapter not found');
+	}
 	
+	const example = await getTutorialExample(chapterId, exampleId);
 	if (!example) {
-		error(404, 'チュートリアルが見つかりません');
+		throw error(404, 'Example not found');
+	}
+	
+	// 次の例題を取得
+	const nextExample = await getNextExample(chapterId, exampleId);
+	let nextChapter = null;
+	let nextExampleInfo = null;
+	
+	if (nextExample) {
+		nextChapter = await getTutorialChapter(nextExample.chapterId);
+		if (nextChapter) {
+			nextExampleInfo = await getTutorialExample(nextExample.chapterId, nextExample.exampleId);
+		}
 	}
 	
 	return {
 		chapterId,
 		exampleId,
-		example
+		chapter,
+		example,
+		nextExample,
+		nextChapter,
+		nextExampleInfo
 	};
 };

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
+	import { _ } from 'svelte-i18n';
 	import WebGPUCanvas from '$lib/components/WebGPUCanvas.svelte';
 	import MonacoEditor from '$lib/components/MonacoEditor.svelte';
 	import ConsoleOutput from '$lib/components/ConsoleOutput.svelte';
@@ -14,40 +15,7 @@
 	let activeAnimationIds = new Set<number>();
 	
 	// デフォルトのプレイグラウンドコード
-	let javascriptCode = $state(`// WebGPUプレイグラウンド
-// 自由にコードを書いて実験してみましょう！
-
-async function main() {
-  // キャンバスとWebGPUの初期化
-  const canvas = document.querySelector('canvas');
-  const adapter = await navigator.gpu.requestAdapter();
-  const device = await adapter.requestDevice();
-  const context = canvas.getContext('webgpu');
-  const canvasFormat = navigator.gpu.getPreferredCanvasFormat();
-  
-  context.configure({
-    device: device,
-    format: canvasFormat,
-  });
-  
-  // ここにあなたのコードを書いてください
-  console.log('WebGPUプレイグラウンドへようこそ！');
-  
-  // 例: 背景色をクリア
-  const encoder = device.createCommandEncoder();
-  const pass = encoder.beginRenderPass({
-    colorAttachments: [{
-      view: context.getCurrentTexture().createView(),
-      clearValue: { r: 0.2, g: 0.3, b: 0.5, a: 1.0 },
-      loadOp: 'clear',
-      storeOp: 'store'
-    }]
-  });
-  pass.end();
-  device.queue.submit([encoder.finish()]);
-}
-
-main().catch(console.error);`);
+	let javascriptCode = $state('');
 	
 	let vertexShader = $state(`@vertex
 fn vs_main(@builtin(vertex_index) vertexIndex: u32) -> @builtin(position) vec4f {
@@ -206,10 +174,48 @@ fn fs_main() -> @location(0) vec4f {
 		}
 		
 		consoleMessages.clear();
-		consoleMessages.info(`サンプル「${sample.name}」をロードしました`);
+		consoleMessages.info($_('playground.messages.sampleLoaded', { values: { name: sample.name } }));
 	}
 	
 	// ページ破棄時のクリーンアップ
+	onMount(() => {
+		// デフォルトコードを設定
+		javascriptCode = `// ${$_('playground.title')}
+// ${$_('playground.description')}
+
+async function main() {
+  // ${$_('playground.code.initCanvas')}
+  const canvas = document.querySelector('canvas');
+  const adapter = await navigator.gpu.requestAdapter();
+  const device = await adapter.requestDevice();
+  const context = canvas.getContext('webgpu');
+  const canvasFormat = navigator.gpu.getPreferredCanvasFormat();
+  
+  context.configure({
+    device: device,
+    format: canvasFormat,
+  });
+  
+  // ${$_('playground.code.yourCode')}
+  console.log('${$_('playground.code.welcome')}');
+  
+  // ${$_('playground.code.example')}
+  const encoder = device.createCommandEncoder();
+  const pass = encoder.beginRenderPass({
+    colorAttachments: [{
+      view: context.getCurrentTexture().createView(),
+      clearValue: { r: 0.2, g: 0.3, b: 0.5, a: 1.0 },
+      loadOp: 'clear',
+      storeOp: 'store'
+    }]
+  });
+  pass.end();
+  device.queue.submit([encoder.finish()]);
+}
+
+main().catch(console.error);`;
+	});
+
 	onDestroy(() => {
 		// 実行中のアニメーションを停止
 		if (activeAnimationIds.size > 0) {
@@ -226,28 +232,28 @@ fn fs_main() -> @location(0) vec4f {
 </script>
 
 <svelte:head>
-	<title>プレイグラウンド - Learn WebGPU</title>
+	<title>{$_('nav.playground')} - {$_('app.title')}</title>
 </svelte:head>
 
 <div class="playground-layout">
 	<!-- ヘッダー -->
 	<div class="playground-header">
-		<h1 class="text-2xl font-bold">WebGPUプレイグラウンド</h1>
+		<h1 class="text-2xl font-bold">{$_('playground.title')}</h1>
 		<div class="flex items-center gap-4">
 			<select onchange={(e) => loadSample(e.currentTarget.value)} class="sample-select">
-				<option value="">サンプルを選択...</option>
-				<option value="triangle">基本的な三角形</option>
-				<option value="rainbow">レインボー三角形</option>
-				<option value="animated">アニメーション三角形</option>
-				<option value="particles">パーティクルシステム</option>
-				<option value="fractal">フラクタル（マンデルブロ集合）</option>
-				<option value="wave">波のアニメーション</option>
-				<option value="3dcube">3D回転キューブ</option>
-				<option value="compute">コンピュートシェーダー（Conway's Game of Life）</option>
-				<option value="texture">テクスチャマッピング</option>
-				<option value="lighting">ライティング（Phongシェーディング）</option>
-				<option value="postprocess">ポストプロセッシング（ブルーム効果）</option>
-				<option value="custom-shader">カスタムシェーダー（頂点・フラグメントタブ使用）</option>
+				<option value="">{$_('playground.samples.select')}</option>
+				<option value="triangle">{$_('playground.samples.triangle')}</option>
+				<option value="rainbow">{$_('playground.samples.rainbow')}</option>
+				<option value="animated">{$_('playground.samples.animated')}</option>
+				<option value="particles">{$_('playground.samples.particles')}</option>
+				<option value="fractal">{$_('playground.samples.fractal')}</option>
+				<option value="wave">{$_('playground.samples.wave')}</option>
+				<option value="3dcube">{$_('playground.samples.3dcube')}</option>
+				<option value="compute">{$_('playground.samples.compute')}</option>
+				<option value="texture">{$_('playground.samples.texture')}</option>
+				<option value="lighting">{$_('playground.samples.lighting')}</option>
+				<option value="postprocess">{$_('playground.samples.postprocess')}</option>
+				<option value="custom-shader">{$_('playground.samples.customShader')}</option>
 			</select>
 		</div>
 	</div>
@@ -270,14 +276,14 @@ fn fs_main() -> @location(0) vec4f {
 					class:active={activeTab === 'vertex'}
 					onclick={() => activeTab = 'vertex'}
 				>
-					頂点シェーダー
+					{$_('tutorialDetail.tabs.vertexShader')}
 				</button>
 				<button
 					class="editor-tab"
 					class:active={activeTab === 'fragment'}
 					onclick={() => activeTab = 'fragment'}
 				>
-					フラグメントシェーダー
+					{$_('tutorialDetail.tabs.fragmentShader')}
 				</button>
 			</div>
 			
@@ -313,16 +319,16 @@ fn fs_main() -> @location(0) vec4f {
 				>
 					{#if isRunning}
 						<div class="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
-						実行中...
+						{$_('tutorialDetail.status.running')}
 					{:else}
 						<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
 						</svg>
-						実行
+						{$_('actions.run')}
 					{/if}
 				</button>
-				<button onclick={clearCode} class="btn-secondary">クリア</button>
+				<button onclick={clearCode} class="btn-secondary">{$_('playground.actions.clear')}</button>
 			</div>
 		</div>
 		

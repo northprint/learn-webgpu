@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { _ } from 'svelte-i18n';
 	import { tutorialChapters } from '$lib/tutorials';
 	
 	interface Props {
@@ -30,7 +31,7 @@
 </script>
 
 <nav class="tutorial-nav">
-	<h2 class="tutorial-nav-header">チュートリアル</h2>
+	<h2 class="tutorial-nav-header">{$_('tutorial.title')}</h2>
 	
 	<div class="tutorial-nav-content">
 		{#each tutorialChapters as chapter}
@@ -40,7 +41,7 @@
 					class="chapter-header"
 					class:active={currentChapter === chapter.id}
 				>
-					<span class="flex-1 text-left">{chapter.title}</span>
+					<span class="flex-1 text-left">{$_(`tutorial.chapters.${chapter.id}.title`)}</span>
 					<svg 
 						class="w-4 h-4 transition-transform"
 						class:rotate-90={expandedChapters.has(chapter.id)}
@@ -60,7 +61,7 @@
 								class="example-link"
 								class:active={currentChapter === chapter.id && currentExample === example.id}
 							>
-								{example.title}
+								{$_(`tutorial.chapters.${chapter.id}.examples.${example.id}`)}
 							</a>
 						{/each}
 					</div>

@@ -1,5 +1,5 @@
 import type { TutorialChapter } from '$lib/webgpu/types';
-import { gettingStartedChapter } from './chapters/getting-started';
+import { getGettingStartedChapter } from './chapters/getting-started';
 import { firstTriangleChapter } from './chapters/first-triangle';
 import { buffersAndUniformsChapter } from './chapters/buffers-and-uniforms';
 import { texturesChapter } from './chapters/textures';
@@ -7,11 +7,58 @@ import { lightingChapter } from './chapters/lighting';
 import { computeGraphicsChapter } from './chapters/compute-graphics';
 import { performanceChapter } from './chapters/performance';
 
+// チャプターIDのリスト
+const chapterIds = [
+	'getting-started',
+	'first-triangle',
+	'buffers-and-uniforms',
+	'textures',
+	'lighting',
+	'compute-graphics',
+	'performance'
+];
+
+// 各チャプターのローダー関数
+const chapterLoaders: Record<string, () => Promise<TutorialChapter | null>> = {
+	'getting-started': getGettingStartedChapter,
+	'first-triangle': async () => firstTriangleChapter,
+	'buffers-and-uniforms': async () => buffersAndUniformsChapter,
+	'textures': async () => texturesChapter,
+	'lighting': async () => lightingChapter,
+	'compute-graphics': async () => computeGraphicsChapter,
+	'performance': async () => performanceChapter
+};
+
+// キャッシュ
+let cachedChapters: TutorialChapter[] | null = null;
+
 /**
- * Tutorial chapters definition
+ * Get all tutorial chapters (with dynamic loading)
+ */
+export async function getTutorialChapters(): Promise<TutorialChapter[]> {
+	if (cachedChapters) return cachedChapters;
+	
+	const chapters: TutorialChapter[] = [];
+	
+	for (const chapterId of chapterIds) {
+		const loader = chapterLoaders[chapterId];
+		if (loader) {
+			const chapter = await loader();
+			if (chapter) {
+				chapters.push(chapter);
+			}
+		}
+	}
+	
+	cachedChapters = chapters;
+	return chapters;
+}
+
+/**
+ * Tutorial chapters definition (後方互換性のため)
  */
 export const tutorialChapters: TutorialChapter[] = [
-	gettingStartedChapter,
+	{ id: 'getting-started', title: 'Loading...', description: 'Loading...', examples: [] },
 	firstTriangleChapter,
 	buffersAndUniformsChapter,
 	texturesChapter,
@@ -23,15 +70,22 @@ export const tutorialChapters: TutorialChapter[] = [
 /**
  * Get tutorial chapter by ID
  */
-export function getTutorialChapter(id: string): TutorialChapter | undefined {
-	return tutorialChapters.find(chapter => chapter.id === id);
+export async function getTutorialChapter(id: string): Promise<TutorialChapter | undefined> {
+	const loader = chapterLoaders[id];
+	if (!loader) {
+		// 後方互換性のためのフォールバック
+		return tutorialChapters.find(chapter => chapter.id === id);
+	}
+	
+	const chapter = await loader();
+	return chapter || undefined;
 }
 
 /**
  * Get tutorial example by chapter ID and example ID
  */
-export function getTutorialExample(chapterId: string, exampleId: string) {
-	const chapter = getTutorialChapter(chapterId);
+export async function getTutorialExample(chapterId: string, exampleId: string) {
+	const chapter = await getTutorialChapter(chapterId);
 	if (!chapter) return undefined;
 	
 	return chapter.examples.find(example => example.id === exampleId);
@@ -40,10 +94,11 @@ export function getTutorialExample(chapterId: string, exampleId: string) {
 /**
  * Get all tutorial chapters slugs for routing
  */
-export function getAllTutorialSlugs(): string[] {
+export async function getAllTutorialSlugs(): Promise<string[]> {
+	const chapters = await getTutorialChapters();
 	const slugs: string[] = [];
 	
-	tutorialChapters.forEach(chapter => {
+	chapters.forEach(chapter => {
 		chapter.examples.forEach(example => {
 			slugs.push(`${chapter.id}/${example.id}`);
 		});
@@ -55,11 +110,12 @@ export function getAllTutorialSlugs(): string[] {
 /**
  * Get next example in the tutorial sequence
  */
-export function getNextExample(chapterId: string, exampleId: string): { chapterId: string; exampleId: string } | null {
-	const chapterIndex = tutorialChapters.findIndex(chapter => chapter.id === chapterId);
+export async function getNextExample(chapterId: string, exampleId: string): Promise<{ chapterId: string; exampleId: string } | null> {
+	const chapters = await getTutorialChapters();
+	const chapterIndex = chapters.findIndex(chapter => chapter.id === chapterId);
 	if (chapterIndex === -1) return null;
 	
-	const chapter = tutorialChapters[chapterIndex];
+	const chapter = chapters[chapterIndex];
 	const exampleIndex = chapter.examples.findIndex(example => example.id === exampleId);
 	if (exampleIndex === -1) return null;
 	
@@ -72,8 +128,8 @@ export function getNextExample(chapterId: string, exampleId: string): { chapterI
 	}
 	
 	// 次のチャプターがある場合
-	if (chapterIndex < tutorialChapters.length - 1) {
-		const nextChapter = tutorialChapters[chapterIndex + 1];
+	if (chapterIndex < chapters.length - 1) {
+		const nextChapter = chapters[chapterIndex + 1];
 		if (nextChapter.examples.length > 0) {
 			return {
 				chapterId: nextChapter.id,

@@ -1,0 +1,103 @@
+{
+  "tabs": {
+    "instructions": "Instructions",
+    "code": "Code",
+    "preview": "Preview",
+    "vertexShader": "Vertex Shader",
+    "fragmentShader": "Fragment Shader",
+    "computeShader": "Compute Shader"
+  },
+  "actions": {
+    "run": "Run",
+    "reset": "Reset",
+    "copy": "Copy",
+    "showSolution": "Show Solution",
+    "hideSolution": "Back to Problem",
+    "runCode": "Run Code",
+    "complete": "Mark as Complete",
+    "retryExercise": "Practice Again"
+  },
+  "status": {
+    "running": "Running...",
+    "showingSolution": "Showing Solution",
+    "codeExecuted": "Code executed",
+    "typingMode": "Practice typing while viewing the solution"
+  },
+  "challenges": {
+    "title": "Challenges",
+    "hint": "Hint"
+  },
+  "messages": {
+    "webgpuStarting": "Initializing WebGPU...",
+    "webgpuReady": "WebGPU is ready",
+    "codeExecuted": "Code executed",
+    "consoleClear": "Console cleared",
+    "errorPrefix": "[Error]",
+    "typeTooltip": "Practice typing while viewing the solution",
+    "error": {
+      "compilation": "Compilation error",
+      "runtime": "Runtime error",
+      "pipelineValidation": "Pipeline validation failed",
+      "shaderCompilation": "Shader compilation failed",
+      "bufferCreation": "Buffer creation failed",
+      "bindGroupCreation": "Bind group creation failed"
+    }
+  },
+  "editor": {
+    "enterTypingMode": "Typing Practice",
+    "typingModeOn": "Typing Mode ON",
+    "typingModeOff": "Typing Mode OFF",
+    "exitTypingMode": "Exit Typing Mode",
+    "solutionCodeReference": "Solution Code (Reference)"
+  },
+  "console": {
+    "executingCode": "Executing code...",
+    "executionCompleted": "Execution completed",
+    "codeReset": "Code reset",
+    "showingSolution": "Showing solution",
+    "backToProblem": "Back to problem",
+    "webgpuContextReady": "WebGPU context ready",
+    "newTutorialLoaded": "New tutorial loaded",
+    "markedCompleted": "Marked this example as completed!",
+    "loadingTutorial": "Loading tutorial content...",
+    "tutorialLoaded": "Tutorial loading completed"
+  },
+  "navigation": {
+    "nextUnit": "Next Unit",
+    "backToTutorialList": "Back to Tutorial List",
+    "tutorialNotFound": "Tutorial not found",
+    "nextUnitTooltip": "Next unit: {title}"
+  },
+  "errors": {
+    "tutorialChanged": "Tutorial changed",
+    "tutorialChangedDetail": "Execution was interrupted because you navigated to a different tutorial. Please click the run button again.",
+    "tutorialChangedHint": "Hint: To run the new tutorial, click the run button again.",
+    "webgpuAdapterFailed": "Failed to get WebGPU adapter. Please check if your browser supports WebGPU.",
+    "webgpuDeviceFailed": "Failed to get WebGPU device. Please check if your GPU drivers are up to date.",
+    "shaderCompileFailed": "Shader compilation failed. Please check your WGSL syntax.",
+    "bufferCreateFailed": "Buffer creation failed. Please check the size and usage flags.",
+    "textureCreateFailed": "Texture creation failed. Please check the format and size.",
+    "pipelineCreateFailed": "Pipeline creation failed. Please check shader and bind group layout compatibility.",
+    "errorLocation": "Error at line {line}, column {column}",
+    "executionErrorPrefix": "Execution error",
+    "shaderCompileError": "Shader compile error",
+    "shaderModuleError": "Shader module creation error",
+    "loadingFailed": "Failed to load tutorial"
+  },
+  "shader": {
+    "minimalVertex": "Minimal vertex shader",
+    "minimalFragment": "Minimal fragment shader",
+    "todoImplementVertex": "TODO: Implement vertex coordinates",
+    "todoImplementColor": "TODO: Implement color",
+    "gray": "gray",
+    "compilationInfo": "Shader compilation info",
+    "problematicCode": "Problematic code:",
+    "shaderError": "Shader error",
+    "shaderWarning": "Shader warning",
+    "shaderInfo": "Shader info",
+    "gpuValidationError": "GPU validation error",
+    "gpuOutOfMemoryError": "GPU out of memory error",
+    "gpuDeviceLost": "GPU device lost",
+    "details": "Details"
+  }
+}

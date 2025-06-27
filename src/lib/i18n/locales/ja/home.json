@@ -1,0 +1,48 @@
+{
+  "hero": {
+    "subtitle": "次世代のWeb グラフィックスAPI、WebGPUを実際にコードを書きながら学べるインタラクティブなチュートリアルです。",
+    "startTutorial": "チュートリアルを始める",
+    "tryPlayground": "プレイグラウンドで試す",
+    "browserNotSupported": "Chrome 113+、Edge 113+、またはChrome Canaryをご利用ください。"
+  },
+  "features": {
+    "stepByStep": {
+      "title": "段階的な学習",
+      "description": "基礎から応用まで、段階的に学べるように構成されたチュートリアル"
+    },
+    "interactive": {
+      "title": "インタラクティブ",
+      "description": "ブラウザ上でコードを編集し、リアルタイムで結果を確認"
+    },
+    "practical": {
+      "title": "実践的な内容",
+      "description": "実際のプロジェクトで使える実践的なテクニックを学習"
+    }
+  },
+  "curriculum": {
+    "title": "学習内容",
+    "basics": {
+      "title": "基礎編",
+      "items": [
+        "WebGPUの基本概念とセットアップ",
+        "最初の三角形を描画",
+        "シェーダー言語WGSL入門",
+        "バッファとデータ転送"
+      ]
+    },
+    "advanced": {
+      "title": "応用編",
+      "items": [
+        "3D変換と行列計算",
+        "テクスチャマッピング",
+        "ライティングとシェーディング",
+        "パフォーマンス最適化"
+      ]
+    }
+  },
+  "cta": {
+    "title": "準備はできましたか？",
+    "subtitle": "WebGPUの世界へ飛び込みましょう",
+    "button": "学習を始める →"
+  }
+}

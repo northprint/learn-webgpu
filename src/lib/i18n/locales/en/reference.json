@@ -1,0 +1,55 @@
+{
+  "title": "WebGPU Reference",
+  "sections": {
+    "basicConcepts": "Basic Concepts",
+    "shaders": "Shaders (WGSL)",
+    "pipeline": "Pipeline",
+    "resourceManagement": "Resource Management",
+    "usefulLinks": "Useful Links"
+  },
+  "concepts": {
+    "gpuAdapter": {
+      "title": "GPUAdapter",
+      "description": "Object that provides access to a physical GPU device."
+    },
+    "gpuDevice": {
+      "title": "GPUDevice",
+      "description": "Logical device used to create GPU resources and execute commands."
+    },
+    "gpuCommandEncoder": {
+      "title": "GPUCommandEncoder",
+      "description": "Encodes GPU commands to create command buffers."
+    }
+  },
+  "shader": {
+    "basicStructure": "Basic Structure",
+    "dataTypes": "Data Types",
+    "types": {
+      "f32": "32-bit floating point",
+      "i32": "32-bit signed integer",
+      "u32": "32-bit unsigned integer",
+      "bool": "Boolean",
+      "vector": "Vector types",
+      "matrix": "4x4 matrix"
+    },
+    "comments": {
+      "vertex": "Vertex shader",
+      "fragment": "Fragment shader",
+      "red": "Red color"
+    }
+  },
+  "pipelineSection": {
+    "renderPipeline": "Render Pipeline"
+  },
+  "resources": {
+    "buffer": "Buffer",
+    "texture": "Texture",
+    "bufferCreate": "Create buffer",
+    "dataWrite": "Write data"
+  },
+  "links": {
+    "webgpuSpec": "WebGPU Specification",
+    "wgslSpec": "WGSL Specification",
+    "mdnDocs": "MDN WebGPU Documentation"
+  }
+}

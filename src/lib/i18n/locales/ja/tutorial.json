@@ -1,0 +1,101 @@
+{
+  "title": "チュートリアル",
+  "chapters": {
+    "introduction": {
+      "title": "イントロダクション",
+      "description": "WebGPUの基礎を学ぶ",
+      "examples": {
+        "what-is-webgpu": "WebGPUとは？",
+        "browser-support": "ブラウザサポート",
+        "setup": "環境セットアップ"
+      }
+    },
+    "first-triangle": {
+      "title": "最初の三角形",
+      "description": "基本的な描画を理解する",
+      "examples": {
+        "device-and-context": "デバイスとコンテキスト",
+        "render-pipeline": "レンダーパイプライン",
+        "draw-triangle": "三角形を描画"
+      }
+    },
+    "shaders": {
+      "title": "シェーダー",
+      "description": "頂点シェーダーとフラグメントシェーダー",
+      "examples": {
+        "shader-basics": "シェーダーの基本",
+        "vertex-shader": "頂点シェーダー",
+        "fragment-shader": "フラグメントシェーダー"
+      }
+    },
+    "buffers": {
+      "title": "バッファー",
+      "description": "GPUメモリ管理",
+      "examples": {
+        "vertex-buffer": "頂点バッファー",
+        "index-buffer": "インデックスバッファー",
+        "uniform-buffer": "ユニフォームバッファー"
+      }
+    },
+    "textures": {
+      "title": "テクスチャ",
+      "description": "画像とサンプリング",
+      "examples": {
+        "loading-textures": "テクスチャの読み込み",
+        "texture-sampling": "テクスチャサンプリング",
+        "multiple-textures": "複数のテクスチャ"
+      }
+    },
+    "3d-graphics": {
+      "title": "3Dグラフィックス",
+      "description": "3D変換と投影",
+      "examples": {
+        "model-transform": "モデル変換",
+        "view-projection": "ビューと投影",
+        "depth-buffer": "深度バッファー"
+      }
+    },
+    "lighting": {
+      "title": "ライティング",
+      "description": "光と影の表現",
+      "examples": {
+        "basic-lighting": "基本的なライティング",
+        "phong-shading": "フォンシェーディング",
+        "multiple-lights": "複数の光源"
+      }
+    },
+    "compute": {
+      "title": "コンピュートシェーダー",
+      "description": "GPU並列計算",
+      "examples": {
+        "compute-basics": "コンピュートの基本",
+        "particle-system": "パーティクルシステム",
+        "image-processing": "画像処理"
+      }
+    }
+  },
+  "progress": {
+    "completed": "完了",
+    "inProgress": "進行中",
+    "notStarted": "未開始",
+    "yourProgress": "学習進捗",
+    "completedCount": "{count}個完了",
+    "resetConfirm": "本当に進捗をリセットしますか？\nこの操作は取り消せません。",
+    "continueFrom": "前回の続きから：",
+    "continueLearning": "続きを学習する"
+  },
+  "navigation": {
+    "previousExample": "前の例",
+    "nextExample": "次の例",
+    "backToChapter": "チャプターに戻る"
+  },
+  "editor": {
+    "instructions": "指示",
+    "code": "コード",
+    "preview": "プレビュー",
+    "console": "コンソール",
+    "runCode": "コードを実行",
+    "resetCode": "コードをリセット",
+    "copyCode": "コードをコピー"
+  }
+}

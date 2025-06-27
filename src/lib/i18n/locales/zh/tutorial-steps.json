@@ -1,0 +1,15 @@
+{
+  "step": "步骤",
+  "task": "任务",
+  "hint": "显示提示",
+  "complete": "完成此步骤",
+  "progress": {
+    "title": "进度",
+    "completed": "已完成 {current} / {total}"
+  },
+  "completion": {
+    "title": "所有步骤已完成！",
+    "message": "恭喜！您已完成本节中的所有学习步骤。",
+    "next": "继续下一节"
+  }
+}
