@@ -52,6 +52,16 @@
     @apply bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 px-1.5 py-0.5 rounded text-sm font-mono;
   }
   
+  /* prose内のcodeタグでダークモード対応 */
+  .prose code {
+    @apply bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200;
+  }
+  
+  /* prose-invert内のcodeタグ */
+  .prose-invert code {
+    @apply bg-gray-800 text-gray-200;
+  }
+  
   /* code-block内のcodeタグは背景をリセット */
   .code-block code {
     @apply bg-transparent p-0;
