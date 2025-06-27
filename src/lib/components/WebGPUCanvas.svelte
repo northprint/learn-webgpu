@@ -64,17 +64,18 @@
 		if (!canvasElement) return;
 		
 		try {
-			// deviceManagerを使用してキャンバスをリセット
-			await webgpuDeviceManager.resetCanvasContext(canvasElement);
+			// 既存のコンテキストを解放
+			if (context) {
+				webgpuDeviceManager.releaseCanvasContext(canvasElement);
+				context = null;
+			}
 			
-			// コンテキストが存在しない場合は初期化
-			if (!context) {
-				await initializeWebGPU();
-			} else {
-				// コールバックを再実行
-				if (onContextReady) {
-					onContextReady(context);
-				}
+			// 新しいコンテキストを作成
+			context = await webgpuDeviceManager.createContext(canvasElement);
+			
+			// コールバックを実行
+			if (onContextReady) {
+				onContextReady(context);
 			}
 		} catch (e) {
 			console.error('[WebGPUCanvas] Failed to reset context:', e);

@@ -100,28 +100,13 @@ class WebGPUDeviceManager {
 		};
 	}
 	
-	// キャンバスのコンテキストをリセット（クリアのみ）
-	async resetCanvasContext(canvas: HTMLCanvasElement): Promise<void> {
-		const context = this.canvasContexts.get(canvas);
-		if (!context || !this.device) return;
+	// キャンバスのコンテキストをリセット
+	async resetCanvasContext(canvas: HTMLCanvasElement): Promise<WebGPUContext> {
+		// 既存のコンテキストを解放
+		this.releaseCanvasContext(canvas);
 		
-		try {
-			// キャンバスを黒でクリア
-			const encoder = this.device.createCommandEncoder();
-			const texture = context.getCurrentTexture();
-			const pass = encoder.beginRenderPass({
-				colorAttachments: [{
-					view: texture.createView(),
-					clearValue: { r: 0, g: 0, b: 0, a: 1 },
-					loadOp: 'clear',
-					storeOp: 'store'
-				}]
-			});
-			pass.end();
-			this.device.queue.submit([encoder.finish()]);
-		} catch (e) {
-			console.error('[DeviceManager] Failed to reset canvas:', e);
-		}
+		// 新しいコンテキストを作成して返す
+		return await this.createContext(canvas);
 	}
 	
 	// キャンバスのコンテキストを解放
