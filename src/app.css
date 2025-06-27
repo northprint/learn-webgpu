@@ -56,4 +56,9 @@
   .code-block code {
     @apply bg-transparent p-0;
   }
+  
+  /* 写経モード内のcodeタグは背景をリセット */
+  .typing-solution-code code {
+    @apply bg-transparent p-0;
+  }
 }

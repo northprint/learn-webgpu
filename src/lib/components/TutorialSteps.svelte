@@ -237,6 +237,7 @@
 	.step-indicator {
 		@apply w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0;
 		@apply bg-gray-200 dark:bg-gray-700;
+		@apply text-gray-700 dark:text-gray-200;
 	}
 	
 	.step-header.completed .step-indicator {

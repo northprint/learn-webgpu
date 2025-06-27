@@ -1065,9 +1065,13 @@ fn fs_main() -> @location(0) vec4f {
 		word-wrap: break-word;
 	}
 	
-	.typing-solution-code code {
-		@apply text-gray-700 dark:text-gray-50;
+	.typing-solution-code pre code {
+		color: rgb(31 41 55) !important;
 		opacity: 0.9;
+	}
+	
+	:global(.dark) .typing-solution-code pre code {
+		color: rgb(243 244 246) !important;
 	}
 	
 	.solution-banner {
