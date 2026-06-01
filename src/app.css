@@ -52,14 +52,19 @@
     @apply bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 px-1.5 py-0.5 rounded text-sm font-mono;
   }
   
-  /* prose内のcodeタグでダークモード対応 */
-  .prose code {
+  /* prose内のインラインcodeタグ (pre内は除外) */
+  .prose :not(pre) > code {
     @apply bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200;
   }
-  
-  /* prose-invert内のcodeタグ */
-  .prose-invert code {
+
+  /* prose-invert内のインラインcodeタグ */
+  .prose-invert :not(pre) > code {
     @apply bg-gray-800 text-gray-200;
+  }
+
+  /* pre 内の code は装飾をリセット (pre の背景・色を継承) */
+  .prose pre code {
+    @apply bg-transparent p-0;
   }
   
   /* code-block内のcodeタグは背景をリセット */

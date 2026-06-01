@@ -7,7 +7,6 @@
  */
 export async function checkWebGPUSupport(): Promise<boolean> {
 	if (!('gpu' in navigator)) {
-		console.log('WebGPU API not found in navigator');
 		return false;
 	}
 	
@@ -19,19 +18,12 @@ export async function checkWebGPUSupport(): Promise<boolean> {
 		});
 		
 		if (!adapter) {
-			console.log('No WebGPU adapter available');
 			return false;
 		}
-		
+
 		// デバイスも取得できるか確認
 		const device = await adapter.requestDevice();
-		console.log('WebGPU support confirmed:', {
-			adapter: adapter,
-			device: device,
-			features: Array.from(adapter.features || []),
-			limits: adapter.limits
-		});
-		
+
 		// デバイスを破棄
 		device.destroy();
 		

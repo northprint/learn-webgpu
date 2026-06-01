@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { tutorialChapters } from '$lib/tutorials';
+	import { m } from '$lib/paraglide/messages';
+	import { localizeHref } from '$lib/paraglide/runtime';
 	
 	interface Props {
 		currentChapter?: string;
@@ -9,7 +11,7 @@
 	
 	let { currentChapter, currentExample }: Props = $props();
 	
-	let expandedChapters = $state<Set<string>>(new Set([currentChapter].filter(Boolean)));
+	let expandedChapters = $state<Set<string>>(new Set(currentChapter ? [currentChapter] : []));
 	
 	function toggleChapter(chapterId: string) {
 		if (expandedChapters.has(chapterId)) {
@@ -30,7 +32,7 @@
 </script>
 
 <nav class="tutorial-nav">
-	<h2 class="tutorial-nav-header">チュートリアル</h2>
+	<h2 class="tutorial-nav-header">{m.nav_tutorial()}</h2>
 	
 	<div class="tutorial-nav-content">
 		{#each tutorialChapters as chapter}
@@ -56,7 +58,7 @@
 					<div class="example-list">
 						{#each chapter.examples as example}
 							<a
-								href="/tutorial/{chapter.id}/{example.id}"
+								href={localizeHref(`/tutorial/${chapter.id}/${example.id}`)}
 								class="example-link"
 								class:active={currentChapter === chapter.id && currentExample === example.id}
 							>

@@ -5,7 +5,25 @@
 	import ConsoleOutput from '$lib/components/ConsoleOutput.svelte';
 	import { consoleMessages } from '$lib/stores/editor';
 	import type { WebGPUContext } from '$lib/webgpu/types';
+	import { createConsoleBridge, executeUserCode } from '$lib/webgpu/codeRunner';
 	import { samples } from '$lib/playground/samples';
+	import { m } from '$lib/paraglide/messages';
+
+	// Localized display name for each sample (keys mirror `samples` keys).
+	const sampleLabel: Record<string, () => string> = {
+		triangle: m.sample_triangle,
+		rainbow: m.sample_rainbow,
+		animated: m.sample_animated,
+		particles: m.sample_particles,
+		fractal: m.sample_fractal,
+		wave: m.sample_wave,
+		'3dcube': m.sample_3dcube,
+		compute: m.sample_compute,
+		texture: m.sample_texture,
+		lighting: m.sample_lighting,
+		postprocess: m.sample_postprocess,
+		'custom-shader': m.sample_custom_shader
+	};
 	
 	let webgpuContext: WebGPUContext | null = null;
 	let webgpuCanvasComponent: WebGPUCanvas | null = null;
@@ -64,24 +82,23 @@ fn fs_main() -> @location(0) vec4f {
 	// WebGPUコンテキストの準備完了
 	function handleContextReady(context: WebGPUContext) {
 		webgpuContext = context;
-		consoleMessages.info('WebGPUの準備が完了しました');
-		console.log('[Playground] WebGPU context ready:', context);
+		consoleMessages.info(m.playground_msg_ready());
 	}
 	
 	// コードを実行
 	async function runCode() {
 		if (!webgpuContext) {
-			consoleMessages.error('WebGPUが初期化されていません');
+			consoleMessages.error(m.playground_msg_not_initialized());
 			return;
 		}
 		
 		isRunning = true;
 		consoleMessages.clear();
-		consoleMessages.log('コードを実行中...');
-		
+		consoleMessages.log(m.playground_msg_running());
+
 		// 先にすべてのアニメーションを停止
 		if (activeAnimationIds.size > 0) {
-			consoleMessages.log(`前のアニメーションを停止します... (${activeAnimationIds.size}個)`);
+			consoleMessages.log(m.playground_msg_stop_anim({ count: String(activeAnimationIds.size) }));
 			activeAnimationIds.forEach(id => cancelAnimationFrame(id));
 			activeAnimationIds.clear();
 			// アニメーションループが完全に停止するまで待機
@@ -90,20 +107,18 @@ fn fs_main() -> @location(0) vec4f {
 		
 		// 実行前にWebGPUコンテキストをリセット
 		if (webgpuCanvasComponent && webgpuCanvasComponent.resetContext) {
-			consoleMessages.log('WebGPUコンテキストをリセット中...');
+			consoleMessages.log(m.playground_msg_reset_ctx());
 			try {
 				await webgpuCanvasComponent.resetContext();
-				// リセット後、新しいコンテキストが設定されるまで少し待つ
 				await new Promise(resolve => setTimeout(resolve, 50));
-				
-				// コンテキストが正常に再初期化されたか確認
+
 				if (!webgpuContext) {
-					consoleMessages.error('WebGPUコンテキストのリセットに失敗しました');
+					consoleMessages.error(m.playground_msg_reset_failed());
 					isRunning = false;
 					return;
 				}
 			} catch (error) {
-				consoleMessages.error('WebGPUコンテキストのリセット中にエラーが発生しました: ' + error);
+				consoleMessages.error(m.playground_msg_reset_error({ error: String(error) }));
 				isRunning = false;
 				return;
 			}
@@ -111,19 +126,7 @@ fn fs_main() -> @location(0) vec4f {
 		
 		try {
 			// カスタムconsoleオブジェクト
-			const customConsole = {
-				log: (...args: any[]) => consoleMessages.log(args.join(' ')),
-				error: (...args: any[]) => consoleMessages.error(args.join(' ')),
-				warn: (...args: any[]) => consoleMessages.warn(args.join(' ')),
-				info: (...args: any[]) => consoleMessages.info(args.join(' ')),
-			};
-			
-			// キャンバスのサイズを確認
-			if (webgpuContext?.canvas) {
-				console.log('[Playground] Canvas size before execution:', 
-					webgpuContext.canvas.width, 'x', webgpuContext.canvas.height);
-			}
-			
+			const customConsole = createConsoleBridge(consoleMessages);
 			
 			// カスタムrequestAnimationFrame
 			const customRequestAnimationFrame = (callback: FrameRequestCallback) => {
@@ -167,17 +170,11 @@ fn fs_main() -> @location(0) vec4f {
 			};
 			
 			// 非同期関数として実行
-			const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
-			const executeCode = new AsyncFunction(
-				...Object.keys(executionEnv),
-				javascriptCode
-			);
-			
-			await executeCode(...Object.values(executionEnv));
-			consoleMessages.log('実行が完了しました');
+			await executeUserCode(javascriptCode, executionEnv);
+			consoleMessages.log(m.playground_msg_run_done());
 		} catch (error) {
-			const errorMessage = error instanceof Error ? error.message : '不明なエラー';
-			consoleMessages.error(`実行エラー: ${errorMessage}`);
+			const errorMessage = error instanceof Error ? error.message : m.playground_msg_unknown_error();
+			consoleMessages.error(m.playground_msg_run_error({ error: errorMessage }));
 		} finally {
 			isRunning = false;
 		}
@@ -218,7 +215,8 @@ fn fs_main() -> @location(0) vec4f {
 		}
 		
 		consoleMessages.clear();
-		consoleMessages.info(`サンプル「${sample.name}」をロードしました`);
+		const displayName = sampleLabel[sampleName]?.() ?? sample.name;
+		consoleMessages.info(m.playground_msg_sample_loaded({ name: displayName }));
 	}
 	
 	// ページ破棄時のクリーンアップ
@@ -238,28 +236,19 @@ fn fs_main() -> @location(0) vec4f {
 </script>
 
 <svelte:head>
-	<title>プレイグラウンド - Learn WebGPU</title>
+	<title>{m.playground_meta_title()}</title>
 </svelte:head>
 
 <div class="playground-layout">
 	<!-- ヘッダー -->
 	<div class="playground-header">
-		<h1 class="text-2xl font-bold">WebGPUプレイグラウンド</h1>
+		<h1 class="text-2xl font-bold">{m.playground_title()}</h1>
 		<div class="flex items-center gap-4">
-			<select onchange={(e) => loadSample(e.currentTarget.value)} class="sample-select">
-				<option value="">サンプルを選択...</option>
-				<option value="triangle">基本的な三角形</option>
-				<option value="rainbow">レインボー三角形</option>
-				<option value="animated">アニメーション三角形</option>
-				<option value="particles">パーティクルシステム</option>
-				<option value="fractal">フラクタル（マンデルブロ集合）</option>
-				<option value="wave">波のアニメーション</option>
-				<option value="3dcube">3D回転キューブ</option>
-				<option value="compute">コンピュートシェーダー（Conway's Game of Life）</option>
-				<option value="texture">テクスチャマッピング</option>
-				<option value="lighting">ライティング（Phongシェーディング）</option>
-				<option value="postprocess">ポストプロセッシング（ブルーム効果）</option>
-				<option value="custom-shader">カスタムシェーダー（頂点・フラグメントタブ使用）</option>
+			<select onchange={(e) => loadSample(e.currentTarget.value)} class="sample-select" aria-label={m.playground_samples_label()}>
+				<option value="">{m.playground_select_sample()}</option>
+				{#each Object.keys(sampleLabel) as key (key)}
+					<option value={key}>{sampleLabel[key]()}</option>
+				{/each}
 			</select>
 		</div>
 	</div>
@@ -282,14 +271,14 @@ fn fs_main() -> @location(0) vec4f {
 					class:active={activeTab === 'vertex'}
 					onclick={() => activeTab = 'vertex'}
 				>
-					頂点シェーダー
+					{m.playground_tab_vertex()}
 				</button>
 				<button
 					class="editor-tab"
 					class:active={activeTab === 'fragment'}
 					onclick={() => activeTab = 'fragment'}
 				>
-					フラグメントシェーダー
+					{m.playground_tab_fragment()}
 				</button>
 			</div>
 			
@@ -325,16 +314,16 @@ fn fs_main() -> @location(0) vec4f {
 				>
 					{#if isRunning}
 						<div class="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
-						実行中...
+						{m.playground_running()}
 					{:else}
 						<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
 						</svg>
-						実行
+						{m.playground_run()}
 					{/if}
 				</button>
-				<button onclick={clearCode} class="btn-secondary">クリア</button>
+				<button onclick={clearCode} class="btn-secondary">{m.playground_clear()}</button>
 			</div>
 		</div>
 		

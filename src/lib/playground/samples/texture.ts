@@ -3,10 +3,32 @@ import type { PlaygroundSample } from './index';
 export const texture: PlaygroundSample = {
 	id: 'texture',
 	name: 'テクスチャマッピング',
+	vertexShader: `struct VertexOutput {
+  @builtin(position) position: vec4f,
+  @location(0) uv: vec2f,
+};
+
+@vertex
+fn vs_main(
+  @location(0) position: vec2f,
+  @location(1) uv: vec2f
+) -> VertexOutput {
+  var output: VertexOutput;
+  output.position = vec4f(position, 0.0, 1.0);
+  output.uv = uv;
+  return output;
+}`,
+	fragmentShader: `@group(0) @binding(0) var myTexture: texture_2d<f32>;
+@group(0) @binding(1) var mySampler: sampler;
+
+@fragment
+fn fs_main(input: VertexOutput) -> @location(0) vec4f {
+  return textureSample(myTexture, mySampler, input.uv);
+}`,
 	javascript: `// テクスチャマッピングの例
 async function main() {
   const canvas = document.querySelector('canvas');
-  
+
   // すでに初期化されたWebGPUコンテキストを使用
   let device, context, canvasFormat;
   if (window.webgpuDevice && window.webgpuContext && window.webgpuFormat) {
@@ -20,7 +42,7 @@ async function main() {
     canvasFormat = navigator.gpu.getPreferredCanvasFormat();
     context.configure({ device, format: canvasFormat });
   }
-  
+
   // 頂点データ（位置とUV座標）
   const vertices = new Float32Array([
     // position     // uv
@@ -29,12 +51,12 @@ async function main() {
      0.8,  0.8,     1.0, 0.0,
     -0.8,  0.8,     0.0, 0.0,
   ]);
-  
+
   const indices = new Uint16Array([
     0, 1, 2,
     0, 2, 3,
   ]);
-  
+
   const vertexBuffer = device.createBuffer({
     size: vertices.byteLength,
     usage: GPUBufferUsage.VERTEX,
@@ -42,7 +64,7 @@ async function main() {
   });
   new Float32Array(vertexBuffer.getMappedRange()).set(vertices);
   vertexBuffer.unmap();
-  
+
   const indexBuffer = device.createBuffer({
     size: indices.byteLength,
     usage: GPUBufferUsage.INDEX,
@@ -50,7 +72,7 @@ async function main() {
   });
   new Uint16Array(indexBuffer.getMappedRange()).set(indices);
   indexBuffer.unmap();
-  
+
   // チェッカーボードテクスチャを作成
   const textureSize = 256;
   const texture = device.createTexture({
@@ -58,7 +80,7 @@ async function main() {
     format: 'rgba8unorm',
     usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST,
   });
-  
+
   // テクスチャデータを生成
   const textureData = new Uint8Array(textureSize * textureSize * 4);
   for (let y = 0; y < textureSize; y++) {
@@ -66,20 +88,20 @@ async function main() {
       const i = (y * textureSize + x) * 4;
       const checker = ((Math.floor(x / 32) ^ Math.floor(y / 32)) & 1);
       const color = checker ? 255 : 64;
-      textureData[i + 0] = color;     // R
+      textureData[i + 0] = color;       // R
       textureData[i + 1] = color * 0.7; // G
       textureData[i + 2] = color * 0.5; // B
-      textureData[i + 3] = 255;        // A
+      textureData[i + 3] = 255;         // A
     }
   }
-  
+
   device.queue.writeTexture(
     { texture },
     textureData,
     { bytesPerRow: textureSize * 4, rowsPerImage: textureSize },
     { width: textureSize, height: textureSize }
   );
-  
+
   // サンプラーを作成
   const sampler = device.createSampler({
     magFilter: 'linear',
@@ -87,35 +109,11 @@ async function main() {
     addressModeU: 'repeat',
     addressModeV: 'repeat',
   });
-  
+
   const shaderModule = device.createShaderModule({
-    code: \`
-      struct VertexOutput {
-        @builtin(position) position: vec4f,
-        @location(0) uv: vec2f,
-      };
-      
-      @vertex
-      fn vs_main(
-        @location(0) position: vec2f,
-        @location(1) uv: vec2f
-      ) -> VertexOutput {
-        var output: VertexOutput;
-        output.position = vec4f(position, 0.0, 1.0);
-        output.uv = uv;
-        return output;
-      }
-      
-      @group(0) @binding(0) var myTexture: texture_2d<f32>;
-      @group(0) @binding(1) var mySampler: sampler;
-      
-      @fragment
-      fn fs_main(input: VertexOutput) -> @location(0) vec4f {
-        return textureSample(myTexture, mySampler, input.uv);
-      }
-    \`
+    code: window.vertexShaderCode + '\\n' + window.fragmentShaderCode
   });
-  
+
   const bindGroupLayout = device.createBindGroupLayout({
     entries: [
       {
@@ -130,7 +128,7 @@ async function main() {
       }
     ]
   });
-  
+
   const bindGroup = device.createBindGroup({
     layout: bindGroupLayout,
     entries: [
@@ -138,11 +136,11 @@ async function main() {
       { binding: 1, resource: sampler }
     ]
   });
-  
+
   const pipelineLayout = device.createPipelineLayout({
     bindGroupLayouts: [bindGroupLayout]
   });
-  
+
   const pipeline = device.createRenderPipeline({
     layout: pipelineLayout,
     vertex: {
@@ -165,7 +163,7 @@ async function main() {
       topology: 'triangle-list'
     }
   });
-  
+
   function render() {
     const encoder = device.createCommandEncoder();
     const pass = encoder.beginRenderPass({
@@ -176,17 +174,17 @@ async function main() {
         storeOp: 'store'
       }]
     });
-    
+
     pass.setPipeline(pipeline);
     pass.setBindGroup(0, bindGroup);
     pass.setVertexBuffer(0, vertexBuffer);
     pass.setIndexBuffer(indexBuffer, 'uint16');
     pass.drawIndexed(6);
     pass.end();
-    
+
     device.queue.submit([encoder.finish()]);
   }
-  
+
   render();
   console.log('テクスチャマッピングを描画しました！');
 }

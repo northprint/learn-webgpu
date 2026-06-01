@@ -1,42 +1,42 @@
 <script lang="ts">
-	// WebGPUリファレンス
+	import { m } from '$lib/paraglide/messages';
 </script>
 
 <svelte:head>
-	<title>リファレンス - Learn WebGPU</title>
+	<title>{m.reference_meta_title()}</title>
 </svelte:head>
 
 <div class="container mx-auto px-6 py-8 max-w-4xl">
-	<h1 class="text-3xl font-bold mb-6">WebGPUリファレンス</h1>
-	
+	<h1 class="text-3xl font-bold mb-6">{m.reference_title()}</h1>
+
 	<div class="prose dark:prose-invert max-w-none">
 		<section class="mb-12">
-			<h2 class="text-2xl font-semibold mb-4">基本概念</h2>
-			
+			<h2 class="text-2xl font-semibold mb-4">{m.reference_basics_title()}</h2>
+
 			<div class="card mb-6">
-				<h3 class="text-xl font-semibold mb-2">GPUAdapter</h3>
+				<h3 class="text-xl font-semibold mb-2">{m.reference_basics_adapter_title()}</h3>
 				<p class="text-gray-600 dark:text-gray-400 mb-3">
-					物理的なGPUデバイスへのアクセスを提供するオブジェクト。
+					{m.reference_basics_adapter_body()}
 				</p>
 				<div class="code-block">
 					<pre><code>{`const adapter = await navigator.gpu.requestAdapter();`}</code></pre>
 				</div>
 			</div>
-			
+
 			<div class="card mb-6">
-				<h3 class="text-xl font-semibold mb-2">GPUDevice</h3>
+				<h3 class="text-xl font-semibold mb-2">{m.reference_basics_device_title()}</h3>
 				<p class="text-gray-600 dark:text-gray-400 mb-3">
-					GPUリソースの作成とコマンドの実行に使用される論理デバイス。
+					{m.reference_basics_device_body()}
 				</p>
 				<div class="code-block">
 					<pre><code>{`const device = await adapter.requestDevice();`}</code></pre>
 				</div>
 			</div>
-			
+
 			<div class="card mb-6">
-				<h3 class="text-xl font-semibold mb-2">GPUCommandEncoder</h3>
+				<h3 class="text-xl font-semibold mb-2">{m.reference_basics_encoder_title()}</h3>
 				<p class="text-gray-600 dark:text-gray-400 mb-3">
-					GPUコマンドをエンコードしてコマンドバッファを作成。
+					{m.reference_basics_encoder_body()}
 				</p>
 				<div class="code-block">
 					<pre><code>{`const encoder = device.createCommandEncoder();
@@ -45,45 +45,45 @@ device.queue.submit([commandBuffer]);`}</code></pre>
 				</div>
 			</div>
 		</section>
-		
+
 		<section class="mb-12">
-			<h2 class="text-2xl font-semibold mb-4">シェーダー（WGSL）</h2>
-			
+			<h2 class="text-2xl font-semibold mb-4">{m.reference_shader_title()}</h2>
+
 			<div class="card mb-6">
-				<h3 class="text-xl font-semibold mb-2">基本構造</h3>
+				<h3 class="text-xl font-semibold mb-2">{m.reference_shader_structure_title()}</h3>
 				<div class="code-block">
-					<pre><code>{`// 頂点シェーダー
+					<pre><code>{`// Vertex shader
 @vertex
 fn vs_main(@location(0) position: vec3f) -> @builtin(position) vec4f {
   return vec4f(position, 1.0);
 }
 
-// フラグメントシェーダー
+// Fragment shader
 @fragment
 fn fs_main() -> @location(0) vec4f {
-  return vec4f(1.0, 0.0, 0.0, 1.0); // 赤色
+  return vec4f(1.0, 0.0, 0.0, 1.0);
 }`}</code></pre>
 				</div>
 			</div>
-			
+
 			<div class="card mb-6">
-				<h3 class="text-xl font-semibold mb-2">データ型</h3>
+				<h3 class="text-xl font-semibold mb-2">{m.reference_shader_types_title()}</h3>
 				<ul class="list-disc list-inside space-y-1 text-gray-600 dark:text-gray-400">
-					<li><code>f32</code> - 32ビット浮動小数点数</li>
-					<li><code>i32</code> - 32ビット符号付き整数</li>
-					<li><code>u32</code> - 32ビット符号なし整数</li>
-					<li><code>bool</code> - 真偽値</li>
-					<li><code>vec2f</code>, <code>vec3f</code>, <code>vec4f</code> - ベクトル型</li>
-					<li><code>mat4x4f</code> - 4x4行列</li>
+					<li>{@html m.reference_shader_types_f32()}</li>
+					<li>{@html m.reference_shader_types_i32()}</li>
+					<li>{@html m.reference_shader_types_u32()}</li>
+					<li>{@html m.reference_shader_types_bool()}</li>
+					<li>{@html m.reference_shader_types_vec()}</li>
+					<li>{@html m.reference_shader_types_mat()}</li>
 				</ul>
 			</div>
 		</section>
-		
+
 		<section class="mb-12">
-			<h2 class="text-2xl font-semibold mb-4">パイプライン</h2>
-			
+			<h2 class="text-2xl font-semibold mb-4">{m.reference_pipeline_title()}</h2>
+
 			<div class="card mb-6">
-				<h3 class="text-xl font-semibold mb-2">レンダーパイプライン</h3>
+				<h3 class="text-xl font-semibold mb-2">{m.reference_pipeline_render_title()}</h3>
 				<div class="code-block">
 					<pre><code>{`const pipeline = device.createRenderPipeline({
   layout: 'auto',
@@ -91,7 +91,7 @@ fn fs_main() -> @location(0) vec4f {
     module: shaderModule,
     entryPoint: 'vs_main',
     buffers: [{
-      arrayStride: 12, // 3 * 4 bytes
+      arrayStride: 12,
       attributes: [{
         format: 'float32x3',
         offset: 0,
@@ -113,53 +113,51 @@ fn fs_main() -> @location(0) vec4f {
 				</div>
 			</div>
 		</section>
-		
+
 		<section class="mb-12">
-			<h2 class="text-2xl font-semibold mb-4">リソース管理</h2>
-			
+			<h2 class="text-2xl font-semibold mb-4">{m.reference_resources_title()}</h2>
+
 			<div class="card mb-6">
-				<h3 class="text-xl font-semibold mb-2">バッファ</h3>
+				<h3 class="text-xl font-semibold mb-2">{m.reference_resources_buffer_title()}</h3>
 				<div class="code-block">
-					<pre><code>{`// バッファの作成
-const buffer = device.createBuffer({
+					<pre><code>{`const buffer = device.createBuffer({
   size: vertices.byteLength,
   usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST
 });
 
-// データの書き込み
 device.queue.writeBuffer(buffer, 0, vertices);`}</code></pre>
 				</div>
 			</div>
-			
+
 			<div class="card mb-6">
-				<h3 class="text-xl font-semibold mb-2">テクスチャ</h3>
+				<h3 class="text-xl font-semibold mb-2">{m.reference_resources_texture_title()}</h3>
 				<div class="code-block">
 					<pre><code>{`const texture = device.createTexture({
   size: { width: 256, height: 256 },
   format: 'rgba8unorm',
-  usage: GPUTextureUsage.TEXTURE_BINDING | 
+  usage: GPUTextureUsage.TEXTURE_BINDING |
          GPUTextureUsage.COPY_DST
 });`}</code></pre>
 				</div>
 			</div>
 		</section>
-		
+
 		<section>
-			<h2 class="text-2xl font-semibold mb-4">役立つリンク</h2>
+			<h2 class="text-2xl font-semibold mb-4">{m.reference_links_title()}</h2>
 			<ul class="space-y-2">
 				<li>
 					<a href="https://www.w3.org/TR/webgpu/" target="_blank" rel="noopener noreferrer" class="text-gpu-blue hover:underline">
-						WebGPU仕様書 →
+						{m.reference_links_webgpu_spec()}
 					</a>
 				</li>
 				<li>
 					<a href="https://www.w3.org/TR/WGSL/" target="_blank" rel="noopener noreferrer" class="text-gpu-blue hover:underline">
-						WGSL仕様書 →
+						{m.reference_links_wgsl_spec()}
 					</a>
 				</li>
 				<li>
 					<a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGPU_API" target="_blank" rel="noopener noreferrer" class="text-gpu-blue hover:underline">
-						MDN WebGPUドキュメント →
+						{m.reference_links_mdn()}
 					</a>
 				</li>
 			</ul>

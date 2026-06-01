@@ -2,33 +2,40 @@
 	import { tutorialChapters } from '$lib/tutorials';
 	import { progress, completionRate } from '$lib/stores/progress';
 	import { isExampleCompleted } from '$lib/stores/progress';
+	import { m } from '$lib/paraglide/messages';
+	import { localizeHref } from '$lib/paraglide/runtime';
+	import { getLocale } from '$lib/paraglide/runtime';
+	import type { Locale } from '$lib/i18n/locales';
 </script>
 
 <svelte:head>
-	<title>チュートリアル - Learn WebGPU</title>
+	<title>{m.tutorial_list_meta_title()}</title>
 </svelte:head>
 
 <div class="tutorial-list-container">
-	<h1 class="text-3xl font-bold mb-6">WebGPUチュートリアル</h1>
-	
+	<h1 class="text-3xl font-bold mb-6">{m.tutorial_list_title()}</h1>
+
 	<!-- 進捗表示 -->
 	<div class="mb-8 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
 		<div class="flex items-center justify-between mb-2">
-			<span class="text-sm font-medium">学習進捗</span>
+			<span class="text-sm font-medium">{m.tutorial_list_progress_label()}</span>
 			<div class="flex items-center gap-4">
 				<span class="text-sm text-gray-800 dark:text-gray-400">
-					{$completionRate.completed} / {$completionRate.total} 完了
+					{m.tutorial_list_progress_summary({
+						completed: String($completionRate.completed),
+						total: String($completionRate.total)
+					})}
 				</span>
-				<button 
+				<button
 					onclick={() => {
-						if (confirm('本当に進捗をリセットしますか？\nこの操作は取り消せません。')) {
+						if (confirm(m.tutorial_list_progress_reset_confirm())) {
 							progress.reset();
 						}
 					}}
 					class="text-xs text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 transition-colors"
-					title="進捗をリセット"
+					title={m.tutorial_list_progress_reset_title()}
 				>
-					リセット
+					{m.tutorial_list_progress_reset()}
 				</button>
 			</div>
 		</div>
@@ -56,8 +63,8 @@
 						<div class="space-y-2">
 							{#each chapter.examples as example}
 								{@const isCompleted = isExampleCompleted(chapter.id, example.id, $progress)}
-								<a 
-									href="/tutorial/{chapter.id}/{example.id}"
+								<a
+									href={localizeHref(`/tutorial/${chapter.id}/${example.id}`)}
 									class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-gpu-blue transition-colors group"
 								>
 									<div class="flex-shrink-0">
@@ -96,12 +103,12 @@
 	<!-- 最後に訪問したページへのリンク -->
 	{#if $progress.lastVisited && $progress.lastVisited !== '/tutorial'}
 		<div class="mt-8 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
-			<p class="text-sm text-gray-800 dark:text-gray-400 mb-2">前回の続きから：</p>
-			<a 
-				href={$progress.lastVisited} 
+			<p class="text-sm text-gray-800 dark:text-gray-400 mb-2">{m.tutorial_list_last_visited_label()}</p>
+			<a
+				href={localizeHref($progress.lastVisited)}
 				class="inline-flex items-center gap-2 text-gpu-blue hover:underline"
 			>
-				続きを学習する
+				{m.tutorial_list_last_visited_link()}
 				<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
 				</svg>

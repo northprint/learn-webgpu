@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import BackgroundAnimation from '$lib/components/BackgroundAnimation.svelte';
+	import { m } from '$lib/paraglide/messages';
+	import { localizeHref } from '$lib/paraglide/runtime';
 	
 	let webgpuSupported = $state(false);
 	let checkingSupport = $state(true);
@@ -55,57 +57,44 @@
 	onMount(async () => {
 		// ブラウザ情報を取得
 		browserInfo = getBrowserInfo();
-		console.log('[HomePage] Browser info:', browserInfo);
-		
+
 		// WebGPUサポートチェック
-		console.log('[HomePage] Checking WebGPU support...');
-		console.log('[HomePage] navigator.gpu:', 'gpu' in navigator);
-		
 		try {
 			if (!('gpu' in navigator)) {
-				console.log('[HomePage] WebGPU API not available');
-				errorMessage = 'WebGPU APIがブラウザで利用できません。';
+				errorMessage = m.home_err_no_api();
 				webgpuSupported = false;
 			} else {
-				console.log('[HomePage] Requesting adapter...');
 				const adapter = await navigator.gpu.requestAdapter();
-				console.log('[HomePage] Adapter:', adapter);
-				
+
 				if (!adapter) {
-					console.log('[HomePage] No adapter available');
-					errorMessage = 'WebGPUアダプターが利用できません。GPUが無効化されているか、ドライバーの更新が必要な可能性があります。';
+					errorMessage = m.home_err_no_adapter();
 					webgpuSupported = false;
 				} else {
 					// デバイスの取得も試みる
-					console.log('[HomePage] Requesting device...');
 					try {
 						const device = await adapter.requestDevice();
-						console.log('[HomePage] Device:', device);
-						
+
 						// 成功！
 						webgpuSupported = true;
 						device.destroy();
 					} catch (deviceError) {
-						console.error('[HomePage] Device request failed:', deviceError);
-						errorMessage = 'WebGPUデバイスの初期化に失敗しました。';
+						errorMessage = m.home_err_device();
 						webgpuSupported = false;
 					}
 				}
 			}
 		} catch (e) {
-			console.error('[HomePage] WebGPU check failed:', e);
-			errorMessage = 'WebGPUのチェック中にエラーが発生しました。';
+			errorMessage = m.home_err_generic();
 			webgpuSupported = false;
 		} finally {
 			checkingSupport = false;
-			console.log('[HomePage] WebGPU supported:', webgpuSupported);
 		}
 	});
 </script>
 
 <svelte:head>
-	<title>Learn WebGPU - WebGPUを学ぶためのインタラクティブチュートリアル</title>
-	<meta name="description" content="WebGPUの基礎から応用まで、実際にコードを書きながら学べるインタラクティブなチュートリアル" />
+	<title>{m.home_meta_title()}</title>
+	<meta name="description" content={m.home_meta_description()} />
 </svelte:head>
 
 <div class="relative min-h-screen">
@@ -118,10 +107,10 @@
 	<!-- ヒーローセクション -->
 	<section class="text-center mb-16">
 		<h1 class="text-5xl font-bold mb-6 bg-gradient-to-r from-gpu-blue via-gpu-purple to-gpu-pink bg-clip-text text-transparent">
-			WebGPUを学ぼう
+			{m.home_hero_title()}
 		</h1>
 		<p class="text-xl text-gray-900 dark:text-gray-300 mb-8 max-w-2xl mx-auto font-medium">
-			次世代のWeb グラフィックスAPI、WebGPUを実際にコードを書きながら学べるインタラクティブなチュートリアルです。
+			{m.home_hero_subtitle()}
 		</p>
 		
 		{#if checkingSupport}
@@ -130,90 +119,80 @@
 			</div>
 		{:else if webgpuSupported}
 			<div class="flex gap-4 justify-center">
-				<a href="/tutorial" class="btn-primary">
-					チュートリアルを始める
+				<a href={localizeHref('/tutorial')} class="btn-primary">
+					{m.home_cta_start_tutorial()}
 				</a>
-				<a href="/playground" class="btn-secondary">
-					プレイグラウンドで試す
+				<a href={localizeHref('/playground')} class="btn-secondary">
+					{m.home_cta_try_playground()}
 				</a>
 			</div>
 		{:else}
 			<div class="bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700 rounded-lg p-6 max-w-2xl mx-auto">
 				<h3 class="text-lg font-semibold text-red-800 dark:text-red-200 mb-3">
-					WebGPUがサポートされていません
+					{m.home_unsupported_title()}
 				</h3>
-				
+
 				<div class="space-y-3 text-sm">
-					<!-- ブラウザ情報 -->
 					<div class="bg-white/50 dark:bg-gray-800/50 rounded p-3">
-						<p class="font-medium text-red-700 dark:text-red-300 mb-1">現在のブラウザ情報:</p>
+						<p class="font-medium text-red-700 dark:text-red-300 mb-1">{m.home_unsupported_browser_label()}</p>
 						<p class="text-gray-700 dark:text-gray-300">
-							{browserInfo.browserName} バージョン {browserInfo.browserVersion}
+							{m.home_unsupported_browser_version_template({ name: browserInfo.browserName, version: browserInfo.browserVersion })}
 						</p>
 					</div>
-					
-					<!-- エラーメッセージ -->
+
 					{#if errorMessage}
 						<div class="bg-white/50 dark:bg-gray-800/50 rounded p-3">
-							<p class="font-medium text-red-700 dark:text-red-300 mb-1">エラー詳細:</p>
+							<p class="font-medium text-red-700 dark:text-red-300 mb-1">{m.home_unsupported_error_label()}</p>
 							<p class="text-gray-700 dark:text-gray-300">{errorMessage}</p>
 						</div>
 					{/if}
-					
-					<!-- 推奨事項 -->
+
 					<div class="bg-white/50 dark:bg-gray-800/50 rounded p-3">
-						<p class="font-medium text-red-700 dark:text-red-300 mb-2">解決方法:</p>
+						<p class="font-medium text-red-700 dark:text-red-300 mb-2">{m.home_unsupported_solution_label()}</p>
 						<ul class="space-y-2 text-gray-700 dark:text-gray-300">
 							{#if browserInfo.isChrome && browserInfo.chromeVersion < 113}
 								<li class="flex items-start gap-2">
 									<span class="text-red-500">•</span>
-									<span>Chrome {browserInfo.chromeVersion}は古いバージョンです。Chrome 113以上にアップデートしてください。</span>
+									<span>{m.home_unsupported_chrome_old({ version: String(browserInfo.chromeVersion) })}</span>
 								</li>
 							{:else if browserInfo.isChrome && browserInfo.chromeVersion >= 113}
 								<li class="flex items-start gap-2">
 									<span class="text-yellow-500">•</span>
-									<span>Chrome {browserInfo.chromeVersion}でWebGPUが利用できない場合は、以下を確認してください：</span>
+									<span>{m.home_unsupported_chrome_recent({ version: String(browserInfo.chromeVersion) })}</span>
 								</li>
 								<li class="ml-6">
-									• GPUハードウェアアクセラレーションが有効になっているか（設定 → システム → 詳細設定）
+									• {m.home_unsupported_chrome_check_gpu()}
 								</li>
 								<li class="ml-6">
-									• <code class="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-1 rounded">chrome://gpu</code> でGPU情報を確認
+									• {@html m.home_unsupported_chrome_gpu_page()}
 								</li>
 								<li class="ml-6">
-									• グラフィックドライバーが最新版に更新されているか
+									• {m.home_unsupported_chrome_driver()}
 								</li>
 							{/if}
 							<li class="flex items-start gap-2">
 								<span class="text-green-500">•</span>
-								<span>WebGPUは以下の環境で最も安定して動作します：</span>
+								<span>{m.home_unsupported_env_intro()}</span>
 							</li>
-							<li class="ml-6">
-								• Windows 10/11またはmacOS（最新版）
-							</li>
-							<li class="ml-6">
-								• 専用GPU（NVIDIA、AMD、Intel Arc）
-							</li>
-							<li class="ml-6">
-								• 最新のグラフィックドライバー
-							</li>
+							<li class="ml-6">• {m.home_unsupported_env_os()}</li>
+							<li class="ml-6">• {m.home_unsupported_env_gpu()}</li>
+							<li class="ml-6">• {m.home_unsupported_env_driver()}</li>
 							{#if navigator.userAgent.includes('Linux')}
 								<li class="flex items-start gap-2 mt-3">
 									<span class="text-orange-500">•</span>
-									<span>Linuxでは追加の設定が必要な場合があります。Chrome DevやCanaryでの動作確認を推奨します。</span>
+									<span>{m.home_unsupported_linux_note()}</span>
 								</li>
 							{/if}
 						</ul>
 					</div>
-					
-					<!-- LinuxでのGPU確認 -->
+
 					{#if navigator.platform.includes('Linux')}
 						<div class="bg-blue-50 dark:bg-blue-900/20 rounded p-3 border border-blue-200 dark:border-blue-800">
-							<p class="font-medium text-blue-700 dark:text-blue-300 mb-2">Linux環境の追加確認事項:</p>
+							<p class="font-medium text-blue-700 dark:text-blue-300 mb-2">{m.home_unsupported_linux_title()}</p>
 							<ul class="space-y-1 text-gray-700 dark:text-gray-300 text-sm">
-								<li>• GPUドライバーが正しくインストールされているか確認</li>
-								<li>• ハードウェアアクセラレーションが有効になっているか確認</li>
-								<li>• <code class="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-1 rounded">chrome://gpu</code> でGPU情報を確認</li>
+								<li>• {m.home_unsupported_linux_driver()}</li>
+								<li>• {m.home_unsupported_linux_accel()}</li>
+								<li>• {@html m.home_unsupported_linux_gpu_page()}</li>
 							</ul>
 						</div>
 					{/if}
@@ -230,9 +209,9 @@
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
 				</svg>
 			</div>
-			<h3 class="text-xl font-semibold mb-2">段階的な学習</h3>
+			<h3 class="text-xl font-semibold mb-2">{m.home_features_stepwise_title()}</h3>
 			<p class="text-gray-800 dark:text-gray-300">
-				基礎から応用まで、段階的に学べるように構成されたチュートリアル
+				{m.home_features_stepwise_body()}
 			</p>
 		</div>
 		
@@ -242,9 +221,9 @@
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
 				</svg>
 			</div>
-			<h3 class="text-xl font-semibold mb-2">インタラクティブ</h3>
+			<h3 class="text-xl font-semibold mb-2">{m.home_features_interactive_title()}</h3>
 			<p class="text-gray-800 dark:text-gray-300">
-				ブラウザ上でコードを編集し、リアルタイムで結果を確認
+				{m.home_features_interactive_body()}
 			</p>
 		</div>
 		
@@ -254,59 +233,35 @@
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
 				</svg>
 			</div>
-			<h3 class="text-xl font-semibold mb-2">実践的な内容</h3>
+			<h3 class="text-xl font-semibold mb-2">{m.home_features_practical_title()}</h3>
 			<p class="text-gray-800 dark:text-gray-300">
-				実際のプロジェクトで使える実践的なテクニックを学習
+				{m.home_features_practical_body()}
 			</p>
 		</div>
 	</section>
 	
 	<!-- カリキュラムセクション -->
 	<section class="mb-16">
-		<h2 class="text-3xl font-bold mb-8 text-center">学習内容</h2>
-		
+		<h2 class="text-3xl font-bold mb-8 text-center">{m.home_curriculum_title()}</h2>
+
 		<div class="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
 			<div class="card">
-				<h3 class="text-lg font-semibold mb-3 text-gpu-blue">基礎編</h3>
+				<h3 class="text-lg font-semibold mb-3 text-gpu-blue">{m.home_curriculum_basics_title()}</h3>
 				<ul class="space-y-2 text-sm">
-					<li class="flex items-start gap-2">
-						<span class="text-green-500 mt-0.5">✓</span>
-						<span>WebGPUの基本概念とセットアップ</span>
-					</li>
-					<li class="flex items-start gap-2">
-						<span class="text-green-500 mt-0.5">✓</span>
-						<span>最初の三角形を描画</span>
-					</li>
-					<li class="flex items-start gap-2">
-						<span class="text-green-500 mt-0.5">✓</span>
-						<span>シェーダー言語WGSL入門</span>
-					</li>
-					<li class="flex items-start gap-2">
-						<span class="text-green-500 mt-0.5">✓</span>
-						<span>バッファとデータ転送</span>
-					</li>
+					<li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span><span>{m.home_curriculum_basics_1()}</span></li>
+					<li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span><span>{m.home_curriculum_basics_2()}</span></li>
+					<li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span><span>{m.home_curriculum_basics_3()}</span></li>
+					<li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span><span>{m.home_curriculum_basics_4()}</span></li>
 				</ul>
 			</div>
-			
+
 			<div class="card">
-				<h3 class="text-lg font-semibold mb-3 text-gpu-purple">応用編</h3>
+				<h3 class="text-lg font-semibold mb-3 text-gpu-purple">{m.home_curriculum_advanced_title()}</h3>
 				<ul class="space-y-2 text-sm">
-					<li class="flex items-start gap-2">
-						<span class="text-green-500 mt-0.5">✓</span>
-						<span>3D変換と行列計算</span>
-					</li>
-					<li class="flex items-start gap-2">
-						<span class="text-green-500 mt-0.5">✓</span>
-						<span>テクスチャマッピング</span>
-					</li>
-					<li class="flex items-start gap-2">
-						<span class="text-green-500 mt-0.5">✓</span>
-						<span>ライティングとシェーディング</span>
-					</li>
-					<li class="flex items-start gap-2">
-						<span class="text-green-500 mt-0.5">✓</span>
-						<span>パフォーマンス最適化</span>
-					</li>
+					<li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span><span>{m.home_curriculum_advanced_1()}</span></li>
+					<li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span><span>{m.home_curriculum_advanced_2()}</span></li>
+					<li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span><span>{m.home_curriculum_advanced_3()}</span></li>
+					<li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span><span>{m.home_curriculum_advanced_4()}</span></li>
 				</ul>
 			</div>
 		</div>
@@ -314,12 +269,12 @@
 	
 	<!-- CTAセクション -->
 	<section class="text-center py-12 bg-gradient-to-r from-gpu-blue/10 via-gpu-purple/10 to-gpu-pink/10 rounded-2xl">
-		<h2 class="text-3xl font-bold mb-4">準備はできましたか？</h2>
+		<h2 class="text-3xl font-bold mb-4">{m.home_cta_ready_title()}</h2>
 		<p class="text-lg text-gray-900 dark:text-gray-300 mb-8 font-medium">
-			WebGPUの世界へ飛び込みましょう
+			{m.home_cta_ready_subtitle()}
 		</p>
-		<a href="/tutorial" class="btn-primary text-lg px-8 py-3">
-			学習を始める →
+		<a href={localizeHref('/tutorial')} class="btn-primary text-lg px-8 py-3">
+			{m.home_cta_ready_button()}
 		</a>
 	</section>
 </div>

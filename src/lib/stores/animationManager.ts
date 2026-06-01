@@ -35,8 +35,6 @@ class AnimationManager {
 		// Start the animation
 		currentId = requestAnimationFrame(wrappedCallback);
 		this.activeAnimations.add(currentId);
-		
-		console.log('[AnimationManager] Started animation:', currentId);
 		return currentId;
 	}
 
@@ -47,7 +45,6 @@ class AnimationManager {
 		if (this.activeAnimations.has(id)) {
 			cancelAnimationFrame(id);
 			this.activeAnimations.delete(id);
-			console.log('[AnimationManager] Stopped animation:', id);
 		}
 	}
 
@@ -56,18 +53,9 @@ class AnimationManager {
 	 */
 	stopAll() {
 		this.isDestroying = true;
-		const count = this.activeAnimations.size;
-		
-		this.activeAnimations.forEach(id => {
-			cancelAnimationFrame(id);
-		});
-		
+		this.activeAnimations.forEach(id => cancelAnimationFrame(id));
 		this.activeAnimations.clear();
 		this.isDestroying = false;
-		
-		if (count > 0) {
-			console.log('[AnimationManager] Stopped all animations:', count);
-		}
 	}
 
 	/**

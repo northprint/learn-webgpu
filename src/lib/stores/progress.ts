@@ -1,4 +1,6 @@
-import { writable, derived } from 'svelte/store';
+import { writable, derived, get } from 'svelte/store';
+import { PROGRESS_STORAGE_KEY } from '$lib/config';
+import { tutorialChapters } from '$lib/tutorials/index';
 
 export interface ProgressData {
 	completedExamples: Set<string>;
@@ -7,7 +9,7 @@ export interface ProgressData {
 }
 
 // ローカルストレージのキー
-const STORAGE_KEY = 'webgpu-tutorial-progress';
+const STORAGE_KEY = PROGRESS_STORAGE_KEY;
 
 // 初期データの読み込み
 function loadProgress(): ProgressData {
@@ -39,6 +41,8 @@ function loadProgress(): ProgressData {
 			};
 		}
 	} catch (e) {
+		// 破損したデータや非対応環境では初期値にフォールバック
+		console.warn('[progress] Failed to load progress from localStorage:', e);
 	}
 	
 	return {
@@ -78,15 +82,11 @@ function createProgressStore() {
 			});
 		},
 		
-		// ステップの完了状態を取得
+		// ステップの完了状態を取得（コピーを返す）
 		getCompletedSteps(chapterId: string, exampleId: string): Set<number> {
 			const key = `${chapterId}/${exampleId}`;
-			let currentData: ProgressData | null = null;
-			const unsubscribe = this.subscribe((data) => {
-				currentData = data;
-			});
-			unsubscribe();
-			return currentData?.completedSteps[key] || new Set();
+			const data = get<ProgressData>({ subscribe });
+			return new Set(data.completedSteps[key] ?? []);
 		},
 		
 		// 例題の完了を取り消し
@@ -139,6 +139,8 @@ function createProgressStore() {
 				};
 				localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
 			} catch (e) {
+				// 容量超過やプライベートブラウジング等では保存をスキップ
+				console.warn('[progress] Failed to save progress to localStorage:', e);
 			}
 		}
 	};
@@ -170,10 +172,7 @@ export function isExampleCompleted(chapterId: string, exampleId: string, progres
 	return progressData.completedExamples.has(key);
 }
 
-// チュートリアルの総数を取得
+// チュートリアルの総数を取得（tutorialChaptersから動的に算出）
 function getTotalExamples(): number {
-	// 動的インポートを避けるため、ここで手動で計算
-	// この値はtutorialChaptersの実際の例題数と同期する必要がある
-	// getting-started: 2, first-triangle: 1, buffers-and-uniforms: 2, textures: 1, lighting: 1
-	return 7;
+	return tutorialChapters.reduce((total, chapter) => total + chapter.examples.length, 0);
 }

@@ -10,12 +10,15 @@
 	import { editorState, consoleMessages, executionState, loadCode } from '$lib/stores/editor.js';
 	import { progress } from '$lib/stores/progress.js';
 	import type { WebGPUContext } from '$lib/webgpu/types.js';
+	import { createConsoleBridge, checkSyntax, executeUserCode } from '$lib/webgpu/codeRunner';
+	import { m } from '$lib/paraglide/messages';
+	import { localizeHref } from '$lib/paraglide/runtime';
 	
 	let webgpuContext: WebGPUContext | null = null;
 	let currentExecutionId = 0;
 	let canvasComponent = $state<WebGPUCanvas | null>(null);
 	let activeAnimationFrame: number | null = null;
-	let activeTimeouts: number[] = [];
+	let activeTimeouts: ReturnType<typeof setTimeout>[] = [];
 	let createdResources: any[] = [];
 	
 	// URLパラメータから現在のチャプターと例題を取得
@@ -111,7 +114,7 @@ fn fs_main() -> @location(0) vec4f {
 			window.scrollTo(0, 0);
 			
 			consoleMessages.clear();
-			consoleMessages.info('新しいチュートリアルを読み込みました');
+			consoleMessages.info(m.tutorial_detail_msg_loaded());
 		}
 		
 		return () => {
@@ -127,13 +130,11 @@ fn fs_main() -> @location(0) vec4f {
 	// WebGPUコンテキストの準備完了
 	function handleContextReady(context: WebGPUContext) {
 		webgpuContext = context;
-		consoleMessages.info('WebGPUコンテキストの準備が完了しました');
+		consoleMessages.info(m.tutorial_detail_msg_ctx_ready());
 	}
 	
 	// WebGPUリソースのクリーンアップ
 	function cleanupWebGPUResources() {
-		console.log('[Tutorial] Cleaning up WebGPU resources');
-		
 		// 作成されたリソースの破棄
 		createdResources.forEach(resource => {
 			try {
@@ -179,32 +180,7 @@ fn fs_main() -> @location(0) vec4f {
 			});
 			
 			// カスタムコンソールの拡張
-			const customConsole = {
-				log: (...args: any[]) => consoleMessages.log(args.map(arg => {
-					if (arg instanceof Error) {
-						return `${arg.name}: ${arg.message}`;
-					}
-					return typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg);
-				}).join(' ')),
-				error: (...args: any[]) => consoleMessages.error(args.map(arg => {
-					if (arg instanceof Error) {
-						return `${arg.name}: ${arg.message}`;
-					}
-					return typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg);
-				}).join(' ')),
-				warn: (...args: any[]) => consoleMessages.warn(args.map(arg => {
-					if (arg instanceof Error) {
-						return `${arg.name}: ${arg.message}`;
-					}
-					return typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg);
-				}).join(' ')),
-				info: (...args: any[]) => consoleMessages.info(args.map(arg => {
-					if (arg instanceof Error) {
-						return `${arg.name}: ${arg.message}`;
-					}
-					return typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg);
-				}).join(' ')),
-			};
+			const customConsole = createConsoleBridge(consoleMessages);
 			
 			// シェーダーコンパイル用のヘルパー関数
 			const createShaderModule = async (code: string, type: 'vertex' | 'fragment') => {
@@ -321,8 +297,8 @@ fn fs_main() -> @location(0) vec4f {
 					if (prop === 'getContext') {
 						return (contextType: string) => {
 							if (contextType === 'webgpu') {
-								// 既に設定済みのコンテキストを返す
-								return webgpuContext.context;
+								// 既に設定済みのコンテキストを返す（runCode 冒頭で null チェック済み）
+								return webgpuContext!.context;
 							}
 							return target.getContext(contextType);
 						};
@@ -465,44 +441,10 @@ fn fs_main() -> @location(0) vec4f {
 			
 			
 			// コードの前処理 - 基本的なシンタックスチェック
-			try {
-				new Function(code);
-			} catch (syntaxError) {
-				const error = syntaxError as Error;
-				const match = error.message.match(/^(.+) \((\d+):(\d+)\)$/);
-				if (match) {
-					const [, message, line] = match;
-					throw new Error(`シンタックスエラー (行 ${line}): ${message}`);
-				}
-				throw new Error(`シンタックスエラー: ${error.message}`);
-			}
-			
-			const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
-			const executeCode = new AsyncFunction(
-				...Object.keys(executionEnv),
-				`
-				const executionContext = this;
-				try {
-					${code}
-				} catch (error) {
-					// エラースタックトレースの改善
-					if (error instanceof Error) {
-						console.error('[Tutorial Code Error]', error);
-						const stack = error.stack || '';
-						const lines = stack.split('\\n');
-						const relevantLines = lines.filter(line => 
-							!line.includes('AsyncFunction') && 
-							!line.includes('at eval')
-						);
-						error.stack = relevantLines.join('\\n');
-					}
-					throw error;
-				}
-				`
-			);
-			
-			// executionEnvをthisコンテキストとして渡す
-			await executeCode.call(executionEnv, ...Object.values(executionEnv));
+			checkSyntax(code);
+
+			// executionEnv をスコープ変数兼 this として渡して実行
+			await executeUserCode(code, executionEnv, { improveStack: true });
 			
 			// 最終的なGPUエラーチェック
 			await executionEnv.checkGPUError();
@@ -515,12 +457,9 @@ fn fs_main() -> @location(0) vec4f {
 					lastRunTime: new Date()
 				}));
 				
-				// デバッグ情報
-				console.log(`[Tutorial] Execution completed. Created resources: ${createdResources.length}`);
 			}
 		} catch (error) {
 			if (executionId === currentExecutionId) {
-				console.error('[Tutorial] Execution error:', error);
 				
 				let errorMessage = '不明なエラー';
 				let errorDetails = '';
@@ -591,7 +530,7 @@ fn fs_main() -> @location(0) vec4f {
 				};
 				loadCode(processedCode);
 				consoleMessages.clear();
-				consoleMessages.info('コードをリセットしました');
+				consoleMessages.info(m.tutorial_detail_msg_reset());
 				showSolution = false;
 			}
 		}
@@ -599,16 +538,8 @@ fn fs_main() -> @location(0) vec4f {
 	
 	// 解答の表示切り替え
 	function toggleSolution() {
-		console.log('[Tutorial] Toggle solution called');
-		console.log('[Tutorial] Current example:', example);
-		console.log('[Tutorial] Has initialCode:', !!example?.initialCode);
-		console.log('[Tutorial] Has code:', !!example?.code);
-		console.log('[Tutorial] Code content:', example?.code);
-		
 		if (example && example.initialCode) {
 			showSolution = !showSolution;
-			console.log('[Tutorial] showSolution:', showSolution);
-			console.log('[Tutorial] Loading code:', showSolution ? 'solution' : 'initial');
 			const codeToLoad = showSolution ? example.code : example.initialCode;
 			if (codeToLoad) {
 				// 空のシェーダーコードを最小限のテンプレートで置き換え
@@ -618,7 +549,7 @@ fn fs_main() -> @location(0) vec4f {
 					fragmentShader: codeToLoad.fragmentShader || minimalFragmentShader
 				};
 				loadCode(processedCode);
-				consoleMessages.info(showSolution ? '解答を表示しています' : '問題に戻りました');
+				consoleMessages.info(showSolution ? m.tutorial_detail_msg_showing_solution() : m.tutorial_detail_msg_back_to_problem());
 			}
 		}
 	}
@@ -627,7 +558,7 @@ fn fs_main() -> @location(0) vec4f {
 	function markAsCompleted() {
 		if (chapterId && exampleId) {
 			progress.markCompleted(chapterId, exampleId);
-			consoleMessages.info('この例題を完了としてマークしました！');
+			consoleMessages.info(m.tutorial_detail_msg_marked_complete());
 		}
 	}
 	
@@ -638,11 +569,11 @@ fn fs_main() -> @location(0) vec4f {
 			if (next) {
 				// スクロール位置をトップに戻す
 				window.scrollTo(0, 0);
-				goto(`/tutorial/${next.chapterId}/${next.exampleId}`);
+				goto(localizeHref(`/tutorial/${next.chapterId}/${next.exampleId}`));
 			} else {
 				// 最後の単元の場合は、チュートリアルトップに戻る
 				window.scrollTo(0, 0);
-				goto('/tutorial');
+				goto(localizeHref('/tutorial'));
 			}
 		}
 	}
@@ -686,17 +617,17 @@ fn fs_main() -> @location(0) vec4f {
 </script>
 
 <svelte:head>
-	<title>{example?.title || 'チュートリアル'} - WebGPU Learn</title>
+	<title>{m.tutorial_detail_title_template({ title: example?.title || m.tutorial_detail_title_fallback() })}</title>
 </svelte:head>
 
 {#if !chapter || !example}
 	<div class="flex items-center justify-center h-full">
 		<div class="text-center">
 			<h2 class="text-2xl font-bold text-gray-600 dark:text-gray-400">
-				チュートリアルが見つかりません
+				{m.tutorial_detail_not_found()}
 			</h2>
-			<a href="/tutorial" class="mt-4 inline-block text-gpu-blue hover:underline">
-				チュートリアル一覧に戻る
+			<a href={localizeHref('/tutorial')} class="mt-4 inline-block text-gpu-blue hover:underline">
+				{m.tutorial_detail_not_found_link()}
 			</a>
 		</div>
 	</div>
@@ -719,15 +650,15 @@ fn fs_main() -> @location(0) vec4f {
 					onclick={markAsCompleted}
 					class="btn-secondary text-sm"
 				>
-					完了にする
+					{m.tutorial_detail_mark_done_short()}
 				</button>
 				{#if nextExample && nextExampleInfo}
 					<button
 						onclick={navigateToNextExample}
 						class="btn-primary text-sm flex items-center gap-2"
-						title="次の単元: {nextExampleInfo.title}"
+						title={m.tutorial_detail_next_unit_title({ title: nextExampleInfo.title })}
 					>
-						次の単元へ
+						{m.tutorial_detail_next_unit()}
 						<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
 						</svg>
@@ -748,7 +679,7 @@ fn fs_main() -> @location(0) vec4f {
 							class:active={viewMode === 'learn'}
 							onclick={() => viewMode = 'learn'}
 						>
-							📚 学習
+							{m.tutorial_detail_view_learn()}
 						</button>
 					{/if}
 					<button
@@ -756,7 +687,7 @@ fn fs_main() -> @location(0) vec4f {
 						class:active={viewMode === 'code'}
 						onclick={() => viewMode = 'code'}
 					>
-						💻 コード
+						{m.tutorial_detail_view_code()}
 					</button>
 				</div>
 				
@@ -788,7 +719,7 @@ fn fs_main() -> @location(0) vec4f {
 										class:active={activeTab === 'vertex'}
 										onclick={() => activeTab = 'vertex'}
 									>
-										頂点シェーダー
+										{m.playground_tab_vertex()}
 									</button>
 								{/if}
 								{#if example.code?.fragmentShader}
@@ -797,7 +728,7 @@ fn fs_main() -> @location(0) vec4f {
 										class:active={activeTab === 'fragment'}
 										onclick={() => activeTab = 'fragment'}
 									>
-										フラグメントシェーダー
+										{m.playground_tab_fragment()}
 									</button>
 								{/if}
 							</div>
@@ -809,7 +740,7 @@ fn fs_main() -> @location(0) vec4f {
 										<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
 										</svg>
-										<span>解答を表示中</span>
+										<span>{m.tutorial_detail_solution_active()}</span>
 									</div>
 								{/if}
 								
@@ -817,12 +748,12 @@ fn fs_main() -> @location(0) vec4f {
 									<!-- 写経モード時の解答表示 -->
 									<div class="typing-solution">
 										<div class="typing-solution-header">
-											<span class="text-sm font-medium text-gray-700 dark:text-gray-100">解答コード（参照用）</span>
-											<button 
+											<span class="text-sm font-medium text-gray-700 dark:text-gray-100">{m.tutorial_detail_typing_solution_label()}</span>
+											<button
 												onclick={() => typingMode = false}
 												class="text-xs text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
 											>
-												写経モードを終了
+												{m.tutorial_detail_typing_exit()}
 											</button>
 										</div>
 										<div class="typing-solution-code">
@@ -862,40 +793,40 @@ fn fs_main() -> @location(0) vec4f {
 								>
 									{#if $executionState.isRunning}
 										<div class="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
-										実行中...
+										{m.tutorial_detail_running()}
 									{:else}
-										▶ 実行
+										{m.tutorial_detail_run_button()}
 									{/if}
 								</button>
-								
+
 								<button
 									onclick={resetCode}
 									class="btn-secondary"
 								>
-									リセット
+									{m.tutorial_detail_reset_button()}
 								</button>
-								
+
 								{#if example.code}
 									<button
 										onclick={() => typingMode = !typingMode}
 										class="btn-secondary flex items-center gap-2"
-										title="解答を見ながらコードを書く練習モード"
+										title={m.tutorial_detail_typing_title()}
 									>
 										{#if typingMode}
 											<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
 												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
 											</svg>
-											写経モード ON
+											{m.tutorial_detail_typing_on()}
 										{:else}
 											<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
 											</svg>
-											写経モード OFF
+											{m.tutorial_detail_typing_off()}
 										{/if}
 									</button>
 								{/if}
-								
+
 								{#if example.initialCode}
 									<button
 										onclick={toggleSolution}
@@ -905,12 +836,12 @@ fn fs_main() -> @location(0) vec4f {
 											<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
 											</svg>
-											問題に戻る
+											{m.tutorial_detail_solution_back()}
 										{:else}
 											<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l2 2 4-4M9 11l2 2 4-4m0 6l-8 8-4-4 1.5-1.5L5 14l6.5 6.5z" />
 											</svg>
-											解答を見る
+											{m.tutorial_detail_solution_show()}
 										{/if}
 									</button>
 								{/if}
@@ -920,7 +851,7 @@ fn fs_main() -> @location(0) vec4f {
 						<!-- チャレンジ -->
 						{#if example.challenges && viewMode === 'code'}
 							<div class="challenges-section">
-								<h3 class="text-lg font-semibold mb-4">🏆 チャレンジ</h3>
+								<h3 class="text-lg font-semibold mb-4">{m.tutorial_detail_challenges_title()}</h3>
 								<div class="space-y-3">
 									{#each example.challenges as challenge, i}
 										<div class="challenge-card">
@@ -928,7 +859,7 @@ fn fs_main() -> @location(0) vec4f {
 											<p class="text-sm text-gray-600 dark:text-gray-400">{challenge.description}</p>
 											{#if challenge.hint}
 												<details class="mt-2">
-													<summary class="cursor-pointer text-sm text-gpu-blue">💡 ヒント</summary>
+													<summary class="cursor-pointer text-sm text-gpu-blue">{m.tutorial_detail_challenges_hint()}</summary>
 													<p class="mt-1 text-sm pl-4">{challenge.hint}</p>
 												</details>
 											{/if}

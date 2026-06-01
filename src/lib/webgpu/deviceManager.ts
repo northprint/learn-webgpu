@@ -75,10 +75,11 @@ class WebGPUDeviceManager {
 		let context = this.canvasContexts.get(canvas);
 		
 		if (!context) {
-			context = canvas.getContext('webgpu');
-			if (!context) {
+			const newContext = canvas.getContext('webgpu');
+			if (!newContext) {
 				throw new Error('WebGPUコンテキストを取得できません');
 			}
+			context = newContext;
 			this.canvasContexts.set(canvas, context);
 		}
 		

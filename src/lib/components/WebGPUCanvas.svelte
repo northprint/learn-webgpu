@@ -17,6 +17,15 @@
 	let error = $state<string | null>(null);
 	let isInitializing = $state(true);
 	let showCanvas = $state(false);
+	let isDeviceLost = false;
+
+	// 新しいコンテキストのデバイスロストを監視する
+	function trackDeviceLost(ctx: WebGPUContext) {
+		isDeviceLost = false;
+		ctx.device.lost.then(() => {
+			isDeviceLost = true;
+		});
+	}
 	
 	// キャンバスをクリアする関数をエクスポート
 	export function clearCanvas() {
@@ -27,7 +36,7 @@
 			const { device, context: canvasContext, format } = context;
 			
 			// デバイスが失われていないかチェック
-			if (device.lost) {
+			if (isDeviceLost) {
 				console.warn('[WebGPUCanvas] Device is lost, skipping clear');
 				// デバイスが失われた場合はリセットを呼び出す（非同期）
 				resetContext().catch(e => console.error('[WebGPUCanvas] Failed to reset context:', e));
@@ -72,7 +81,8 @@
 			
 			// 新しいコンテキストを作成
 			context = await webgpuDeviceManager.createContext(canvasElement);
-			
+			trackDeviceLost(context);
+
 			// コールバックを実行
 			if (onContextReady) {
 				onContextReady(context);
@@ -134,7 +144,8 @@
 			
 			// deviceManagerを使用してコンテキストを作成
 			context = await webgpuDeviceManager.createContext(canvasElement);
-			
+			trackDeviceLost(context);
+
 			// 初期化完了
 			isInitializing = false;
 			

@@ -86,12 +86,6 @@ export function resetEditor() {
 
 // コードをエディタにロード
 export function loadCode(code: { javascript: string; vertexShader: string; fragmentShader: string }) {
-	console.log('[editor.ts] loadCode called with:', {
-		javascript: code.javascript?.substring(0, 50) + '...',
-		vertexShader: code.vertexShader?.substring(0, 50) + '...',
-		fragmentShader: code.fragmentShader?.substring(0, 50) + '...'
-	});
-	
 	// 完全に新しいオブジェクトを作成して強制的に更新
 	editorState.set({
 		javascript: code.javascript || '',

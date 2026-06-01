@@ -3,10 +3,35 @@ import type { PlaygroundSample } from './index';
 export const cube3d: PlaygroundSample = {
 	id: 'cube3d',
 	name: '3D回転キューブ',
+	vertexShader: `struct Uniforms {
+  mvpMatrix: mat4x4f,
+};
+
+@group(0) @binding(0) var<uniform> uniforms: Uniforms;
+
+struct VertexOutput {
+  @builtin(position) position: vec4f,
+  @location(0) color: vec3f,
+};
+
+@vertex
+fn vs_main(
+  @location(0) position: vec3f,
+  @location(1) color: vec3f
+) -> VertexOutput {
+  var output: VertexOutput;
+  output.position = uniforms.mvpMatrix * vec4f(position, 1.0);
+  output.color = color;
+  return output;
+}`,
+	fragmentShader: `@fragment
+fn fs_main(input: VertexOutput) -> @location(0) vec4f {
+  return vec4f(input.color, 1.0);
+}`,
 	javascript: `// 3D回転キューブ
 async function main() {
   const canvas = document.querySelector('canvas');
-  
+
   // すでに初期化されたWebGPUコンテキストを使用
   let device, context, canvasFormat;
   if (window.webgpuDevice && window.webgpuContext && window.webgpuFormat) {
@@ -20,7 +45,7 @@ async function main() {
     canvasFormat = navigator.gpu.getPreferredCanvasFormat();
     context.configure({ device, format: canvasFormat });
   }
-  
+
   // キューブの頂点データ
   const vertices = new Float32Array([
     // 前面
@@ -54,7 +79,7 @@ async function main() {
     -0.5,  0.5, -0.5,  0.0, 1.0, 1.0,
     -0.5,  0.5,  0.5,  0.0, 1.0, 1.0,
   ]);
-  
+
   const indices = new Uint16Array([
     0,  1,  2,  0,  2,  3,  // 前面
     4,  6,  5,  4,  7,  6,  // 背面
@@ -63,7 +88,7 @@ async function main() {
     16, 17, 18, 16, 18, 19, // 右面
     20, 22, 21, 20, 23, 22, // 左面
   ]);
-  
+
   const vertexBuffer = device.createBuffer({
     size: vertices.byteLength,
     usage: GPUBufferUsage.VERTEX,
@@ -71,7 +96,7 @@ async function main() {
   });
   new Float32Array(vertexBuffer.getMappedRange()).set(vertices);
   vertexBuffer.unmap();
-  
+
   const indexBuffer = device.createBuffer({
     size: indices.byteLength,
     usage: GPUBufferUsage.INDEX,
@@ -79,43 +104,16 @@ async function main() {
   });
   new Uint16Array(indexBuffer.getMappedRange()).set(indices);
   indexBuffer.unmap();
-  
+
   const uniformBuffer = device.createBuffer({
     size: 64, // 4x4 matrix
     usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
   });
-  
+
   const shaderModule = device.createShaderModule({
-    code: \`
-      struct Uniforms {
-        mvpMatrix: mat4x4f,
-      };
-      
-      @group(0) @binding(0) var<uniform> uniforms: Uniforms;
-      
-      struct VertexOutput {
-        @builtin(position) position: vec4f,
-        @location(0) color: vec3f,
-      };
-      
-      @vertex
-      fn vs_main(
-        @location(0) position: vec3f,
-        @location(1) color: vec3f
-      ) -> VertexOutput {
-        var output: VertexOutput;
-        output.position = uniforms.mvpMatrix * vec4f(position, 1.0);
-        output.color = color;
-        return output;
-      }
-      
-      @fragment
-      fn fs_main(input: VertexOutput) -> @location(0) vec4f {
-        return vec4f(input.color, 1.0);
-      }
-    \`
+    code: window.vertexShaderCode + '\\n' + window.fragmentShaderCode
   });
-  
+
   const bindGroupLayout = device.createBindGroupLayout({
     entries: [{
       binding: 0,
@@ -123,7 +121,7 @@ async function main() {
       buffer: { type: 'uniform' }
     }]
   });
-  
+
   const bindGroup = device.createBindGroup({
     layout: bindGroupLayout,
     entries: [{
@@ -131,11 +129,11 @@ async function main() {
       resource: { buffer: uniformBuffer }
     }]
   });
-  
+
   const pipelineLayout = device.createPipelineLayout({
     bindGroupLayouts: [bindGroupLayout]
   });
-  
+
   const pipeline = device.createRenderPipeline({
     layout: pipelineLayout,
     vertex: {
@@ -164,20 +162,20 @@ async function main() {
       format: 'depth24plus'
     }
   });
-  
+
   // 深度バッファの作成
   const depthTexture = device.createTexture({
     size: [canvas.width, canvas.height],
     format: 'depth24plus',
     usage: GPUTextureUsage.RENDER_ATTACHMENT
   });
-  
+
   let rotation = 0;
-  
+
   function render() {
     rotation += 0.01;
-    
-    // MVP行列の計算（簡易版）
+
+    // MVP行列の計算
     const aspect = canvas.width / canvas.height;
     const projection = mat4Perspective(Math.PI / 4, aspect, 0.1, 100);
     const view = mat4LookAt([0, 0, 3], [0, 0, 0], [0, 1, 0]);
@@ -186,9 +184,9 @@ async function main() {
       mat4RotateX(rotation * 0.7)
     );
     const mvpMatrix = mat4Multiply(projection, mat4Multiply(view, model));
-    
+
     device.queue.writeBuffer(uniformBuffer, 0, mvpMatrix);
-    
+
     const encoder = device.createCommandEncoder();
     const pass = encoder.beginRenderPass({
       colorAttachments: [{
@@ -204,18 +202,18 @@ async function main() {
         depthStoreOp: 'store'
       }
     });
-    
+
     pass.setPipeline(pipeline);
     pass.setBindGroup(0, bindGroup);
     pass.setVertexBuffer(0, vertexBuffer);
     pass.setIndexBuffer(indexBuffer, 'uint16');
     pass.drawIndexed(36);
     pass.end();
-    
+
     device.queue.submit([encoder.finish()]);
     requestAnimationFrame(render);
   }
-  
+
   render();
   console.log('3Dキューブを描画しました！');
 }
