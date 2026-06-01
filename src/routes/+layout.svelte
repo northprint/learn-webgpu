@@ -22,14 +22,29 @@
 		window.matchMedia('(prefers-color-scheme: dark)').matches) : true);
 	
 	onMount(() => {
+		const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
 		// クライアントサイドでの初期設定
 		const stored = localStorage.getItem('darkMode');
 		if (stored !== null) {
 			darkMode = stored === 'true';
 		} else {
-			darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			darkMode = mediaQuery.matches;
 		}
 		updateTheme();
+
+		// OSのカラースキーム変更にライブ追従（手動設定が保存されていない場合のみ）
+		const handleSchemeChange = (e: MediaQueryListEvent) => {
+			if (localStorage.getItem('darkMode') === null) {
+				darkMode = e.matches;
+				updateTheme();
+			}
+		};
+		mediaQuery.addEventListener('change', handleSchemeChange);
+
+		return () => {
+			mediaQuery.removeEventListener('change', handleSchemeChange);
+		};
 	});
 	
 	function toggleDarkMode() {
