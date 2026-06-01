@@ -25,20 +25,12 @@
 	
 	.tutorial-sidebar {
 		@apply w-64 border-r border-[var(--color-border)] overflow-y-auto flex flex-col;
-		background-color: rgb(249 250 251);
+		background-color: var(--color-surface);
 	}
-	
-	:global(.dark) .tutorial-sidebar {
-		background-color: rgb(17 24 39 / 0.5);
-	}
-	
+
 	.tutorial-content {
 		@apply flex-1 overflow-auto;
-		background-color: rgb(255 255 255);
-	}
-	
-	:global(.dark) .tutorial-content {
-		background-color: rgb(17 24 39);
+		background-color: var(--color-bg);
 	}
 	
 	/* レスポンシブ対応 */

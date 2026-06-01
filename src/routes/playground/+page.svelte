@@ -242,7 +242,10 @@ fn fs_main() -> @location(0) vec4f {
 <div class="playground-layout">
 	<!-- ヘッダー -->
 	<div class="playground-header">
-		<h1 class="text-2xl font-bold">{m.playground_title()}</h1>
+		<div>
+			<p class="text-xs font-medium uppercase tracking-wider text-[var(--color-accent)] mb-0.5">Playground</p>
+			<h1 class="text-2xl font-bold">{m.playground_title()}</h1>
+		</div>
 		<div class="flex items-center gap-4">
 			<select onchange={(e) => loadSample(e.currentTarget.value)} class="sample-select" aria-label={m.playground_samples_label()}>
 				<option value="">{m.playground_select_sample()}</option>
@@ -358,53 +361,64 @@ fn fs_main() -> @location(0) vec4f {
 	}
 	
 	.sample-select {
-		@apply px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg;
-		background-color: rgb(255 255 255);
+		@apply px-4 py-2 rounded-lg text-sm transition-colors;
+		border: 1px solid var(--color-border-strong);
+		background-color: var(--color-surface);
+		color: var(--color-text);
 	}
-	
-	:global(.dark) .sample-select {
-		background-color: rgb(31 41 55);
+
+	.sample-select:hover {
+		border-color: var(--color-accent);
 	}
-	
+
 	.playground-main {
 		@apply flex-1 flex overflow-hidden;
 	}
-	
+
 	.playground-editor {
 		@apply flex-1 flex flex-col;
 	}
-	
+
 	.editor-tabs {
 		@apply flex border-b border-[var(--color-border)] px-4;
+		background-color: var(--color-surface);
 	}
-	
+
 	.editor-tab {
-		@apply px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 border-b-2 border-transparent hover:text-gray-900 dark:hover:text-gray-100 transition-colors;
+		@apply px-4 py-2 text-sm font-medium border-b-2 border-transparent transition-colors;
+		color: var(--color-muted);
 	}
-	
+
+	.editor-tab:hover {
+		color: var(--color-text);
+	}
+
 	.editor-tab.active {
-		@apply text-gpu-blue border-gpu-blue;
+		color: var(--color-accent);
+		border-color: var(--color-accent);
 	}
-	
+
 	.editor-container {
 		@apply flex-1 overflow-hidden;
 	}
-	
+
 	.editor-controls {
 		@apply px-4 py-3 border-t border-[var(--color-border)] flex gap-3;
+		background-color: var(--color-surface);
 	}
-	
+
 	.playground-preview {
 		@apply w-[640px] flex flex-col border-l border-[var(--color-border)];
 	}
-	
+
 	.preview-canvas {
 		@apply flex-1 p-4 flex items-center justify-center;
-		background-color: rgb(249 250 251);
-	}
-	
-	:global(.dark) .preview-canvas {
-		background-color: rgb(17 24 39 / 0.5);
+		background-color: var(--color-surface);
+		background-image: radial-gradient(
+			color-mix(in srgb, var(--color-muted) 16%, transparent) 1px,
+			transparent 1px
+		);
+		background-size: 20px 20px;
 	}
 	
 	.preview-console {

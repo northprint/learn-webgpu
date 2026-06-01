@@ -13,14 +13,17 @@
 </svelte:head>
 
 <div class="tutorial-list-container">
-	<h1 class="text-3xl font-bold mb-6">{m.tutorial_list_title()}</h1>
+	<div class="mb-8">
+		<p class="text-xs font-medium uppercase tracking-wider text-[var(--color-accent)] mb-2">Tutorial</p>
+		<h1 class="text-3xl font-bold">{m.tutorial_list_title()}</h1>
+	</div>
 
 	<!-- 進捗表示 -->
-	<div class="mb-8 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-		<div class="flex items-center justify-between mb-2">
+	<div class="mb-10 p-5 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-card">
+		<div class="flex items-center justify-between mb-3">
 			<span class="text-sm font-medium">{m.tutorial_list_progress_label()}</span>
 			<div class="flex items-center gap-4">
-				<span class="text-sm text-gray-800 dark:text-gray-400">
+				<span class="text-sm text-[var(--color-muted)] tabular-nums">
 					{m.tutorial_list_progress_summary({
 						completed: String($completionRate.completed),
 						total: String($completionRate.total)
@@ -32,16 +35,16 @@
 							progress.reset();
 						}
 					}}
-					class="text-xs text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 transition-colors"
+					class="text-xs text-[var(--color-muted)] hover:text-red-500 transition-colors"
 					title={m.tutorial_list_progress_reset_title()}
 				>
 					{m.tutorial_list_progress_reset()}
 				</button>
 			</div>
 		</div>
-		<div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-			<div 
-				class="bg-gpu-blue h-2 rounded-full transition-all duration-300"
+		<div class="w-full bg-[var(--color-elevated)] border border-[var(--color-border)] rounded-full h-2 overflow-hidden">
+			<div
+				class="h-full rounded-full bg-gradient-to-r from-[var(--color-accent)] to-[#22D3EE] transition-all duration-500"
 				style="width: {$completionRate.percentage}%"
 			></div>
 		</div>
@@ -52,43 +55,43 @@
 		{#each tutorialChapters as chapter, chapterIndex}
 			<div class="card">
 				<div class="flex items-start gap-4">
-					<div class="flex-shrink-0 w-12 h-12 bg-gpu-blue/10 rounded-lg flex items-center justify-center">
-						<span class="text-lg font-bold text-gpu-blue">{chapterIndex + 1}</span>
+					<div class="flex-shrink-0 w-11 h-11 bg-[var(--color-accent)]/10 ring-1 ring-[var(--color-accent)]/20 rounded-lg flex items-center justify-center">
+						<span class="text-base font-bold text-[var(--color-accent)] tabular-nums">{chapterIndex + 1}</span>
 					</div>
-					
-					<div class="flex-1">
-						<h2 class="text-xl font-semibold mb-2">{chapter.title}</h2>
-						<p class="text-gray-800 dark:text-gray-300 mb-4">{chapter.description}</p>
-						
+
+					<div class="flex-1 min-w-0">
+						<h2 class="text-lg font-semibold mb-1">{chapter.title}</h2>
+						<p class="text-sm text-[var(--color-muted)] mb-4">{chapter.description}</p>
+
 						<div class="space-y-2">
 							{#each chapter.examples as example}
 								{@const isCompleted = isExampleCompleted(chapter.id, example.id, $progress)}
 								<a
 									href={localizeHref(`/tutorial/${chapter.id}/${example.id}`)}
-									class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-gpu-blue transition-colors group"
+									class="flex items-center gap-3 p-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] hover:border-[var(--color-accent)] hover:bg-[var(--color-elevated)] transition-colors group"
 								>
 									<div class="flex-shrink-0">
 										{#if isCompleted}
-											<div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+											<div class="w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center">
 												<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 													<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
 												</svg>
 											</div>
 										{:else}
-											<div class="w-6 h-6 border-2 border-gray-300 dark:border-gray-600 rounded-full group-hover:border-gpu-blue transition-colors"></div>
+											<div class="w-6 h-6 border-2 border-[var(--color-border-strong)] rounded-full group-hover:border-[var(--color-accent)] transition-colors"></div>
 										{/if}
 									</div>
-									
-									<div class="flex-1">
-										<h3 class="font-medium group-hover:text-gpu-blue transition-colors">
+
+									<div class="flex-1 min-w-0">
+										<h3 class="font-medium group-hover:text-[var(--color-accent)] transition-colors">
 											{example.title}
 										</h3>
-										<p class="text-sm text-gray-800 dark:text-gray-400">
+										<p class="text-sm text-[var(--color-muted)]">
 											{example.description}
 										</p>
 									</div>
-									
-									<svg class="w-5 h-5 text-gray-400 group-hover:text-gpu-blue transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+									<svg class="w-5 h-5 text-[var(--color-muted)] group-hover:text-[var(--color-accent)] group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
 									</svg>
 								</a>
@@ -102,11 +105,11 @@
 	
 	<!-- 最後に訪問したページへのリンク -->
 	{#if $progress.lastVisited && $progress.lastVisited !== '/tutorial'}
-		<div class="mt-8 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
-			<p class="text-sm text-gray-800 dark:text-gray-400 mb-2">{m.tutorial_list_last_visited_label()}</p>
+		<div class="mt-8 p-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]">
+			<p class="text-sm text-[var(--color-muted)] mb-2">{m.tutorial_list_last_visited_label()}</p>
 			<a
 				href={localizeHref($progress.lastVisited)}
-				class="inline-flex items-center gap-2 text-gpu-blue hover:underline"
+				class="inline-flex items-center gap-2 text-[var(--color-accent)] hover:underline"
 			>
 				{m.tutorial_list_last_visited_link()}
 				<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

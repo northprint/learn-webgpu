@@ -156,16 +156,16 @@
 	</div>
 	
 	<!-- 進捗表示 -->
-	<div class="mt-6 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
+	<div class="mt-6 p-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)]">
 		<div class="flex items-center justify-between mb-2">
 			<span class="text-sm font-medium">{m.tutorial_steps_progress_label()}</span>
-			<span class="text-sm text-gray-800 dark:text-gray-400">
+			<span class="text-sm text-[var(--color-muted)] tabular-nums">
 				{m.tutorial_steps_progress_summary({ completed: String(completedSteps.size), total: String(steps.length) })}
 			</span>
 		</div>
-		<div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-			<div 
-				class="bg-gpu-blue h-2 rounded-full transition-all duration-300"
+		<div class="w-full bg-[var(--color-elevated)] border border-[var(--color-border)] rounded-full h-2 overflow-hidden">
+			<div
+				class="h-full rounded-full bg-gradient-to-r from-[var(--color-accent)] to-[#22D3EE] transition-all duration-500"
 				style="width: {(completedSteps.size / steps.length) * 100}%"
 			></div>
 		</div>
@@ -202,81 +202,70 @@
 
 <style>
 	.tutorial-steps {
-		@apply rounded-lg p-6 shadow-sm border border-[var(--color-border)];
-		background-color: rgb(255 255 255);
+		@apply rounded-xl p-6 shadow-card border border-[var(--color-border)];
+		background-color: var(--color-surface);
 	}
-	
-	:global(.dark) .tutorial-steps {
-		background-color: rgb(17 24 39);
-	}
-	
+
 	.step-item {
-		@apply border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden transition-all;
+		@apply rounded-lg overflow-hidden transition-all;
+		border: 1px solid var(--color-border);
 	}
-	
+
 	.step-item.active {
-		@apply border-gpu-blue;
+		border-color: var(--color-accent);
 	}
-	
+
 	.step-header {
-		@apply w-full p-4 hover:bg-gray-50 transition-colors;
+		@apply w-full p-4 transition-colors;
 	}
-	
-	:global(.dark) .step-header:hover {
-		@apply bg-gray-800;
+
+	.step-header:hover {
+		background-color: var(--color-elevated);
 	}
-	
+
 	.step-header.completed {
-		background-color: rgb(240 253 244);
+		background-color: color-mix(in srgb, #10b981 10%, transparent);
 	}
-	
-	:global(.dark) .step-header.completed {
-		background-color: rgb(20 83 45 / 0.2);
-	}
-	
+
 	.step-indicator {
 		@apply w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0;
-		@apply bg-gray-200 dark:bg-gray-700;
-		@apply text-gray-700 dark:text-gray-200;
+		background-color: var(--color-elevated);
+		color: var(--color-muted);
+		border: 1px solid var(--color-border);
 	}
-	
+
 	.step-header.completed .step-indicator {
-		@apply bg-green-500;
+		@apply bg-emerald-500 border-emerald-500;
+		color: #fff;
 	}
-	
+
 	.step-content {
 		@apply p-4 pt-0;
 	}
-	
+
 	.task-box {
 		@apply p-4 rounded-lg mb-4;
-		background-color: rgb(239 246 255);
+		background-color: color-mix(in srgb, var(--color-accent) 10%, transparent);
+		border: 1px solid color-mix(in srgb, var(--color-accent) 22%, transparent);
 	}
-	
-	:global(.dark) .task-box {
-		background-color: rgb(30 58 138 / 0.2);
-	}
-	
+
 	.hint-box {
 		@apply p-4 rounded-lg mb-4;
-		background-color: rgb(254 252 232);
+		background-color: color-mix(in srgb, #f59e0b 12%, transparent);
+		border: 1px solid color-mix(in srgb, #f59e0b 22%, transparent);
 	}
-	
-	:global(.dark) .hint-box {
-		background-color: rgb(120 53 15 / 0.2);
-	}
-	
+
 	.btn-sm {
 		@apply px-3 py-1.5 text-sm;
 	}
-	
+
 	/* Proseスタイルのカスタマイズ */
 	:global(.prose :not(pre) > code) {
-		@apply bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 px-1 py-0.5 rounded;
+		@apply bg-[var(--color-code-bg)] text-[var(--color-text)] px-1 py-0.5 rounded;
 	}
 
 	:global(.prose pre) {
-		@apply bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200;
+		@apply bg-[var(--color-code-bg)] text-[var(--color-text)];
 	}
 
 	:global(.prose pre code) {

@@ -15,7 +15,21 @@
 		}))
 	);
 	const ogLocale = $derived(locales[currentLocale].intlLocale.replace('-', '_'));
-	
+
+	const navItems = [
+		{ href: '/tutorial', label: m.nav_tutorial },
+		{ href: '/playground', label: m.nav_playground },
+		{ href: '/reference', label: m.nav_reference }
+	];
+
+	// localizeHref を考慮しつつ、現在パスがその区画かを判定
+	function isActive(href: string): boolean {
+		const path = $page.url.pathname;
+		// 先頭のロケールプレフィックス(/en など)を除去して比較
+		const stripped = path.replace(/^\/[a-z]{2}(?=\/|$)/, '');
+		return stripped === href || stripped.startsWith(href + '/');
+	}
+
 	// SSRセーフな初期値設定
 	let darkMode = $state(typeof window !== 'undefined' ? 
 		(localStorage.getItem('darkMode') === 'true' || 
@@ -81,24 +95,28 @@
 </svelte:head>
 
 <div class="min-h-screen flex flex-col">
-	<header class="border-b border-[var(--color-border)] sticky top-0 bg-[var(--color-bg)] z-50">
+	<header class="border-b border-[var(--color-border)] sticky top-0 bg-[var(--color-bg)]/80 backdrop-blur-md supports-[backdrop-filter]:bg-[var(--color-bg)]/70 z-50">
 		<div class="container mx-auto px-4 py-4 flex items-center justify-between">
 			<a href={localizeHref('/')} class="flex items-center gap-2">
-				<span class="text-2xl font-bold bg-gradient-to-r from-gpu-blue via-gpu-purple to-gpu-pink bg-clip-text text-transparent">
+				<span class="text-xl font-bold tracking-tight brand-gradient">
 					Learn WebGPU
 				</span>
 			</a>
 
-			<nav class="flex items-center gap-6">
-				<a href={localizeHref('/tutorial')} class="hover:text-gpu-blue transition-colors">
-					{m.nav_tutorial()}
-				</a>
-				<a href={localizeHref('/playground')} class="hover:text-gpu-blue transition-colors">
-					{m.nav_playground()}
-				</a>
-				<a href={localizeHref('/reference')} class="hover:text-gpu-blue transition-colors">
-					{m.nav_reference()}
-				</a>
+			<nav class="flex items-center gap-1 sm:gap-2">
+				{#each navItems as item (item.href)}
+					<a
+						href={localizeHref(item.href)}
+						aria-current={isActive(item.href) ? 'page' : undefined}
+						class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors
+							{isActive(item.href)
+								? 'text-[var(--color-accent)] bg-[var(--color-accent)]/10'
+								: 'text-[var(--color-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-elevated)]'}"
+					>
+						{item.label()}
+					</a>
+				{/each}
+				<span class="w-px h-5 bg-[var(--color-border)] mx-1 sm:mx-2"></span>
 
 				<div class="flex items-center gap-2">
 					<LanguageSwitcher />
@@ -106,7 +124,7 @@
 						href="https://github.com/northprint/learn-webgpu"
 						target="_blank"
 						rel="noopener noreferrer"
-						class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+						class="p-2 rounded-lg text-[var(--color-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-elevated)] transition-colors"
 						aria-label={m.nav_github()}
 					>
 						<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -114,7 +132,7 @@
 						</svg>
 					</a>
 					
-					<a href={localizeHref('/settings')} class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" aria-label={m.nav_settings()}>
+					<a href={localizeHref('/settings')} class="p-2 rounded-lg text-[var(--color-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-elevated)] transition-colors" aria-label={m.nav_settings()}>
 						<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -123,7 +141,7 @@
 					
 					<button
 						onclick={toggleDarkMode}
-						class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+						class="p-2 rounded-lg text-[var(--color-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-elevated)] transition-colors"
 						aria-label={m.nav_dark_mode_toggle()}
 					>
 					{#if darkMode}
@@ -146,10 +164,10 @@
 	</main>
 	
 	<footer class="border-t border-[var(--color-border)] py-8 mt-16">
-		<div class="container mx-auto px-4 text-center text-sm text-gray-900 dark:text-gray-400 font-medium">
+		<div class="container mx-auto px-4 text-center text-sm text-[var(--color-muted)]">
 			<p>{m.footer_tagline()}</p>
 			<p class="mt-2">
-				<a href="https://github.com/northprint/learn-webgpu" target="_blank" rel="noopener noreferrer" class="hover:text-gpu-blue transition-colors">
+				<a href="https://github.com/northprint/learn-webgpu" target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-accent)] transition-colors">
 					GitHub
 				</a>
 			</p>

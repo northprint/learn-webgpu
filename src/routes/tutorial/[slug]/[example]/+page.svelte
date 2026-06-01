@@ -623,10 +623,10 @@ fn fs_main() -> @location(0) vec4f {
 {#if !chapter || !example}
 	<div class="flex items-center justify-center h-full">
 		<div class="text-center">
-			<h2 class="text-2xl font-bold text-gray-600 dark:text-gray-400">
+			<h2 class="text-2xl font-bold text-[var(--color-muted)]">
 				{m.tutorial_detail_not_found()}
 			</h2>
-			<a href={localizeHref('/tutorial')} class="mt-4 inline-block text-gpu-blue hover:underline">
+			<a href={localizeHref('/tutorial')} class="mt-4 inline-block text-[var(--color-accent)] hover:underline">
 				{m.tutorial_detail_not_found_link()}
 			</a>
 		</div>
@@ -636,11 +636,11 @@ fn fs_main() -> @location(0) vec4f {
 		<!-- ヘッダー -->
 		<div class="tutorial-header">
 			<div>
-				<div class="text-sm text-gray-600 dark:text-gray-400 mb-1">
+				<div class="text-xs font-medium uppercase tracking-wider text-[var(--color-accent)] mb-1.5">
 					{chapter.title}
 				</div>
 				<h1 class="text-2xl font-bold">{example.title}</h1>
-				<p class="text-gray-600 dark:text-gray-400 mt-2">
+				<p class="text-sm text-[var(--color-muted)] mt-2">
 					{example.description}
 				</p>
 			</div>
@@ -856,10 +856,10 @@ fn fs_main() -> @location(0) vec4f {
 									{#each example.challenges as challenge, i}
 										<div class="challenge-card">
 											<h4 class="font-medium mb-1">{i + 1}. {challenge.title}</h4>
-											<p class="text-sm text-gray-600 dark:text-gray-400">{challenge.description}</p>
+											<p class="text-sm text-[var(--color-muted)]">{challenge.description}</p>
 											{#if challenge.hint}
 												<details class="mt-2">
-													<summary class="cursor-pointer text-sm text-gpu-blue">{m.tutorial_detail_challenges_hint()}</summary>
+													<summary class="cursor-pointer text-sm text-[var(--color-accent)]">{m.tutorial_detail_challenges_hint()}</summary>
 													<p class="mt-1 text-sm pl-4">{challenge.hint}</p>
 												</details>
 											{/if}
@@ -917,19 +917,21 @@ fn fs_main() -> @location(0) vec4f {
 	.view-mode-tabs {
 		@apply flex border-b border-[var(--color-border)] px-4;
 		flex-shrink: 0;
-		background-color: rgb(249 250 251);
+		background-color: var(--color-surface);
 	}
-	
-	:global(.dark) .view-mode-tabs {
-		background-color: rgb(17 24 39 / 0.5);
-	}
-	
+
 	.view-mode-tab {
-		@apply px-4 py-3 text-sm font-medium text-gray-600 dark:text-gray-400 border-b-2 border-transparent hover:text-gray-900 dark:hover:text-gray-100 transition-colors;
+		@apply px-4 py-3 text-sm font-medium border-b-2 border-transparent transition-colors;
+		color: var(--color-muted);
 	}
-	
+
+	.view-mode-tab:hover {
+		color: var(--color-text);
+	}
+
 	.view-mode-tab.active {
-		@apply text-gpu-blue border-gpu-blue;
+		color: var(--color-accent);
+		border-color: var(--color-accent);
 	}
 	
 	.content-area {
@@ -946,11 +948,17 @@ fn fs_main() -> @location(0) vec4f {
 	}
 	
 	.editor-tab {
-		@apply px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 border-b-2 border-transparent hover:text-gray-900 dark:hover:text-gray-100 transition-colors;
+		@apply px-4 py-2 text-sm font-medium border-b-2 border-transparent transition-colors;
+		color: var(--color-muted);
 	}
-	
+
+	.editor-tab:hover {
+		color: var(--color-text);
+	}
+
 	.editor-tab.active {
-		@apply text-gpu-blue border-gpu-blue;
+		color: var(--color-accent);
+		border-color: var(--color-accent);
 	}
 	
 	.editor-container {
@@ -967,23 +975,15 @@ fn fs_main() -> @location(0) vec4f {
 		max-height: 40%;
 		overflow-y: auto;
 		flex-shrink: 0;
-		background-color: rgb(249 250 251);
+		background-color: var(--color-surface);
 	}
-	
-	:global(.dark) .typing-solution {
-		background-color: rgb(31 41 55 / 0.7);
-	}
-	
+
 	.typing-solution-header {
 		@apply px-4 py-2 border-b border-[var(--color-border)] flex items-center justify-between;
 		position: sticky;
 		top: 0;
 		z-index: 10;
-		background-color: rgb(243 244 246);
-	}
-	
-	:global(.dark) .typing-solution-header {
-		background-color: rgb(31 41 55);
+		background-color: var(--color-elevated);
 	}
 	
 	.typing-solution-code {
@@ -1006,7 +1006,7 @@ fn fs_main() -> @location(0) vec4f {
 	}
 	
 	.solution-banner {
-		@apply absolute top-2 right-2 z-10 px-3 py-1 bg-green-500 text-white text-sm rounded-lg flex items-center gap-2 shadow-lg;
+		@apply absolute top-2 right-2 z-10 px-3 py-1 bg-emerald-500 text-white text-sm rounded-lg flex items-center gap-2 shadow-lg;
 	}
 	
 	.editor-controls {
@@ -1015,28 +1015,20 @@ fn fs_main() -> @location(0) vec4f {
 	}
 	
 	.btn-solution-active {
-		@apply bg-green-500 text-white hover:bg-green-600;
-		@apply border-green-500;
+		@apply bg-emerald-500 text-white hover:bg-emerald-600;
+		@apply border-emerald-500;
 	}
-	
+
 	.challenges-section {
 		@apply p-4 border-t border-[var(--color-border)];
 		max-height: 200px;
 		overflow-y: auto;
-		background-color: rgb(249 250 251);
+		background-color: var(--color-surface);
 	}
-	
-	:global(.dark) .challenges-section {
-		background-color: rgb(17 24 39 / 0.5);
-	}
-	
+
 	.challenge-card {
-		@apply p-3 rounded-lg border border-gray-200 dark:border-gray-700;
-		background-color: rgb(255 255 255);
-	}
-	
-	:global(.dark) .challenge-card {
-		background-color: rgb(31 41 55);
+		@apply p-3 rounded-lg border border-[var(--color-border)];
+		background-color: var(--color-elevated);
 	}
 	
 	.tutorial-right {
@@ -1050,11 +1042,12 @@ fn fs_main() -> @location(0) vec4f {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background-color: rgb(249 250 251);
-	}
-	
-	:global(.dark) .preview-canvas {
-		background-color: rgb(17 24 39 / 0.5);
+		background-color: var(--color-surface);
+		background-image: radial-gradient(
+			color-mix(in srgb, var(--color-muted) 16%, transparent) 1px,
+			transparent 1px
+		);
+		background-size: 20px 20px;
 	}
 	
 	.preview-console {

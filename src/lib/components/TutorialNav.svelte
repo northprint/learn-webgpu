@@ -86,39 +86,37 @@
 	}
 	
 	.chapter-header {
-		@apply w-full px-4 py-2 flex items-center gap-2 hover:bg-gray-100 transition-colors text-sm;
+		@apply w-full px-4 py-2 flex items-center gap-2 transition-colors text-sm rounded-md;
+		color: var(--color-text);
 	}
-	
-	:global(.dark) .chapter-header:hover {
-		@apply bg-gray-800;
+
+	.chapter-header:hover {
+		background-color: var(--color-elevated);
 	}
-	
+
 	.chapter-header.active {
-		@apply text-gpu-blue font-medium;
+		@apply font-medium;
+		color: var(--color-accent);
 	}
-	
+
 	.example-list {
-		@apply ml-4 border-l border-gray-200;
+		@apply ml-4;
+		border-left: 1px solid var(--color-border);
 	}
-	
-	:global(.dark) .example-list {
-		@apply border-gray-700;
-	}
-	
+
 	.example-link {
-		@apply block px-4 py-2 ml-2 text-sm text-gray-800 hover:text-gpu-blue transition-colors;
+		@apply block px-4 py-2 ml-2 text-sm transition-colors;
+		color: var(--color-muted);
 	}
-	
-	:global(.dark) .example-link {
-		@apply text-gray-400;
+
+	.example-link:hover {
+		color: var(--color-accent);
 	}
-	
+
 	.example-link.active {
-		@apply text-gpu-blue font-medium border-l-2 border-gpu-blue -ml-px;
-		background-color: rgb(239 246 255);
-	}
-	
-	:global(.dark) .example-link.active {
-		background-color: rgb(30 58 138 / 0.2);
+		@apply font-medium -ml-px;
+		color: var(--color-accent);
+		border-left: 2px solid var(--color-accent);
+		background-color: color-mix(in srgb, var(--color-accent) 10%, transparent);
 	}
 </style>

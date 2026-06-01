@@ -92,35 +92,49 @@
 
 <style>
 	.console-output {
-		@apply border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden bg-[var(--color-code-bg)];
+		@apply rounded-lg overflow-hidden bg-[var(--color-code-bg)];
+		border: 1px solid var(--color-border);
 		display: flex;
 		flex-direction: column;
 	}
-	
+
 	.console-header {
-		@apply px-4 py-2 border-b border-gray-300 dark:border-gray-700 flex items-center justify-between;
-		background: var(--color-bg);
+		@apply px-4 py-2 flex items-center justify-between;
+		border-bottom: 1px solid var(--color-border);
+		background: var(--color-surface);
 	}
-	
+
 	.clear-button {
-		@apply p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors;
+		@apply p-1 rounded transition-colors;
+		color: var(--color-muted);
 	}
-	
+
+	.clear-button:hover {
+		background-color: var(--color-elevated);
+		color: var(--color-text);
+	}
+
 	.console-content {
 		@apply flex-1 overflow-y-auto p-2 font-mono text-sm;
 	}
-	
+
 	.empty-message {
-		@apply text-center py-8 text-gray-500 dark:text-gray-500;
+		@apply text-center py-8;
+		color: var(--color-muted);
 	}
-	
+
 	.console-message {
-		@apply py-1 px-2 hover:bg-gray-100 dark:hover:bg-gray-800/50 rounded flex items-start gap-2;
+		@apply py-1 px-2 rounded flex items-start gap-2;
 		word-break: break-word;
 	}
-	
+
+	.console-message:hover {
+		background-color: var(--color-elevated);
+	}
+
 	.message-time {
-		@apply text-xs text-gray-500 dark:text-gray-600 flex-shrink-0;
+		@apply text-xs flex-shrink-0;
+		color: var(--color-muted);
 	}
 	
 	.message-icon {

@@ -7,7 +7,10 @@
 </svelte:head>
 
 <div class="container mx-auto px-6 py-8 max-w-4xl">
-	<h1 class="text-3xl font-bold mb-6">{m.reference_title()}</h1>
+	<div class="mb-8">
+		<p class="text-xs font-medium uppercase tracking-wider text-[var(--color-accent)] mb-2">Reference</p>
+		<h1 class="text-3xl font-bold">{m.reference_title()}</h1>
+	</div>
 
 	<div class="prose dark:prose-invert max-w-none">
 		<section class="mb-12">
@@ -15,7 +18,7 @@
 
 			<div class="card mb-6">
 				<h3 class="text-xl font-semibold mb-2">{m.reference_basics_adapter_title()}</h3>
-				<p class="text-gray-600 dark:text-gray-400 mb-3">
+				<p class="text-[var(--color-muted)] mb-3">
 					{m.reference_basics_adapter_body()}
 				</p>
 				<div class="code-block">
@@ -25,7 +28,7 @@
 
 			<div class="card mb-6">
 				<h3 class="text-xl font-semibold mb-2">{m.reference_basics_device_title()}</h3>
-				<p class="text-gray-600 dark:text-gray-400 mb-3">
+				<p class="text-[var(--color-muted)] mb-3">
 					{m.reference_basics_device_body()}
 				</p>
 				<div class="code-block">
@@ -35,7 +38,7 @@
 
 			<div class="card mb-6">
 				<h3 class="text-xl font-semibold mb-2">{m.reference_basics_encoder_title()}</h3>
-				<p class="text-gray-600 dark:text-gray-400 mb-3">
+				<p class="text-[var(--color-muted)] mb-3">
 					{m.reference_basics_encoder_body()}
 				</p>
 				<div class="code-block">
@@ -68,7 +71,7 @@ fn fs_main() -> @location(0) vec4f {
 
 			<div class="card mb-6">
 				<h3 class="text-xl font-semibold mb-2">{m.reference_shader_types_title()}</h3>
-				<ul class="list-disc list-inside space-y-1 text-gray-600 dark:text-gray-400">
+				<ul class="list-disc list-inside space-y-1 text-[var(--color-muted)]">
 					<li>{@html m.reference_shader_types_f32()}</li>
 					<li>{@html m.reference_shader_types_i32()}</li>
 					<li>{@html m.reference_shader_types_u32()}</li>
@@ -146,17 +149,17 @@ device.queue.writeBuffer(buffer, 0, vertices);`}</code></pre>
 			<h2 class="text-2xl font-semibold mb-4">{m.reference_links_title()}</h2>
 			<ul class="space-y-2">
 				<li>
-					<a href="https://www.w3.org/TR/webgpu/" target="_blank" rel="noopener noreferrer" class="text-gpu-blue hover:underline">
+					<a href="https://www.w3.org/TR/webgpu/" target="_blank" rel="noopener noreferrer" class="text-[var(--color-accent)] hover:underline">
 						{m.reference_links_webgpu_spec()}
 					</a>
 				</li>
 				<li>
-					<a href="https://www.w3.org/TR/WGSL/" target="_blank" rel="noopener noreferrer" class="text-gpu-blue hover:underline">
+					<a href="https://www.w3.org/TR/WGSL/" target="_blank" rel="noopener noreferrer" class="text-[var(--color-accent)] hover:underline">
 						{m.reference_links_wgsl_spec()}
 					</a>
 				</li>
 				<li>
-					<a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGPU_API" target="_blank" rel="noopener noreferrer" class="text-gpu-blue hover:underline">
+					<a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGPU_API" target="_blank" rel="noopener noreferrer" class="text-[var(--color-accent)] hover:underline">
 						{m.reference_links_mdn()}
 					</a>
 				</li>
